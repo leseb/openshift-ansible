@@ -748,11 +748,27 @@ And to disable this feature, you must set:
 kuryr_openstack_pool_driver: noop
 ```
 
+<<<<<<< HEAD
 On the other hand, there is a multi driver support to enable hybrid
 deployments with different pools drivers. In order to enable the kuryr
 `multi-pool` driver support, we need to also tag the nodes with their
 corresponding `pod_vif` labels so that the right kuryr pool driver is used
 for each VM/node.
+=======
+And if you also want to enable the ports pooling options, as well as
+preloading them, you should uncomment and set the next:
+
+* `kuryr_openstack_enable_pools: True`
+* `kuryr_openstack_pool_max: 0`
+* `kuryr_openstack_pool_min: 1`
+* `kuryr_openstack_pool_batch: 5`
+* `kuryr_openstack_pool_update_frequency: 60`
+* `openshift_kuryr_precreate_subports: 5`
+
+Note in the last variable you specify the number of subports that will
+be created per trunk port, i.e., per pool.
+
+>>>>>>> Add support to pre-create subports at each trunk
 
 To do that, set this in `inventory/group_vars/OSEv3.yml`:
 

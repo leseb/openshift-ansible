@@ -41,6 +41,7 @@ pods. This allows to have interconnectivity between pods and OpenStack VMs.
 * ``kuryr_openstack_pool_update_frequency=20``
 * ``openshift_kuryr_precreate_subports=5``
 * ``openshift_kuryr_device_owner=compute:kuryr``
+<<<<<<< HEAD
 * ``openshift_kuryr_subnet_driver=default``
 * ``openshift_kuryr_sg_driver=default``
 
@@ -58,6 +59,8 @@ installations. It's controlled by ``[haproxy]jinja_config_template`` option in
 Neutron LBaaS v2 and ``[haproxy_amphora]haproxy_template`` in Octavia's config.
 Please note that such configuration change will affect all the load balancers
 created in the cloud.
+=======
+>>>>>>> Add support to pre-create subports at each trunk
 
 ## Kuryr resources
 

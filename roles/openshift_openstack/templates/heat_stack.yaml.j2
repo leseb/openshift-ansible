@@ -959,7 +959,10 @@ resources:
           subnet:      {{ openshift_openstack_node_subnet_name }}
 {% else %}
           subnet:      { get_resource: subnet }
+<<<<<<< HEAD
 {% endif %}
+=======
+>>>>>>> Add support to pre-create subports at each trunk
 {% if openshift_use_kuryr|default(false)|bool %}
           pod_net:     { get_resource: pod_net }
           pod_subnet:  { get_resource: pod_subnet }
@@ -1047,7 +1050,10 @@ resources:
           subnet:      {{ openshift_openstack_node_subnet_name }}
 {% else %}
           subnet:      { get_resource: subnet }
+<<<<<<< HEAD
 {% endif %}
+=======
+>>>>>>> Add support to pre-create subports at each trunk
 {% if openshift_use_kuryr|default(false)|bool %}
           pod_net:     { get_resource: pod_net }
           pod_subnet:  { get_resource: pod_subnet }
@@ -1127,7 +1133,10 @@ resources:
           subnet:      {{ openshift_openstack_node_subnet_name }}
 {% else %}
           subnet:      { get_resource: subnet }
+<<<<<<< HEAD
 {% endif %}
+=======
+>>>>>>> Add support to pre-create subports at each trunk
 {% if openshift_use_kuryr|default(false)|bool %}
           pod_net:     { get_resource: pod_net }
           pod_subnet:  { get_resource: pod_subnet }
@@ -1156,6 +1165,10 @@ resources:
 {% if openshift_openstack_num_etcd|int == 0 %}
             - { get_resource: etcd-secgrp }
 {% endif %}
+<<<<<<< HEAD
+=======
+            - { get_resource: common-secgrp }
+>>>>>>> Add support to pre-create subports at each trunk
 {% if openshift_use_kuryr|default(false)|bool %}
           pod_secgrp:
             - { get_resource: pod_access_sg }
@@ -1226,7 +1239,10 @@ resources:
           subnet:      {{ openshift_openstack_node_subnet_name }}
 {% else %}
           subnet:      { get_resource: subnet }
+<<<<<<< HEAD
 {% endif %}
+=======
+>>>>>>> Add support to pre-create subports at each trunk
 {% if openshift_use_kuryr|default(false)|bool %}
           pod_net:     { get_resource: pod_net }
           pod_subnet:  { get_resource: pod_subnet }
@@ -1312,7 +1328,10 @@ resources:
           subnet:      {{ openshift_openstack_node_subnet_name }}
 {% else %}
           subnet:      { get_resource: subnet }
+<<<<<<< HEAD
 {% endif %}
+=======
+>>>>>>> Add support to pre-create subports at each trunk
 {% if openshift_use_kuryr|default(false)|bool %}
           pod_net:     { get_resource: pod_net }
           pod_subnet:  { get_resource: pod_subnet }
@@ -1336,6 +1355,10 @@ resources:
 {% else %}
             - { get_resource: node-secgrp }
             - { get_resource: infra-secgrp }
+<<<<<<< HEAD
+=======
+            - { get_resource: common-secgrp }
+>>>>>>> Add support to pre-create subports at each trunk
 {% if openshift_use_kuryr|default(false)|bool %}
           pod_secgrp:
             - { get_resource: pod_access_sg }
@@ -1404,7 +1427,10 @@ resources:
           subnet:      {{ openshift_openstack_node_subnet_name }}
 {% else %}
           subnet:      { get_resource: subnet }
+<<<<<<< HEAD
 {% endif %}
+=======
+>>>>>>> Add support to pre-create subports at each trunk
 {% if openshift_use_kuryr|default(false)|bool %}
           pod_net:     { get_resource: pod_net }
           pod_subnet:  { get_resource: pod_subnet }
@@ -1426,9 +1452,14 @@ resources:
             - { get_resource: flat-secgrp }
 {% else %}
             - { get_resource: node-secgrp }
+<<<<<<< HEAD
 {% if openshift_openstack_num_cns > 0 %}
             - { get_resource: cns-secgrp }
 {% endif %}
+=======
+            - { get_resource: cns-secgrp }
+            - { get_resource: common-secgrp }
+>>>>>>> Add support to pre-create subports at each trunk
 {% if openshift_use_kuryr|default(false)|bool %}
           pod_secgrp:
             - { get_resource: pod_access_sg }
@@ -1438,6 +1469,7 @@ resources:
           floating_network: {{ openshift_openstack_external_network_name }}
 {% endif %}
           volume_size: {{ openshift_openstack_cns_volume_size }}
+<<<<<<< HEAD
 {% if not openshift_openstack_provider_network_name and not openshift_openstack_node_subnet_name  %}
     depends_on:
       - interface
@@ -1514,3 +1546,9 @@ resources:
 {% endif %}
 =======
 >>>>>>> Fix and cleanup not required dns bits
+=======
+{% if not openshift_openstack_provider_network_name %}
+    depends_on:
+      - interface
+{% endif %}
+>>>>>>> Add support to pre-create subports at each trunk

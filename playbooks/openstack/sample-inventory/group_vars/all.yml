@@ -102,11 +102,18 @@ openshift_openstack_external_network_name: "public"
 #kuryr_cni_link_interface: eth0
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 ## Ports pooling is enabled by default (with nested driver).
 ## To disable, uncomment the next:
 #kuryr_openstack_pool_driver: noop
 #
 ## You can also alter the port pooling defaults here
+=======
+## To enable the ports pooling you need to enable the next
+#kuryr_openstack_enable_pools: True
+#
+## You can alter the port pooling defaults here
+>>>>>>> Add support to pre-create subports at each trunk
 #kuryr_openstack_pool_max: 0
 #kuryr_openstack_pool_min: 1
 #kuryr_openstack_pool_batch: 5
@@ -119,6 +126,7 @@ openshift_openstack_external_network_name: "public"
 #
 ## You can also change the default device owner for the precreated subports
 #openshift_kuryr_device_owner: compute:kuryr
+<<<<<<< HEAD
 #
 # You can also disable the kuryr controller and cni healthcheck probes by
 # uncommenting the next
@@ -127,6 +135,9 @@ openshift_openstack_external_network_name: "public"
 
 =======
 >>>>>>> Kuryr var generation in OSt dynamic inventory
+=======
+
+>>>>>>> Add support to pre-create subports at each trunk
 
 ## If you want to use a provider network, set its name here.
 ## NOTE: the `openshift_openstack_external_network_name` and
