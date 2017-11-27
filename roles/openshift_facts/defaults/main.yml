@@ -208,4 +208,16 @@ openshift_node_group_edits_crio:
     value:
       - "10m"
 
+<<<<<<< HEAD
 openshift_master_manage_htpasswd: True
+=======
+openshift_router_selector: "region=infra"
+openshift_hosted_router_selector: "{{ openshift_router_selector }}"
+openshift_hosted_registry_selector: "{{ openshift_router_selector }}"
+
+openshift_service_type_dict:
+  origin: origin
+  openshift-enterprise: atomic-openshift
+
+openshift_service_type: "{{ openshift_service_type_dict[openshift_deployment_type] }}"
+>>>>>>> Remove openshift.common.service_type

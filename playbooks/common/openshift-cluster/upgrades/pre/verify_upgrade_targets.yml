@@ -16,11 +16,27 @@
     ignore_excluders: true
   register: repoquery_out
 
+<<<<<<< HEAD
 - name: Fail when unable to determine available OpenShift RPM version
   fail:
     msg: "Unable to determine available OpenShift RPM version"
   when:
   - not repoquery_out.results.package_found
+=======
+- when: not openshift.common.is_containerized | bool
+  block:
+  - name: Check latest available OpenShift RPM version
+    repoquery:
+      name: "{{ openshift_service_type }}"
+      ignore_excluders: true
+    register: repoquery_out
+
+  - name: Fail when unable to determine available OpenShift RPM version
+    fail:
+      msg: "Unable to determine available OpenShift RPM version"
+    when:
+    - not repoquery_out.results.package_found
+>>>>>>> Remove openshift.common.service_type
 
 - name: Set fact avail_openshift_version
   set_fact:

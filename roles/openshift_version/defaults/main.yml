@@ -1,3 +1,12 @@
 ---
 openshift_protect_installed_version: True
+<<<<<<< HEAD
 openshift_release: '4.0'
+=======
+
+openshift_service_type_dict:
+  origin: origin
+  openshift-enterprise: atomic-openshift
+
+openshift_service_type: "{{ openshift_service_type_dict[openshift_deployment_type] }}"
+>>>>>>> Remove openshift.common.service_type

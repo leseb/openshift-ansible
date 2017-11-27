@@ -16,7 +16,23 @@
     until: not (l_docker_restart_docker_in_node_result is failed)
     retries: 3
     delay: 30
+<<<<<<< HEAD
     when: openshift_node_restart_docker_required | default(True)
+=======
+
+  - name: Restart containerized services
+    service:
+      name: "{{ item }}"
+      state: started
+    with_items:
+    - etcd_container
+    - openvswitch
+    - "{{ openshift_service_type }}-master-api"
+    - "{{ openshift_service_type }}-master-controllers"
+    - "{{ openshift_service_type }}-node"
+    failed_when: false
+    when: openshift.common.is_containerized | bool
+>>>>>>> Remove openshift.common.service_type
 
   - name: Wait for master API to come back online
     wait_for:

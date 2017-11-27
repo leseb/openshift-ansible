@@ -36,6 +36,12 @@ def test_log_matches_high_traffic_msg(group_names, matched, failed, extra_words)
 
     task_vars = dict(
         group_names=group_names,
+<<<<<<< HEAD
+=======
+        openshift=dict(
+            common=dict(is_containerized=False),
+        ),
+>>>>>>> Remove openshift.common.service_type
         openshift_service_type="origin"
     )
 

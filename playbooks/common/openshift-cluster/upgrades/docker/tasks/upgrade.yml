@@ -4,9 +4,17 @@
 - name: Restart static master services
   command: /usr/local/bin/master-restart "{{ item }}"
   with_items:
+<<<<<<< HEAD
   - api
   - controllers
   - etcd
+=======
+    - "{{ openshift_service_type }}-master-api"
+    - "{{ openshift_service_type }}-master-controllers"
+    - "{{ openshift_service_type }}-node"
+    - etcd_container
+    - openvswitch
+>>>>>>> Remove openshift.common.service_type
   failed_when: false
 
 - name: Check Docker image count

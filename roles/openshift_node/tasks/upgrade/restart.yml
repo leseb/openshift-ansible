@@ -1,6 +1,10 @@
 ---
 # input variables:
 # - openshift_service_type
+<<<<<<< HEAD
+=======
+# - openshift.common.is_containerized
+>>>>>>> Remove openshift.common.service_type
 # - openshift.common.hostname
 # - openshift_master_api_port
 
@@ -30,6 +34,7 @@
   retries: 3
   delay: 30
 
+<<<<<<< HEAD
 - name: Restart cri-o
   service:
     name: cri-o
@@ -43,6 +48,16 @@
   async: 300
   poll: 0
   register: node_service
+=======
+- name: Start services
+  service: name={{ item }} state=started
+  with_items:
+    - etcd_container
+    - openvswitch
+    - "{{ openshift_service_type }}-master-api"
+    - "{{ openshift_service_type }}-master-controllers"
+    - "{{ openshift_service_type }}-node"
+>>>>>>> Remove openshift.common.service_type
   failed_when: false
 
 - name: Check status of node service

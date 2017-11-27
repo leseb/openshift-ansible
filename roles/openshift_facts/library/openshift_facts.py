@@ -447,6 +447,94 @@ def set_aggregate_facts(facts):
     return facts
 
 
+<<<<<<< HEAD
+=======
+def set_deployment_facts_if_unset(facts):
+    """ Set Facts that vary based on deployment_type. This currently
+        includes master.registry_url, node.registry_url,
+        node.storage_plugin_deps
+
+        Args:
+            facts (dict): existing facts
+        Returns:
+            dict: the facts dict updated with the generated deployment_type
+            facts
+    """
+    # disabled to avoid breaking up facts related to deployment type into
+    # multiple methods for now.
+    # pylint: disable=too-many-statements, too-many-branches
+    for role in ('master', 'node'):
+        if role in facts:
+            deployment_type = facts['common']['deployment_type']
+            if 'registry_url' not in facts[role]:
+                registry_url = 'openshift/origin-${component}:${version}'
+                if deployment_type == 'openshift-enterprise':
+                    registry_url = 'openshift3/ose-${component}:${version}'
+                facts[role]['registry_url'] = registry_url
+
+    if 'master' in facts:
+        deployment_type = facts['common']['deployment_type']
+        openshift_features = ['Builder', 'S2IBuilder', 'WebConsole']
+        if 'disabled_features' not in facts['master']:
+            if facts['common']['deployment_subtype'] == 'registry':
+                facts['master']['disabled_features'] = openshift_features
+
+    if 'node' in facts:
+        deployment_type = facts['common']['deployment_type']
+        if 'storage_plugin_deps' not in facts['node']:
+            facts['node']['storage_plugin_deps'] = ['ceph', 'glusterfs', 'iscsi']
+
+    return facts
+
+
+# pylint: disable=too-many-statements
+def set_version_facts_if_unset(facts):
+    """ Set version facts. This currently includes common.version and
+        common.version_gte_3_x
+
+        Args:
+            facts (dict): existing facts
+        Returns:
+            dict: the facts dict updated with version facts.
+    """
+    if 'common' in facts:
+        openshift_version = get_openshift_version(facts)
+        if openshift_version and openshift_version != "latest":
+            version = LooseVersion(openshift_version)
+            facts['common']['version'] = openshift_version
+            facts['common']['short_version'] = '.'.join([str(x) for x in version.version[0:2]])
+            version_gte_3_6 = version >= LooseVersion('3.6')
+            version_gte_3_7 = version >= LooseVersion('3.7')
+            version_gte_3_8 = version >= LooseVersion('3.8')
+            version_gte_3_9 = version >= LooseVersion('3.9')
+        else:
+            # 'Latest' version is set to True, 'Next' versions set to False
+            version_gte_3_6 = True
+            version_gte_3_7 = True
+            version_gte_3_8 = False
+            version_gte_3_9 = False
+        facts['common']['version_gte_3_6'] = version_gte_3_6
+        facts['common']['version_gte_3_7'] = version_gte_3_7
+        facts['common']['version_gte_3_8'] = version_gte_3_8
+        facts['common']['version_gte_3_9'] = version_gte_3_9
+
+        if version_gte_3_9:
+            examples_content_version = 'v3.9'
+        elif version_gte_3_8:
+            examples_content_version = 'v3.8'
+        elif version_gte_3_7:
+            examples_content_version = 'v3.7'
+        elif version_gte_3_6:
+            examples_content_version = 'v3.6'
+        else:
+            examples_content_version = 'v1.5'
+
+        facts['common']['examples_content_version'] = examples_content_version
+
+    return facts
+
+
+>>>>>>> Remove openshift.common.service_type
 def set_sdn_facts_if_unset(facts, system_facts):
     """ Set sdn facts if not already present in facts dict
 
@@ -714,6 +802,166 @@ def build_api_server_args(facts):
     return facts
 
 
+<<<<<<< HEAD
+=======
+def is_service_running(service):
+    """ Queries systemd through dbus to see if the service is running """
+    service_running = False
+    try:
+        bus = SystemBus()
+        systemd = bus.get_object('org.freedesktop.systemd1', '/org/freedesktop/systemd1')
+        manager = Interface(systemd, dbus_interface='org.freedesktop.systemd1.Manager')
+        service_unit = service if service.endswith('.service') else manager.GetUnit('{0}.service'.format(service))
+        service_proxy = bus.get_object('org.freedesktop.systemd1', str(service_unit))
+        service_properties = Interface(service_proxy, dbus_interface='org.freedesktop.DBus.Properties')
+        service_load_state = service_properties.Get('org.freedesktop.systemd1.Unit', 'LoadState')
+        service_active_state = service_properties.Get('org.freedesktop.systemd1.Unit', 'ActiveState')
+        if service_load_state == 'loaded' and service_active_state == 'active':
+            service_running = True
+    except DBusException:
+        # TODO: do not swallow exception, as it may be hiding useful debugging
+        # information.
+        pass
+
+    return service_running
+
+
+def rpm_rebuilddb():
+    """
+    Runs rpm --rebuilddb to ensure the db is in good shape.
+    """
+    module.run_command(['/usr/bin/rpm', '--rebuilddb'])  # noqa: F405
+
+
+def get_version_output(binary, version_cmd):
+    """ runs and returns the version output for a command """
+    cmd = []
+    for item in (binary, version_cmd):
+        if isinstance(item, list):
+            cmd.extend(item)
+        else:
+            cmd.append(item)
+
+    if os.path.isfile(cmd[0]):
+        _, output, _ = module.run_command(cmd)  # noqa: F405
+    return output
+
+
+# We may need this in the future.
+def get_docker_version_info():
+    """ Parses and returns the docker version info """
+    result = None
+    if is_service_running('docker') or is_service_running('container-engine'):
+        version_info = yaml.safe_load(get_version_output('/usr/bin/docker', 'version'))
+        if 'Server' in version_info:
+            result = {
+                'api_version': version_info['Server']['API version'],
+                'version': version_info['Server']['Version']
+            }
+    return result
+
+
+def get_openshift_version(facts):
+    """ Get current version of openshift on the host.
+
+        Checks a variety of ways ranging from fastest to slowest.
+
+        Args:
+            facts (dict): existing facts
+            optional cli_image for pulling the version number
+
+        Returns:
+            version: the current openshift version
+    """
+    version = None
+
+    # No need to run this method repeatedly on a system if we already know the
+    # version
+    # TODO: We need a way to force reload this after upgrading bits.
+    if 'common' in facts:
+        if 'version' in facts['common'] and facts['common']['version'] is not None:
+            return chomp_commit_offset(facts['common']['version'])
+
+    if os.path.isfile('/usr/bin/openshift'):
+        _, output, _ = module.run_command(['/usr/bin/openshift', 'version'])  # noqa: F405
+        version = parse_openshift_version(output)
+    elif 'common' in facts and 'is_containerized' in facts['common']:
+        version = get_container_openshift_version(facts)
+
+    # Handle containerized masters that have not yet been configured as a node.
+    # This can be very slow and may get re-run multiple times, so we only use this
+    # if other methods failed to find a version.
+    if not version and os.path.isfile('/usr/local/bin/openshift'):
+        _, output, _ = module.run_command(['/usr/local/bin/openshift', 'version'])  # noqa: F405
+        version = parse_openshift_version(output)
+
+    return chomp_commit_offset(version)
+
+
+def chomp_commit_offset(version):
+    """Chomp any "+git.foo" commit offset string from the given `version`
+    and return the modified version string.
+
+Ex:
+- chomp_commit_offset(None)                 => None
+- chomp_commit_offset(1337)                 => "1337"
+- chomp_commit_offset("v3.4.0.15+git.derp") => "v3.4.0.15"
+- chomp_commit_offset("v3.4.0.15")          => "v3.4.0.15"
+- chomp_commit_offset("v1.3.0+52492b4")     => "v1.3.0"
+    """
+    if version is None:
+        return version
+    else:
+        # Stringify, just in case it's a Number type. Split by '+' and
+        # return the first split. No concerns about strings without a
+        # '+', .split() returns an array of the original string.
+        return str(version).split('+')[0]
+
+
+def get_container_openshift_version(facts):
+    """
+    If containerized, see if we can determine the installed version via the
+    systemd environment files.
+    """
+    deployment_type = facts['common']['deployment_type']
+    service_type_dict = {'origin': 'origin',
+                         'openshift-enterprise': 'atomic-openshift'}
+    service_type = service_type_dict[deployment_type]
+
+    for filename in ['/etc/sysconfig/%s-master-controllers', '/etc/sysconfig/%s-node']:
+        env_path = filename % service_type
+        if not os.path.exists(env_path):
+            continue
+
+        with open(env_path) as env_file:
+            for line in env_file:
+                if line.startswith("IMAGE_VERSION="):
+                    tag = line[len("IMAGE_VERSION="):].strip()
+                    # Remove leading "v" and any trailing release info, we just want
+                    # a version number here:
+                    no_v_version = tag[1:] if tag[0] == 'v' else tag
+                    version = no_v_version.split("-")[0]
+                    return version
+    return None
+
+
+def parse_openshift_version(output):
+    """ Apply provider facts to supplied facts dict
+
+        Args:
+            string: output of 'openshift version'
+        Returns:
+            string: the version number
+    """
+    versions = dict(e.split(' v') for e in output.splitlines() if ' v' in e)
+    ver = versions.get('openshift', '')
+    # Remove trailing build number and commit hash from older versions, we need to return a straight
+    # w.x.y.z version here for use as openshift_version throughout the playbooks/roles. (i.e. 3.1.1.6-64-g80b61da)
+    ver = ver.split('-')[0]
+    return ver
+
+
+>>>>>>> Remove openshift.common.service_type
 def apply_provider_facts(facts, provider_facts):
     """ Apply provider facts to supplied facts dict
 

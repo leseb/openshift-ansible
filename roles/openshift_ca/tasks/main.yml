@@ -5,7 +5,11 @@
 
 - name: Install the base package for admin tooling
   package:
+<<<<<<< HEAD
     name: "{{ openshift_service_type }}{{ openshift_pkg_version | default('') | lib_utils_oo_image_tag_to_rpm_version(include_dash=True) }}"
+=======
+    name: "{{ openshift_service_type }}{{ openshift_pkg_version | default('') | oo_image_tag_to_rpm_version(include_dash=True) }}"
+>>>>>>> Remove openshift.common.service_type
     state: present
   register: install_result
 <<<<<<< HEAD

@@ -9,11 +9,54 @@
 - name: stop services for upgrade
   import_tasks: upgrade/stop_services.yml
 
+<<<<<<< HEAD
 # Ensure actually install latest package.
 - name: install docker upgrade rpm
   command: "{{ ansible_pkg_mgr }} install -y docker{{ '-' + docker_version }}"
   register: result
   until: result is succeeded
+=======
+- name: Stop node and openvswitch services
+  service:
+    name: "{{ item }}"
+    state: stopped
+  with_items:
+  - "{{ openshift_service_type }}-node"
+  - openvswitch
+  failed_when: false
+
+- name: Stop additional containerized services
+  service:
+    name: "{{ item }}"
+    state: stopped
+  with_items:
+  - "{{ openshift_service_type }}-master-controllers"
+  - "{{ openshift_service_type }}-master-api"
+  - etcd_container
+  failed_when: false
+  when: openshift.common.is_containerized | bool
+
+- name: Pre-pull node image
+  command: >
+    docker pull {{ openshift.node.node_image }}:{{ openshift_image_tag }}
+  register: pull_result
+  changed_when: "'Downloaded newer image' in pull_result.stdout"
+  when: openshift.common.is_containerized | bool
+
+- name: Pre-pull openvswitch image
+  command: >
+    docker pull {{ openshift.node.ovs_image }}:{{ openshift_image_tag }}
+  register: pull_result
+  changed_when: "'Downloaded newer image' in pull_result.stdout"
+  when:
+  - openshift.common.is_containerized | bool
+  - openshift_use_openshift_sdn | bool
+
+- include_tasks: docker/upgrade.yml
+  vars:
+    # We will restart Docker ourselves after everything is ready:
+    skip_docker_restart: True
+>>>>>>> Remove openshift.common.service_type
   when:
   - l_docker_upgrade is defined
   - l_docker_upgrade | bool
@@ -48,8 +91,33 @@
   when:
   - openshift_use_crio | default(False) | bool
 
+<<<<<<< HEAD
 - name: install pre-pulled rpms.
   import_tasks: upgrade/rpm_upgrade_install.yml
+=======
+- name: Ensure containerized services stopped before Docker restart
+  service:
+    name: "{{ item }}"
+    state: stopped
+  with_items:
+  - etcd_container
+  - openvswitch
+  - "{{ openshift_service_type }}-master-api"
+  - "{{ openshift_service_type }}-master-controllers"
+  - "{{ openshift_service_type }}-node"
+  failed_when: false
+  when: openshift.common.is_containerized | bool
+
+- name: Stop rpm based services
+  service:
+    name: "{{ item }}"
+    state: stopped
+  with_items:
+  - "{{ openshift_service_type }}-node"
+  - openvswitch
+  failed_when: false
+  when: not openshift.common.is_containerized | bool
+>>>>>>> Remove openshift.common.service_type
 
 # TODO(michaelgugino): Remove in 3.12
 - import_tasks: selinux_container_cgroup.yml

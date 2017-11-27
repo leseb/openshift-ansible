@@ -8,7 +8,12 @@
 - name: Install Node service file
   template:
     dest: "/etc/systemd/system/{{ openshift_service_type }}-node.service"
+<<<<<<< HEAD
     src: "node.service.j2"
+=======
+    src: "{{ openshift.common.is_containerized | bool | ternary('openshift.docker.node.service', 'node.service.j2') }}"
+  when: not l_is_node_system_container | bool
+>>>>>>> Remove openshift.common.service_type
   notify:
   - reload systemd units
 

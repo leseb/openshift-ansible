@@ -15,6 +15,54 @@
 
 - name: Disable excluders and gather facts
   hosts: oo_masters_to_config
+<<<<<<< HEAD
+=======
+  gather_facts: no
+  roles:
+  - role: openshift_excluder
+    r_openshift_excluder_action: disable
+
+- name: Gather and set facts for master hosts
+  hosts: oo_masters_to_config
+  pre_tasks:
+  # Per https://bugzilla.redhat.com/show_bug.cgi?id=1469336
+  #
+  # When scaling up a cluster upgraded from OCP <= 3.5, ensure that
+  # OPENSHIFT_DEFAULT_REGISTRY is present as defined on the existing
+  # masters, or absent if such is the case.
+  - name: Detect if this host is a new master in a scale up
+    set_fact:
+      g_openshift_master_is_scaleup: "{{ openshift.common.hostname in ( groups['new_masters'] | default([]) ) }}"
+
+  - name: Scaleup Detection
+    debug:
+      var: g_openshift_master_is_scaleup
+
+  - name: Check for RPM generated config marker file .config_managed
+    stat:
+      path: /etc/origin/.config_managed
+    register: rpmgenerated_config
+
+  - name: Remove RPM generated config files if present
+    file:
+      path: "/etc/origin/{{ item }}"
+      state: absent
+    when:
+    - rpmgenerated_config.stat.exists == true
+    - deployment_type == 'openshift-enterprise'
+    with_items:
+    - master
+    - node
+    - .config_managed
+
+  - set_fact:
+      openshift_master_etcd_port: "{{ (etcd_client_port | default('2379')) if (groups.oo_etcd_to_config is defined and groups.oo_etcd_to_config) else none }}"
+      openshift_master_etcd_hosts: "{{ hostvars
+                                       | oo_select_keys(groups['oo_etcd_to_config']
+                                                        | default([]))
+                                       | oo_collect('openshift.common.hostname')
+                                       | default(none, true) }}"
+>>>>>>> Remove openshift.common.service_type
   roles:
   - openshift_facts
   tasks:
@@ -100,9 +148,17 @@
     vars:
       r_openshift_excluder_action: enable
 
+<<<<<<< HEAD
 - name: Deploy the central bootstrap configuration
   hosts: oo_first_master
   gather_facts: no
+=======
+- name: Configure API Aggregation on masters
+  hosts: oo_masters
+  serial: 1
+  roles:
+  - role: openshift_facts
+>>>>>>> Remove openshift.common.service_type
   tasks:
   - name: setup bootstrap settings
     import_tasks: tasks/enable_bootstrap_config.yml
@@ -116,10 +172,15 @@
   hosts: oo_masters_to_config
   gather_facts: no
   roles:
+<<<<<<< HEAD
   - role: openshift_manage_node
     openshift_master_host: "{{ groups.oo_first_master.0 }}"
     openshift_manage_node_is_master: "{{ ('oo_masters_to_config' in group_names) | bool }}"
     openshift_node_master_api_url: "{{ hostvars[groups.oo_first_master.0].openshift.master.api_url }}"
+=======
+  - role: openshift_excluder
+    r_openshift_excluder_action: enable
+>>>>>>> Remove openshift.common.service_type
 
 - name: Master Install Checkpoint End
   hosts: all

@@ -1,6 +1,7 @@
 ---
 - name: Install clients
 <<<<<<< HEAD
+<<<<<<< HEAD
   package:
     name: "{{ openshift_service_type }}-clients{{ openshift_pkg_version | default('') }}"
     state: present
@@ -8,6 +9,9 @@
   until: result is succeeded
 =======
   package: name={{ openshift.common.service_type }}-clients state=present
+=======
+  package: name={{ openshift_service_type }}-clients state=present
+>>>>>>> Remove openshift.common.service_type
   when: not openshift.common.is_containerized | bool
   register: result
   until: result | success
