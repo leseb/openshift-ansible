@@ -4,7 +4,11 @@
     name: firewalld
     state: present
   register: result
+<<<<<<< HEAD
   until: result is succeeded
+=======
+  until: result | success
+>>>>>>> retry package operations
 
 - name: Ensure iptables services are not enabled
   systemd:

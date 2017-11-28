@@ -1,4 +1,5 @@
 ---
+<<<<<<< HEAD
 - name: Install node, clients, and conntrack packages
   package:
     name: "{{ pkg_list | join(',') }}"
@@ -10,3 +11,39 @@
     - "{{ openshift_service_type }}-node{{ (openshift_pkg_version | default('')) | lib_utils_oo_image_tag_to_rpm_version(include_dash=True) }}"
     - "{{ openshift_service_type }}-clients{{ (openshift_pkg_version | default('')) | lib_utils_oo_image_tag_to_rpm_version(include_dash=True) }}"
     - conntrack-tools
+=======
+- when: not openshift.common.is_containerized | bool
+  block:
+  - name: Install Node package
+    package:
+      name: "{{ openshift.common.service_type }}-node{{ (openshift_pkg_version | default('')) | oo_image_tag_to_rpm_version(include_dash=True) }}"
+      state: present
+    register: result
+    until: result | success
+
+  - name: Install sdn-ovs package
+    package:
+      name: "{{ openshift.common.service_type }}-sdn-ovs{{ (openshift_pkg_version | default('')) | oo_image_tag_to_rpm_version(include_dash=True) }}"
+      state: present
+    when:
+    - openshift_node_use_openshift_sdn | bool
+    register: result
+    until: result | success
+
+  - name: Install conntrack-tools package
+    package:
+      name: "conntrack-tools"
+      state: present
+    register: result
+    until: result | success
+
+- when:
+  - openshift.common.is_containerized | bool
+  - not l_is_node_system_container | bool
+  block:
+  - name: Pre-pull node image when containerized
+    command: >
+      docker pull {{ openshift.node.node_image }}:{{ openshift_image_tag }}
+    register: pull_result
+    changed_when: "'Downloaded newer image' in pull_result.stdout"
+>>>>>>> retry package operations

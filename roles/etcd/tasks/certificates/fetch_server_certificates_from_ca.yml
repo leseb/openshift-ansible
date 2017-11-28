@@ -3,8 +3,14 @@
   package:
     name: "etcd"
     state: present
+<<<<<<< HEAD
   register: result
   until: result is succeeded
+=======
+  when: not etcd_is_containerized | bool
+  register: result
+  until: result | success
+>>>>>>> retry package operations
 
 - name: Check status of etcd certificates
   stat:

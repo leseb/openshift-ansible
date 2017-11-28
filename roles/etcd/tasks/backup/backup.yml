@@ -27,7 +27,28 @@
 # For non containerized we should have the correct version of
 # etcd installed already. So don't do anything.
 #
+<<<<<<< HEAD
 # For static pod installs we now exec into etcd_container
+=======
+# For containerized installs we now exec into etcd_container
+#
+# For embedded non containerized we need to ensure we have the latest version
+# etcd on the host.
+- name: Detecting Atomic Host Operating System
+  stat:
+    path: /run/ostree-booted
+  register: l_ostree_booted
+
+- name: Install latest etcd for embedded
+  package:
+    name: etcd
+    state: latest
+  when:
+  - r_etcd_common_embedded_etcd | bool
+  - not l_ostree_booted.stat.exists | bool
+  register: result
+  until: result | success
+>>>>>>> retry package operations
 
 - name: Check selinux label of '{{ etcd_data_dir }}'
   command: >

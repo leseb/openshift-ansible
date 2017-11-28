@@ -1,11 +1,18 @@
 ---
 - name: Install flannel
   become: yes
+<<<<<<< HEAD
   package:
     name: flannel
     state: present
   register: result
   until: result is succeeded
+=======
+  package: name=flannel state=present
+  when: not openshift.common.is_atomic | bool
+  register: result
+  until: result | success
+>>>>>>> retry package operations
 
 - name: Set flannel etcd options
   become: yes

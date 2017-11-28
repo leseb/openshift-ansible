@@ -20,12 +20,21 @@
   package:
     name: "{{ pkg_list | join(',') }}"
     state: present
+<<<<<<< HEAD
   vars:
     pkg_list:
       - iptables
       - iptables-services
   register: result
   until: result is succeeded
+=======
+  with_items:
+    - iptables
+    - iptables-services
+  when: not r_os_firewall_is_atomic | bool
+  register: result
+  until: result | success
+>>>>>>> retry package operations
 
 - name: Start and enable iptables service
   systemd:

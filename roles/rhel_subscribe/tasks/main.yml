@@ -8,12 +8,16 @@
     name: subscription-manager
     state: present
   register: result
+<<<<<<< HEAD
   until: result is succeeded
 
 - name: Is host already registered?
   command: "subscription-manager version"
   register: rh_subscribed
   changed_when: False
+=======
+  until: result | success
+>>>>>>> retry package operations
 
 - name: Register host using user/password
   redhat_subscription:

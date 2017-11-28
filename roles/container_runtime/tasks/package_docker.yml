@@ -15,6 +15,7 @@
 # Docker upgrades are handled by a separate playbook.
 # Note: The curr_docker_version.stdout check can be removed when https://github.com/ansible/ansible/issues/33187 gets fixed.
 - name: Install Docker
+<<<<<<< HEAD:roles/container_runtime/tasks/package_docker.yml
   package:
     name: "{{ pkg_list | join(',') }}"
     state: present
@@ -24,6 +25,12 @@
     pkg_list:
     - "docker{{ '-' + docker_version if docker_version is defined else '' }}"
     - skopeo
+=======
+  package: name=docker{{ '-' + docker_version if docker_version is defined else '' }} state=present
+  when: not openshift.common.is_atomic | bool and not curr_docker_version | skipped and not curr_docker_version.stdout != ''
+  register: result
+  until: result | success
+>>>>>>> retry package operations:roles/docker/tasks/package_docker.yml
 
 - block:
   # Extend the default Docker service unit file when using iptables-services

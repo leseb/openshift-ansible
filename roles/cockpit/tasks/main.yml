@@ -12,9 +12,16 @@
     - cockpit-system
     - cockpit-bridge
     - cockpit-docker
+<<<<<<< HEAD
     - "{{ cockpit_plugins | join(',') }}"
   register: result
   until: result is succeeded
+=======
+    - "{{ cockpit_plugins }}"
+  when: not openshift.common.is_containerized | bool
+  register: result
+  until: result | success
+>>>>>>> retry package operations
 
 - name: Enable cockpit-ws
   systemd:

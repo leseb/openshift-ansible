@@ -1,5 +1,6 @@
 ---
 - name: Install iSCSI storage plugin dependencies
+<<<<<<< HEAD
   package:
     name: "{{ pkg_list | join(',') }}"
     state: present
@@ -29,3 +30,9 @@
 #enable multipath
 - name: Enable and start multipath
   command: "mpathconf --enable --with_multipathd y"
+=======
+  package: name=iscsi-initiator-utils state=present
+  when: not openshift.common.is_atomic | bool
+  register: result
+  until: result | success
+>>>>>>> retry package operations

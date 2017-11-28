@@ -1,7 +1,14 @@
 ---
 - name: Install Ceph storage plugin dependencies
+<<<<<<< HEAD
   package:
     name: ceph-common
     state: present
   register: result
   until: result is succeeded
+=======
+  package: name=ceph-common state=present
+  when: not openshift.common.is_atomic | bool
+  register: result
+  until: result | success
+>>>>>>> retry package operations

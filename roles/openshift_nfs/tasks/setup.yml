@@ -3,11 +3,17 @@
   import_tasks: firewall.yml
 
 - name: Install nfs-utils
+<<<<<<< HEAD
   package:
     name: nfs-utils
     state: present
   register: result
   until: result is succeeded
+=======
+  package: name=nfs-utils state=present
+  register: result
+  until: result | success
+>>>>>>> retry package operations
 
 - name: Configure NFS
   lineinfile:

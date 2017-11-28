@@ -6,7 +6,11 @@
   when:
   - not glusterfs_heketi_is_native | bool
   register: result
+<<<<<<< HEAD
   until: result is succeeded
+=======
+  until: result | success
+>>>>>>> retry package operations
 
 - name: Verify heketi-cli is installed
   shell: "command -v {{ glusterfs_heketi_cli }} >/dev/null 2>&1 || { echo >&2 'ERROR: Make sure heketi-cli is available, then re-run the installer'; exit 1; }"

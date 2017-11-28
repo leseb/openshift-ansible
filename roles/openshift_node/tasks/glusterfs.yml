@@ -1,10 +1,17 @@
 ---
 - name: Install GlusterFS storage plugin dependencies
+<<<<<<< HEAD:roles/openshift_node/tasks/glusterfs.yml
   package:
     name: glusterfs-fuse
     state: present
   register: result
   until: result is succeeded
+=======
+  package: name=glusterfs-fuse state=present
+  when: not openshift.common.is_atomic | bool
+  register: result
+  until: result | success
+>>>>>>> retry package operations:roles/openshift_node/tasks/storage_plugins/glusterfs.yml
 
 - name: Check for existence of fusefs sebooleans
   command: getsebool {{ item }}

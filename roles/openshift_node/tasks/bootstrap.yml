@@ -1,6 +1,16 @@
 ---
+<<<<<<< HEAD
 - name: include package installs
   import_tasks: install_rpms.yml
+=======
+- name: install needed rpm(s)
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ r_openshift_node_image_prep_packages }}"
+  register: result
+  until: result | success
+>>>>>>> retry package operations
 
 - name: create the directory for node
   file:

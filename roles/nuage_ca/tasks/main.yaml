@@ -1,10 +1,17 @@
 ---
 - name: Install openssl
+<<<<<<< HEAD
   package:
     name: openssl
     state: present
   register: result
   until: result is succeeded
+=======
+  package: name=openssl state=present
+  when: not openshift.common.is_atomic | bool
+  register: result
+  until: result | success
+>>>>>>> retry package operations
 
 - name: Create CA directory
   file: path="{{ nuage_ca_dir }}" state=directory

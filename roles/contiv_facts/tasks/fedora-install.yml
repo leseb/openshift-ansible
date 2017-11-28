@@ -4,7 +4,11 @@
     name: dnf
     state: installed
   register: result
+<<<<<<< HEAD
   until: result is succeeded
+=======
+  until: result | success
+>>>>>>> retry package operations
 
 - name: Update repo cache
   command: dnf update -y

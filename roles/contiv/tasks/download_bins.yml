@@ -9,7 +9,11 @@
     name: bzip2
     state: installed
   register: result
+<<<<<<< HEAD
   until: result is succeeded
+=======
+  until: result | success
+>>>>>>> retry package operations
 
 - name: Download Bins | Download Contiv tar file
   get_url:

@@ -8,7 +8,11 @@
     name: "{{ openshift_service_type }}{{ openshift_pkg_version | default('') | lib_utils_oo_image_tag_to_rpm_version(include_dash=True) }}"
     state: present
   register: install_result
+<<<<<<< HEAD
   until: install_result is succeeded
+=======
+  until: install_result | success
+>>>>>>> retry package operations
   delegate_to: "{{ openshift_ca_host }}"
   run_once: true
 
