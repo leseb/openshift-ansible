@@ -109,11 +109,16 @@ parameters:
     label: Security groups
     description: Security group resources
 
+<<<<<<< HEAD
+=======
+{% if openshift_use_kuryr|default(false)|bool %}
+>>>>>>> Kuryr var generation in OSt dynamic inventory
   api_lb_pool:
     default: ''
     type: string
     label: API LoadBalancer pool ID
     description: API Loadbalancer pool resource
+<<<<<<< HEAD
 
   router_lb_pool_http:
     type: string
@@ -131,6 +136,8 @@ parameters:
     label: Subports Security groups
     description: Security group resources for subports
     default: ''
+=======
+>>>>>>> Kuryr var generation in OSt dynamic inventory
 {% endif %}
 
   attach_float_net:
@@ -334,6 +341,7 @@ resources:
 {% endif %}
 
 
+<<<<<<< HEAD
   api_lb_member:
     type: OS::{{ openshift_openstack_lbaasv2_provider }}::PoolMember
     condition:
@@ -365,3 +373,18 @@ resources:
       protocol_port: 443
       address: { get_attr: [server, first_address]}
       subnet: { get_param: subnet }
+=======
+{% if openshift_use_kuryr|default(false)|bool %}
+  lb_member:
+    type: OS::Neutron::LBaaS::PoolMember
+    condition:
+      equals:
+        - get_param: type
+        - master
+    properties:
+      pool: { get_param: api_lb_pool }
+      protocol_port: {{ openshift_master_api_port|default(8443) }}
+      address: { get_attr: [server, first_address]}
+      subnet: { get_param: subnet }
+{% endif %}
+>>>>>>> Kuryr var generation in OSt dynamic inventory

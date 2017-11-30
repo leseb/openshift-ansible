@@ -125,6 +125,7 @@ outputs:
     value: {{ openshift_openstack_router_id }}
 {% endif %}
 
+<<<<<<< HEAD
 
 {% if openshift_kuryr_subnet_driver|default('default') == 'namespace' %}
   pod_subnet_pool:
@@ -141,10 +142,25 @@ outputs:
     description: ID of the security group to enable access from namespaces to default namespace
     value: { get_resource: sg_allow_from_namespace}
 {% endif %}
+=======
+{% if openshift_use_kuryr|default(false)|bool %}
+  vm_subnet:
+    description: ID of the subnet the Pods will be on
+    value: { get_resource: subnet }
+
+  pod_subnet:
+    description: ID of the subnet the Pods will be on
+    value: { get_resource: pod_subnet }
+
+  service_subnet:
+    description: ID of the subnet the services will be on
+    value: { get_resource: service_subnet }
+>>>>>>> Kuryr var generation in OSt dynamic inventory
 
   pod_access_sg_id:
     description: Id of the security group for services to be able to reach pods
     value: { get_resource: pod_access_sg }
+<<<<<<< HEAD
 
   api_lb_vip_port_id:
     description: Id of the OpenShift API load balancer VIP port
@@ -161,6 +177,10 @@ outputs:
 
 =======
 >>>>>>> Fix and cleanup not required dns bits
+=======
+{% endif %}
+
+>>>>>>> Kuryr var generation in OSt dynamic inventory
 conditions:
   no_floating: {% if openshift_openstack_provider_network_name %}true{% else %}false{% endif %}
 
@@ -230,6 +250,7 @@ resources:
 
 {% if not openshift_openstack_provider_network_name %}
 {% if openshift_use_kuryr|default(false)|bool %}
+<<<<<<< HEAD
   pod_net:
     type: OS::Neutron::Net
     properties:
@@ -299,22 +320,75 @@ resources:
       remote_group: { get_resource: sg_allow_from_default }
 {% endif %}
 
+=======
+  api_lb:
+    type: OS::Neutron::LBaaS::LoadBalancer
+    properties:
+      name:
+        str_replace:
+          template: openshift-ansible-cluster_id-api-lb
+          params:
+            cluster_id: {{ openshift_openstack_stack_name }}
+      vip_address: {{ openshift_openstack_kuryr_service_subnet_cidr | ipaddr('1') | ipaddr('address') }}
+      vip_subnet: { get_resource: service_subnet }
+
+  api_lb_listener:
+    type: OS::Neutron::LBaaS::Listener
+    properties:
+      name:
+        str_replace:
+          template: openshift-ansible-cluster_id-api-lb-listener
+          params:
+            cluster_id: {{ openshift_openstack_stack_name }}
+      loadbalancer: { get_resource: api_lb }
+      protocol: HTTPS
+      protocol_port: 443
+
+  api_lb_pool:
+    type: OS::Neutron::LBaaS::Pool
+    properties:
+      name:
+        str_replace:
+          template: openshift-ansible-cluster_id-api-lb-pool
+          params:
+            cluster_id: {{ openshift_openstack_stack_name }}
+      protocol: HTTPS
+      lb_algorithm: ROUND_ROBIN
+      listener: { get_resource: api_lb_listener }
+
+  pod_net:
+    type: OS::Neutron::Net
+    properties:
+      name:
+        str_replace:
+          template: openshift-ansible-cluster_id-pod-net
+          params:
+            cluster_id: {{ openshift_openstack_stack_name }}
+>>>>>>> Kuryr var generation in OSt dynamic inventory
 
   pod_subnet:
     type: OS::Neutron::Subnet
     properties:
       network_id: { get_resource: pod_net }
+<<<<<<< HEAD
 {% if openshift_kuryr_subnet_driver|default('default') == 'namespace' %}
       subnetpool: { get_resource: pod_subnet_pool }
 {% else %}
       cidr: {{ openshift_openstack_kuryr_pod_subnet_cidr }}
 {% endif %}
+=======
+      cidr: {{ openshift_openstack_kuryr_pod_subnet_cidr }}
+>>>>>>> Kuryr var generation in OSt dynamic inventory
       enable_dhcp: False
       name:
         str_replace:
           template: openshift-ansible-cluster_id-pod-subnet
           params:
+<<<<<<< HEAD
             cluster_id: {{ openshift_openstack_full_dns_domain }}
+=======
+            cluster_id: {{ openshift_openstack_stack_name }}
+>>>>>>> Kuryr var generation in OSt dynamic inventory
       dns_nameservers:
 {% for nameserver in openshift_openstack_dns_nameservers %}
         - {{ nameserver }}
@@ -327,7 +401,11 @@ resources:
         str_replace:
           template: openshift-ansible-cluster_id-service-net
           params:
+<<<<<<< HEAD
             cluster_id: {{ openshift_openstack_full_dns_domain }}
+=======
+            cluster_id: {{ openshift_openstack_stack_name }}
+>>>>>>> Kuryr var generation in OSt dynamic inventory
 
   service_subnet:
     type: OS::Neutron::Subnet
@@ -343,11 +421,18 @@ resources:
         str_replace:
           template: openshift-ansible-cluster_id-service-subnet
           params:
+<<<<<<< HEAD
             cluster_id: {{ openshift_openstack_full_dns_domain }}
 
 {% endif %}
 
 {% if not openshift_openstack_node_subnet_name %}
+=======
+            cluster_id: {{ openshift_openstack_stack_name }}
+
+{% endif %}
+
+>>>>>>> Kuryr var generation in OSt dynamic inventory
   net:
     type: OS::Neutron::Net
     properties:
@@ -448,6 +533,33 @@ resources:
       port: { get_resource: service_router_port }
 {% endif %}
 
+{% if openshift_use_kuryr|default(false)|bool %}
+  pod_subnet_interface:
+    type: OS::Neutron::RouterInterface
+    properties:
+      router_id: { get_resource: router }
+      subnet_id: { get_resource: pod_subnet }
+
+  service_router_port:
+      type: OS::Neutron::Port
+      properties:
+        network: { get_resource: service_net}
+        fixed_ips:
+          - subnet: { get_resource: service_subnet }
+            ip_address: {{ openshift_openstack_kuryr_service_subnet_cidr | ipaddr('-2') | ipaddr('address') }}
+        name:
+          str_replace:
+            template: openshift-ansible-cluster_id-service-subnet-router-port
+            params:
+              cluster_id: {{ openshift_openstack_stack_name }}
+
+  service_subnet_interface:
+    type: OS::Neutron::RouterInterface
+    properties:
+      router_id: { get_resource: router }
+      port: { get_resource: service_router_port }
+{% endif %}
+
 {% endif %}
 
 #  keypair:
@@ -494,6 +606,25 @@ resources:
       - ethertype: IPv4
         remote_mode: remote_group_id
 {% endif %}
+{% endif %}
+
+{% if openshift_use_kuryr|default(false)|bool %}
+  pod_access_sg:
+    type: OS::Neutron::SecurityGroup
+    properties:
+      name:
+        str_replace:
+          template: openshift-ansible-cluster_id-pod-service-secgrp
+          params:
+            cluster_id: {{ openshift_openstack_stack_name }}
+      description: Give services and nodes access to the pods
+      rules:
+      - ethertype: IPv4
+        remote_ip_prefix: {{ openshift_openstack_kuryr_service_subnet_cidr }}
+      - ethertype: IPv4
+        remote_ip_prefix: {{ openshift_openstack_subnet_cidr }}
+      - ethertype: IPv4
+        remote_mode: remote_group_id
 {% endif %}
 
 {% if openshift_openstack_flat_secgrp|default(False)|bool %}
