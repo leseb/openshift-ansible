@@ -1,0 +1,40 @@
+---
+- name: create temp directory
+  command: mktemp -d /tmp/openshift-ceph-ansible-XXXXXX
+  register: mktemp
+  changed_when: False
+  check_mode: no
+
+- name: copy the admin client config
+  command: >
+    cp {{ openshift.common.config_base }}/master/admin.kubeconfig {{ mktemp.stdout }}/admin.kubeconfig
+  changed_when: False
+  check_mode: no
+
+- name: include ceph_facts.yml
+  include_tasks: ceph_facts.yml
+
+- name: include ceph_wipe.yml
+  include_tasks: ceph_wipe.yml
+  when: openshift_storage_ceph_wipe|default(False)
+
+# do not apply any fw rules since everything is a network ns
+- name: include firewall.yml
+  include_tasks: firewall.yml
+  when: openshift_storage_ceph_firewall_enabled|bool
+
+- name: include common.yml
+  include_tasks: common.yml
+
+- name: include rook_deploy.yml
+  include_tasks: rook_deploy.yml
+
+- name: include ceph_deploy.yml
+  include_tasks: ceph_deploy.yml
+
+- name: delete temp directory
+  file:
+    name: "{{ tmpdir }}"
+    state: absent
+  changed_when: False
+  check_mode: no

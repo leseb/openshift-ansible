@@ -1,0 +1,50 @@
+---
+# - name: verify target namespace exists
+#   oc_project:
+#     state: present
+#     name: "{{ openshift_storage_ceph_name }}"
+
+# is this really useful for us?
+# - name: add namespace service accounts to privileged scc
+#   oc_adm_policy_user:
+#     user: "system:serviceaccount:{{ openshift_storage_ceph_name }}:{{ item }}"
+#     resource_kind: scc
+#     resource_name: privileged
+#     state: present
+#   with_items:
+#     - default
+#     - router
+
+# hostvars[item].openshift.node.nodename?
+# remove the [0] at some point
+- name: label ceph mon and mgr node
+  oc_label:
+    name: "{{ hostvars[item].ansible_fqdn }}"
+    kind: node
+    state: add
+    labels:
+      - key: ceph-mon
+        value: enabled
+      - key: ceph-mgr
+        value: enabled
+  with_items:
+    - "{{ openshift_storage_ceph_nodes[0] }}"
+
+- name: copy rook templates
+  template:
+    src: "{{ item }}.j2"
+    dest: "{{ tmpdir }}/{{ item }}"
+  with_items:
+    - rook-operator.yml
+    - scc.yml
+
+- name: add rook scc
+  oc_obj:
+    state: present
+    namespace: rook-ceph
+    kind: SecurityContextConstraints
+    name: rook-ceph
+    files:
+      - "{{ tmpdir }}/rook-scc.yml"
+  delegate_to: "{{ groups.oo_masters_to_config.0 }}"
+  run_once: true

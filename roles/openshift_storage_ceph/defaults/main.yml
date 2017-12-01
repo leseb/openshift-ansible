@@ -1,0 +1,16 @@
+---
+openshift_storage_ceph_nodes: "{{ groups.ceph | default([]) }}"
+openshift_storage_ceph_timeout: 300
+openshift_storage_ceph_mon_count: 1
+openshift_storage_ceph_use_host_network: False
+openshift_storage_ceph_dirs: '/var/lib/rook'
+openshift_storage_ceph_image: "{{ 'rhceph/rhceph-3-rhel7' | quote if deployment_type == 'openshift-enterprise' else 'ceph/ceph' | quote }}"
+openshift_storage_ceph_version: "{{ 'latest' | quote if deployment_type == 'openshift-enterprise' else 'v13' | quote }}"
+openshift_storage_ceph_firewall_enabled: "{{ os_firewall_enabled | default(False) }}"
+openshift_storage_ceph_use_firewalld: "{{ os_firewall_use_firewalld | default(False) }}"
+openshift_storage_ceph_os_firewall_deny: []
+openshift_storage_ceph_os_firewall_allow:
+  - service: ceph-mon
+    port: "6789/tcp"
+  - service: ceph-mgr
+    port: "7000/tcp"

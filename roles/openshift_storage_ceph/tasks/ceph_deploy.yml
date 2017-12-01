@@ -1,0 +1,56 @@
+---
+- name: generate minimal ceph cluster crd
+  template:
+    src: "cluster.yml.j2"
+    dest: "{{ mktemp.stdout }}/cluster.yml"
+
+- name: create minimal ceph cluster
+  oc_obj:
+    namespace: rook-ceph
+    kind: deployment
+    name: rook-ceph-operator
+    state: present
+    files:
+      - "{{ tmpdir }}/cluster.yml"
+
+- name: wait for the initial ceph-mon to be ready
+  oc_obj:
+    namespace: "{{ openshift_storage_ceph_namespace }}"
+    kind: deployment
+    name: rook-ceph-mon-a
+    state: list
+  register: ceph_mon
+  until:
+    - (ceph_mon.results.results[0].status.numberReady | default(0) == ceph_mon.results.results[0].status.desiredNumberScheduled | default(openshift_storage_ceph_nodes | length))
+  delay: 10
+  retries: "{{ (openshift_storage_ceph_timeout | int / 30) | int }}"
+
+- name: wait for the initial ceph-mgr to be ready
+  oc_obj:
+    namespace: "{{ openshift_storage_ceph_namespace }}"
+    kind: deployment
+    name: rook-ceph-mgr-a
+    state: list
+  register: ceph_mgr
+  until:
+    - (ceph_mgr.results.results[0].status.numberReady | default(0) == ceph_mgr.results.results[0].status.desiredNumberScheduled | default(openshift_storage_ceph_nodes | length))
+  delay: 10
+  retries: "{{ (openshift_storage_ceph_timeout | int / 30) | int }}"
+
+# wait for the all the ressources created by the operator?
+#- name: wait for ceph mon pod to be ready
+#  oc_obj:
+#    namespace: "{{ openshift_storage_ceph_namespace }}"
+#    kind: pod
+#    state: list
+#    selector:
+#      component: "{{ kibana_component }}"
+#      provider: openshift
+#  register: ceph_mon_pod
+#  until:
+#    - "ceph_mon_pod.results.results[0]['items'] | length > 0"
+    # There must be as many pods with 'Ready' status  True as there are nodes expecting those pods
+    # TODO: change openshift_storage_ceph_nodes[0] to openshift_storage_ceph_nodes
+    #- "ceph_mon_pod.results.results[0]['items'] | oo_collect(attribute='status.conditions') | oo_collect(attribute='status', filters={'type': 'Ready'}) | map('bool') | select | list | length == openshift_storage_ceph_nodes[0] | length"
+#  delay: 3
+#  retries: "{{ (openshift_storage_ceph_timeout | int / 30) | int }}"

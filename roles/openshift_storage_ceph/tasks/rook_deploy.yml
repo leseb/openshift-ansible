@@ -1,0 +1,39 @@
+---
+- name: create rook operator
+  oc_obj:
+    namespace: rook-ceph-system
+    kind: deployment
+    name: rook-ceph-operator
+    state: present
+    files:
+      - "{{ tmpdir }}/rook-operator.yml"
+
+- name: wait for the rook operator to be ready
+  oc_obj:
+    namespace: "{{ openshift_storage_ceph_namespace }}"
+    kind: deployment
+    name: rook-ceph-operator
+    state: list
+  register: rook_operator
+  until:
+    - (rook_operator.results.results[0].status.numberReady | default(0) == rook_operator.results.results[0].status.desiredNumberScheduled | default(openshift_storage_ceph_nodes | length))
+  delay: 10
+  retries: "{{ (openshift_storage_ceph_timeout | int / 30) | int }}"
+
+# wait for the all the ressources created by the operator?
+#- name: wait for ceph mon pod to be ready
+#  oc_obj:
+#    namespace: "{{ openshift_storage_ceph_namespace }}"
+#    kind: pod
+#    state: list
+#    selector:
+#      component: "{{ kibana_component }}"
+#      provider: openshift
+#  register: ceph_mon_pod
+#  until:
+#    - "ceph_mon_pod.results.results[0]['items'] | length > 0"
+    # There must be as many pods with 'Ready' status  True as there are nodes expecting those pods
+    # TODO: change openshift_storage_ceph_nodes[0] to openshift_storage_ceph_nodes
+    #- "ceph_mon_pod.results.results[0]['items'] | oo_collect(attribute='status.conditions') | oo_collect(attribute='status', filters={'type': 'Ready'}) | map('bool') | select | list | length == openshift_storage_ceph_nodes[0] | length"
+#  delay: 3
+#  retries: "{{ (openshift_storage_ceph_timeout | int / 30) | int }}"
