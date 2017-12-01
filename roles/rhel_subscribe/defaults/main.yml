@@ -1,2 +1,7 @@
+<<<<<<< HEAD
 ---
 rhsub_pool: 'Red Hat OpenShift Container Platform, Premium*'
+=======
+rhsub_pool: 'Red Hat OpenShift Container Platform, Premium*'
+ose_version: '3.6'
+>>>>>>> Remove reading shell environment in rhel_subscribe
