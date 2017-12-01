@@ -1,0 +1,35 @@
+---
+- name: create ceph mgr deployment
+  oc_obj:
+    namespace: "{{ openshift_storage_ceph_namespace }}"
+    kind: deployment
+    name: "ceph-mgr"
+    state: present
+    files:
+      - "{{ tmpdir }}/deployment-mgr.yml"
+
+- name: wait for deployment ceph-mgr to be ready
+  oc_obj:
+    namespace: "{{ openshift_storage_ceph_namespace }}"
+    kind: deployment
+    name: "ceph-mgr"
+    state: list
+  register: ceph_mgr_dp
+  until:
+    - (ceph_mgr_dp.results.results[0].status.numberReady | default(0) == ceph_mgr_dp.results.results[0].status.desiredNumberScheduled | default(openshift_storage_ceph_nodes[0] | length))
+  delay: 3
+  retries: "{{ (openshift_storage_ceph_timeout | int / 30) | int }}"
+
+#- name: wait for ceph mgr pod to be ready
+#  oc_obj:
+#    namespace: "{{ openshift_storage_ceph_namespace }}"
+#    kind: pod
+#    state: list
+#    selector: "ceph-mgr=enabled"
+#  register: ceph_mgr_pod
+#  until:
+#    - "ceph_mgr_pod.results.results[0]['items'] | count > 0"
+#    # There must be as many pods with 'Ready' status  True as there are nodes expecting those pods
+#    - "ceph_mgr_pod.results.results[0]['items'] | oo_collect(attribute='status.conditions') | oo_collect(attribute='status', filters={'type': 'Ready'}) | map('bool') | select | list | count == openshift_storage_ceph_nodes | count"
+#  delay: 10
+#  retries: "{{ (openshift_storage_ceph_timeout | int / 10) | int }}"

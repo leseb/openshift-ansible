@@ -1,0 +1,14 @@
+[global]
+fsid = {{ openshift_storage_ceph_fsid }}
+mon_host = {{ hostvars[openshift_storage_ceph_nodes[0]]['ansible_fqdn'] }}
+
+
+{#
+mon host = {% for host in openshift_storage_ceph_nodes -%}{{ hostvars[host]['ansible_fqdn'] }}{% if not loop.last -%},{%- endif %}{%- endfor %}
+mon_host = {{ hostvars[openshift_storage_ceph_nodes][0]['ansible_fqdn'] }}
+mon_host = {{ hostvars[groups.ceph[0]]['ansible_fqdn'] }}
+#}
+
+[osd]
+public_network = {{ openshift_storage_ceph_public_network }}
+cluster_network = {{ openshift_storage_ceph_public_network }}

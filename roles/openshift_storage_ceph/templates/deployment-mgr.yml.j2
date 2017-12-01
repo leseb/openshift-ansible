@@ -1,0 +1,95 @@
+#jinja2: trim_blocks: "true", lstrip_blocks: "true"
+---
+kind: Deployment
+apiVersion: apps/v1beta1
+metadata:
+  name: ceph-mgr
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        release_group: ceph
+        application: ceph
+        component: mgr
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: release_group
+                  operator: In
+                  values:
+                    - ceph
+                - key: application
+                  operator: In
+                  values:
+                    - ceph
+                - key: component
+                  operator: In
+                  values:
+                    - mgr
+              topologyKey: kubernetes.io/hostname
+            weight: 10
+      nodeSelector:
+        ceph-mgr: enabled
+      dnsPolicy: {{ openshift_storage_ceph_pod_dns_policy }}
+      serviceAccount: default
+      containers:
+        - name: ceph-mgr
+          image: {{ openshift_storage_ceph_image }}
+          imagePullPolicy: {{ openshift_storage_ceph_image_pull_policy }}
+          env:
+            {% if openshift_storage_ceph_mgr_enabled_modules | length > 0 %}
+            - name: ENABLED_MODULES
+              value: |-
+              {% for i in openshift_storage_ceph_mgr_enabled_modules %}
+                {{ i }}
+              {% endfor %}
+            {% endif %}
+            - name: CEPH_DAEMON
+              value: mgr
+            - name: DEBUG
+              value: verbose
+          livenessProbe:
+              exec:
+                command:
+                - bash
+                - /watch_mgr_health.sh
+              initialDelaySeconds: 30
+              timeoutSeconds: 5
+          readinessProbe:
+              exec:
+                command:
+                  - bash
+                  - /watch_mgr_health.sh
+              initialDelaySeconds: 30
+              timeoutSeconds: 5
+          volumeMounts:
+            - name: pod-etc-ceph
+              mountPath: /etc/ceph
+            - name: ceph-etc
+              mountPath: /etc/ceph/ceph.conf
+              subPath: ceph.conf
+              readOnly: true
+            - name: ceph-client-admin-keyring
+              mountPath: /etc/ceph/ceph.client.admin.keyring
+              subPath: ceph-client-admin-keyring
+              readOnly: true
+      volumes:
+        - name: pod-etc-ceph
+          emptyDir: {}
+        - name: ceph-etc
+          configMap:
+            name: ceph-etc
+            defaultMode: 0444
+        - name: pod-run
+          emptyDir:
+            medium: "Memory"
+        - name: ceph-client-admin-keyring
+          secret:
+            secretName: ceph-client-admin-keyring

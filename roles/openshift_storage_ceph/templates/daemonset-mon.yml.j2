@@ -1,0 +1,115 @@
+---
+kind: DaemonSet
+apiVersion: extensions/v1beta1
+metadata:
+  name: ceph-mon
+spec:
+  template:
+    metadata:
+      labels:
+        release_group: ceph
+        application: ceph
+        component: mon
+    spec:
+      nodeSelector:
+        ceph-mon: enabled
+      hostNetwork: true
+      dnsPolicy: {{ openshift_storage_ceph_pod_dns_policy }}
+      serviceAccount: default
+      containers:
+        - name: ceph-mon
+          image: {{ openshift_storage_ceph_image }}
+          imagePullPolicy: {{ openshift_storage_ceph_image_pull_policy }}
+          env:
+            - name: K8S_HOST_NETWORK
+              value: "1"
+            - name: K8S_MON_SELECTOR
+              value: "application=ceph,component=mon"
+            - name: MONMAP
+              value: /var/lib/ceph/mon/monmap
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+            - name: CEPH_DAEMON
+              value: mon
+            - name: KV_TYPE
+              value: kubernetes
+            - name: CEPH_PUBLIC_NETWORK
+              value: {{ openshift_storage_ceph_public_network }}
+            - name: DEBUG
+              value: verbose
+            - name: MON_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+          ports:
+            - containerPort: 6789
+          livenessProbe:
+              tcpSocket:
+                port: 6789
+              initialDelaySeconds: 90
+              timeoutSeconds: 5
+          readinessProbe:
+              tcpSocket:
+                port: 6789
+              timeoutSeconds: 5
+          volumeMounts:
+            - name: ceph-etc
+              mountPath: /etc/ceph/ceph.conf
+              subPath: ceph.conf
+              readOnly: true
+            - name: ceph-client-admin-keyring
+              mountPath: /etc/ceph/ceph.client.admin.keyring
+              subPath: ceph-client-admin-keyring
+              readOnly: false
+            - name: ceph-client-mon-keyring
+              mountPath: /etc/ceph/ceph.mon.keyring
+              subPath: ceph-client-mon-keyring
+              readOnly: false # should be True, but needed because of the chown ceph:ceph
+            - name: ceph-bootstrap-osd-keyring
+              mountPath: /var/lib/ceph/bootstrap-osd/ceph.keyring
+              subPath: ceph-bootstrap-osd-keyring
+              readOnly: false
+            - name: ceph-bootstrap-mds-keyring
+              mountPath: /var/lib/ceph/bootstrap-mds/ceph.keyring
+              subPath: ceph-bootstrap-mds-keyring
+              readOnly: false
+            - name: ceph-bootstrap-rgw-keyring
+              mountPath: /var/lib/ceph/bootstrap-rgw/ceph.keyring
+              subPath: ceph-bootstrap-rgw-keyring
+              readOnly: false
+            - name: ceph-bootstrap-rbd-keyring
+              mountPath: /var/lib/ceph/bootstrap-rbd/ceph.keyring
+              subPath: ceph-bootstrap-rbd-keyring
+              readOnly: false
+            - name: pod-var-lib-ceph-mon
+              mountPath: /var/lib/ceph/mon
+              readOnly: false
+      volumes:
+        - name: ceph-etc
+          configMap:
+            name: ceph-etc
+            defaultMode: 0444
+        - name: pod-var-lib-ceph-mon
+          hostPath:
+            path: /var/lib/ceph/mon
+        - name: ceph-client-admin-keyring
+          secret:
+            secretName: ceph-client-admin-keyring
+        - name: ceph-client-mon-keyring
+          secret:
+            secretName: ceph-client-mon-keyring
+        - name: ceph-bootstrap-osd-keyring
+          secret:
+            secretName: ceph-bootstrap-osd-keyring
+        - name: ceph-bootstrap-mds-keyring
+          secret:
+            secretName: ceph-bootstrap-mds-keyring
+        - name: ceph-bootstrap-rgw-keyring
+          secret:
+            secretName: ceph-bootstrap-rgw-keyring
+        - name: ceph-bootstrap-rbd-keyring
+          secret:
+            secretName: ceph-bootstrap-rbd-keyring

@@ -1,0 +1,38 @@
+---
+- name: create ceph mon daemonset
+  oc_obj:
+    namespace: "{{ openshift_storage_ceph_namespace }}"
+    kind: daemonset
+    name: "ceph-mon"
+    state: present
+    files:
+      - "{{ tmpdir }}/daemonset-mon.yml"
+
+- name: wait for daemonset ceph-mon to be ready
+  oc_obj:
+    namespace: "{{ openshift_storage_ceph_namespace }}"
+    kind: daemonset
+    name: "ceph-mon"
+    state: list
+  register: ceph_mon_ds
+  until:
+    - (ceph_mon_ds.results.results[0].status.numberReady | default(0) == ceph_mon_ds.results.results[0].status.desiredNumberScheduled | default(openshift_storage_ceph_nodes | length))
+  delay: 10
+  retries: "{{ (openshift_storage_ceph_timeout | int / 30) | int }}"
+
+#- name: wait for ceph mon pod to be ready
+#  oc_obj:
+#    namespace: "{{ openshift_storage_ceph_namespace }}"
+#    kind: pod
+#    state: list
+#    selector:
+#      component: "{{ kibana_component }}"
+#      provider: openshift
+#  register: ceph_mon_pod
+#  until:
+#    - "ceph_mon_pod.results.results[0]['items'] | length > 0"
+    # There must be as many pods with 'Ready' status  True as there are nodes expecting those pods
+    # TODO: change openshift_storage_ceph_nodes[0] to openshift_storage_ceph_nodes
+    #- "ceph_mon_pod.results.results[0]['items'] | oo_collect(attribute='status.conditions') | oo_collect(attribute='status', filters={'type': 'Ready'}) | map('bool') | select | list | length == openshift_storage_ceph_nodes[0] | length"
+#  delay: 3
+#  retries: "{{ (openshift_storage_ceph_timeout | int / 30) | int }}"

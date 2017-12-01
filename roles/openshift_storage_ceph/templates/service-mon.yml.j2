@@ -1,0 +1,23 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: ceph-mon
+  annotations:
+    # In Kubernetes 1.6 and beyond, it seems there was a change in behaviour
+    # requiring us to tolerate unready endpoints to form a quorum.  I can only
+    # guess at some small timing change causing statefulset+2 to not see the
+    # now ready statefulset+1, and because we do not tolerate unready endpoints
+    # a newly provisioned ceph-mon will most certainly never see itself in the
+    # peer list.  This change allows us to form a quorum reliably everytime
+    service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
+spec:
+  ports:
+  - port: {{ openshift_storage_ceph_mon_port }}
+    protocol: TCP
+    targetPort: {{ openshift_storage_ceph_mon_port }}
+  selector:
+    release_group: ceph
+    application: ceph
+    component: mon
+  clusterIP: None

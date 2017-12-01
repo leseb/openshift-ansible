@@ -1,0 +1,61 @@
+---
+- name: delete pre-existing ceph resources
+  oc_obj:
+    namespace: "{{ openshift_storage_ceph_namespace }}"
+    kind: "{{ item.kind }}"
+    name: "{{ item.name }}"
+    state: absent
+  with_items:
+    - kind: daemonset
+      name: ceph-mon
+    - kind: deployment
+      name: ceph-mgr
+    - kind: configmap
+      name: ceph-etc
+    - kind: service
+      name: ceph-mon
+
+- name: wait for ceph resources to terminate
+  oc_obj:
+    namespace: "{{ openshift_storage_ceph_namespace }}"
+    kind: pod
+    state: list
+    #selector: "ceph-mon=enabled"
+  register: ceph_pods
+  until: "ceph_pods.results.results[0]['items'] | length == 0"
+  delay: 10
+  retries: "{{ (openshift_storage_ceph_timeout | int / 30) | int }}"
+
+- name: delete ceph secrets
+  oc_secret:
+    name: "{{ item.name }}"
+    state: absent
+    namespace: "{{ openshift_storage_ceph_namespace }}"
+    files:
+      - name: "{{ item.name }}"
+        path: "{{ item.path }}"
+  with_items: "{{ openshift_storage_ceph_secrets }}"
+
+- name: unlabel any existing ceph nodes
+  oc_label:
+    name: "{{ hostvars[item].ansible_fqdn }}"
+    kind: node
+    state: absent
+    labels:
+    - key: ceph-mon
+      value: enabled
+    - key: ceph-mgr
+      value: enabled
+  with_items: "{{ openshift_storage_ceph_nodes }}"
+
+- name: delete pre-existing ceph config
+  file:
+    path: "{{ item[0] }}"
+    state: absent
+  delegate_to: "{{ item[1] }}"
+  with_nested:
+    - "{{ openshift_storage_ceph_dirs }}"
+    - "{{ openshift_storage_ceph_nodes }}"
+
+# TODO delete RBAC
+# TODO remove fw rules

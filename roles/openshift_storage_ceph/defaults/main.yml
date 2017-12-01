@@ -1,0 +1,26 @@
+---
+openshift_storage_ceph_nodes: "{{ groups.ceph | default([]) }}"
+openshift_storage_ceph_name: 'ceph'
+openshift_storage_ceph_timeout: 300
+openshift_storage_ceph_image: "{{ 'rhceph/rhceph-3-rhel7' | quote if deployment_type == 'openshift-enterprise' else 'ceph/daemon' | quote }}"
+openshift_storage_ceph_version: 'latest'
+openshift_storage_ceph_namespace: 'ceph'
+openshift_storage_ceph_image_pull_policy: 'IfNotPresent'
+openshift_storage_ceph_storage_mon_log: True
+openshift_storage_ceph_pod_dns_policy: 'ClusterFirstWithHostNet'
+openshift_storage_ceph_container_image_minimal: 'docker.io/alpine:latest'
+openshift_storage_ceph_public_network: '192.168.121.0/24'
+openshift_storage_ceph_mon_log: True
+openshift_storage_ceph_mon_port: 6789
+openshift_storage_ceph_mon_log_path: '/var/log/ceph'
+openshift_storage_ceph_mgr_enabled_modules:
+  - restful
+  - status
+openshift_storage_ceph_firewall_enabled: "{{ os_firewall_enabled | default(True) }}"
+openshift_storage_ceph_use_firewalld: "{{ os_firewall_use_firewalld | default(False) }}"
+openshift_storage_ceph_os_firewall_deny: []
+openshift_storage_ceph_os_firewall_allow:
+  - service: ceph-mon
+    port: "6789/tcp"
+  - service: ceph-mgr
+    port: "7000/tcp"

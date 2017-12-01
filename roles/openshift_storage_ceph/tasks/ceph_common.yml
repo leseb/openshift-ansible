@@ -1,0 +1,82 @@
+---
+- name: verify target namespace exists
+  oc_project:
+    state: present
+    name: "{{ openshift_storage_ceph_name }}"
+
+# is this really useful for us?
+- name: add namespace service accounts to privileged scc
+  oc_adm_policy_user:
+    user: "system:serviceaccount:{{ openshift_storage_ceph_name }}:{{ item }}"
+    resource_kind: scc
+    resource_name: privileged
+    state: present
+  with_items:
+    - default
+    - router
+
+# hostvars[item].openshift.node.nodename?
+# remove the [0] at some point
+- name: label ceph mon and mgr node
+  oc_label:
+    name: "{{ hostvars[item].ansible_fqdn }}"
+    kind: node
+    state: add
+    labels:
+      - key: ceph-mon
+        value: enabled
+      - key: ceph-mgr
+        value: enabled
+  with_items:
+    - "{{ openshift_storage_ceph_nodes[0] }}"
+
+- name: copy ceph templates
+  template:
+    src: "{{ item }}.j2"
+    dest: "{{ tmpdir }}/{{ item }}"
+  with_items:
+    - daemonset-mon.yml
+    - deployment-mgr.yml
+    - service-mon.yml
+    - rbac.yml
+
+- name: check if selinux is enabled
+  command: getenforce
+  register: sestatus
+  changed_when: false
+  failed_when: false
+  check_mode: no
+  when:
+    - ansible_os_family == 'RedHat'
+  with_items: "{{ openshift_storage_ceph_nodes }}"
+  delegate_to: "{{ item }}"
+
+- name: create /var/lib/ceph/mon on rhel
+  file:
+    path: /var/lib/ceph/mon
+    state: directory
+  when:
+    - ansible_os_family == 'RedHat'
+  with_items: "{{ openshift_storage_ceph_nodes }}"
+  delegate_to: "{{ item }}"
+
+- name: set selinux permissions
+  shell: |
+    chcon -Rt svirt_sandbox_file_t /var/lib/ceph/mon
+  changed_when: false
+  when:
+    - ansible_os_family == 'RedHat'
+    - item.1.stdout != 'Disabled'
+  delegate_to: "{{ item.0 }}"
+  with_together:
+    - "{{ openshift_storage_ceph_nodes }}"
+    - "{{ sestatus.results }}"
+
+#- name: apply ceph rbac
+#  oc_obj:
+#    kind: template
+#    name: "ceph-rbac"
+#    state: present
+#    namespace: "{{ openshift_storage_ceph_namespace }}"
+#    files:
+#      - "{{ tmpdir }}/rbac.yml"

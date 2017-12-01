@@ -1,0 +1,56 @@
+---
+- name: create ceph bootstrap keys
+  shell: python2 -c "import os ; import struct ; import time; import base64 ; key = os.urandom(16) ; header = struct.pack('<hiih',1,int(time.time()),0,len(key)) ; print base64.b64encode(header + key)"
+  register: openshift_storage_ceph_bootstrap_keys
+  with_items:
+    - osd
+    - mds
+    - rgw
+    - rbd
+
+- name: generate bootstrap keyring
+  template:
+    src: bootstrap.keyring.j2
+    dest: "{{ tmpdir }}/client.bootstrap-{{ item.item }}"
+  with_items: "{{ openshift_storage_ceph_bootstrap_keys.results }}"
+
+- name: generate ceph admin key
+  shell: python2 -c "import os ; import struct ; import time; import base64 ; key = os.urandom(16) ; header = struct.pack('<hiih',1,int(time.time()),0,len(key)) ; print base64.b64encode(header + key)"
+  register: openshift_storage_ceph_client_admin
+
+- name: generate admin key
+  template:
+    src: client.admin.keyring.j2
+    dest: "{{ tmpdir }}/client.admin.keyring"
+
+- name: generate ceph mon key
+  shell: python2 -c "import os ; import struct ; import time; import base64 ; key = os.urandom(16) ; header = struct.pack('<hiih',1,int(time.time()),0,len(key)) ; print base64.b64encode(header + key)"
+  register: openshift_storage_ceph_mon_keyring
+
+- name: generate mon key
+  template:
+    src: mon.keyring.j2
+    dest: "{{ tmpdir }}/mon.keyring"
+
+- name: add ceph keys to secret
+  oc_secret:
+    name: "{{ item.name }}"
+    state: present
+    namespace: "{{ openshift_storage_ceph_namespace }}"
+    files:
+      - name: "{{ item.name }}"
+        path: "{{ item.path }}"
+  with_items: "{{ openshift_storage_ceph_secrets }}"
+
+- name: generate ceph.conf
+  template:
+    src: ceph.conf.j2
+    dest: "{{ tmpdir }}/ceph.conf"
+
+- name: add ceph.conf to configmap
+  oc_configmap:
+    name: ceph-etc
+    state: present
+    namespace: "{{ openshift_storage_ceph_namespace }}"
+    from_file:
+      ceph.conf: "{{ tmpdir }}/ceph.conf"

@@ -1,0 +1,24 @@
+---
+- name: set_fact tmpdir
+  set_fact:
+    tmpdir: "{{ mktemp.stdout }}"
+
+- name: set_fact openshift_storage_ceph_dirs
+  set_fact:
+    openshift_storage_ceph_dirs:
+      - /etc/ceph
+      - /var/lib/ceph
+
+- name: set_fact openshift_storage_ceph_secrets
+  set_fact:
+    openshift_storage_ceph_secrets:
+      - { name: ceph-bootstrap-osd-keyring, path: "{{ tmpdir }}/client.bootstrap-osd" }
+      - { name: ceph-bootstrap-mds-keyring, path: "{{ tmpdir }}/client.bootstrap-mds" }
+      - { name: ceph-bootstrap-rgw-keyring, path: "{{ tmpdir }}/client.bootstrap-rgw" }
+      - { name: ceph-bootstrap-rbd-keyring, path: "{{ tmpdir }}/client.bootstrap-rbd" }
+      - { name: ceph-client-admin-keyring, path: "{{ tmpdir }}/client.admin.keyring" }
+      - { name: ceph-client-mon-keyring, path: "{{ tmpdir }}/mon.keyring" }
+
+- name: set_fact openshift_storage_ceph_fsid
+  set_fact:
+    openshift_storage_ceph_fsid: "{{ ansible_machine_id | to_uuid }}"

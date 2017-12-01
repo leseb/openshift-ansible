@@ -1,0 +1,41 @@
+---
+- name: make sure we have at least 3 ceph nodes
+  fail:
+    msg: "There must be at least three Ceph nodes specified"
+  when:
+    - openshift_storage_ceph_nodes | length < 2
+
+- name: create temp directory
+  command: mktemp -d /tmp/openshift-ceph-ansible-XXXXXX
+  register: mktemp
+  changed_when: False
+  check_mode: no
+
+- name: include ceph_facts.yml
+  include: ceph_facts.yml
+
+- name: include ceph_wipe.yml
+  include: ceph_wipe.yml
+  when: openshift_storage_ceph_wipe|default(False)
+
+- name: include firewall.yml
+  include: firewall.yml
+
+- name: include ceph_common.yml
+  include: ceph_common.yml
+
+- name: include ceph_config.yml
+  include: ceph_config.yml
+
+- name: include ceph_deploy_mon.yml
+  include: ceph_deploy_mon.yml
+
+- name: include ceph_deploy_mgr.yml
+  include: ceph_deploy_mgr.yml
+
+- name: delete temp directory
+  file:
+    name: "{{ tmpdir }}"
+    state: absent
+  changed_when: False
+  check_mode: no

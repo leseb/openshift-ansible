@@ -1,0 +1,50 @@
+---
+- when: openshift_storage_ceph_firewall_enabled | bool and not openshift_storage_ceph_use_firewalld | bool
+  block:
+  - name: remove iptables rules
+    os_firewall_manage_iptables:
+      name: "{{ item.0.service }}"
+      action: remove
+      protocol: "{{ item.0.port.split('/')[1] }}"
+      port: "{{ item.0.port.split('/')[0] }}"
+    delegate_to: "{{ item.1 }}"
+    with_nested:
+      - "{{ openshift_storage_ceph_os_firewall_deny }}"
+      - "{{ openshift_storage_ceph_nodes }}"
+    when: openshift_storage_ceph_wipe|default(False)
+
+  - name: add iptables allow rules
+    os_firewall_manage_iptables:
+      name: "{{ item.0.service }}"
+      action: add
+      protocol: "{{ item.0.port.split('/')[1] }}"
+      port: "{{ item.0.port.split('/')[0] }}"
+    delegate_to: "{{ item.1 }}"
+    with_nested:
+      - "{{ openshift_storage_ceph_os_firewall_allow }}"
+      - "{{ openshift_storage_ceph_nodes }}"
+
+- when: openshift_storage_ceph_firewall_enabled | bool and openshift_storage_ceph_use_firewalld | bool
+  block:
+  - name: remove firewalld allow rules
+    firewalld:
+      port: "{{ item.0.port }}"
+      permanent: true
+      immediate: true
+      state: disabled
+    #when: item..0.cond | default(True)
+    when: openshift_storage_ceph_wipe|default(False)
+    delegate_to: "{{ item.1 }}"
+    with_nested:
+      - "{{ openshift_storage_ceph_os_firewall_deny }}"
+      - "{{ openshift_storage_ceph_nodes }}"
+  - name: add firewalld allow rules
+    firewalld:
+      port: "{{ item.0.port }}"
+      permanent: true
+      immediate: true
+      state: enabled
+    delegate_to: "{{ item.1 }}"
+    with_nested:
+      - "{{ openshift_storage_ceph_os_firewall_allow }}"
+      - "{{ openshift_storage_ceph_nodes }}"
