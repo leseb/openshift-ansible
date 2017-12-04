@@ -22,6 +22,12 @@
   - name: Gather facts for the new nodes
     setup:
 
+<<<<<<< HEAD
+=======
+- name: set common facts
+  include: ../../init/facts.yml
+
+>>>>>>> Fix and cleanup not required dns bits
 
 # TODO(shadower): consider splitting this up so people can stop here
 # and configure their DNS if they have to.

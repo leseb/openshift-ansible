@@ -11,4 +11,10 @@
     msg: "SELinux is required for OpenShift and has been detected as '{{ ansible_selinux.config_mode }}'"
   when: ansible_selinux.config_mode != "enforcing"
 
+<<<<<<< HEAD
 - include_tasks: container-storage-setup.yml
+=======
+- include: container-storage-setup.yml
+
+- include: node-network.yml
+>>>>>>> Fix and cleanup not required dns bits

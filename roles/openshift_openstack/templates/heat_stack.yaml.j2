@@ -64,6 +64,7 @@ outputs:
 {% endif %}
 {% endif %}
 
+<<<<<<< HEAD
   public_api_ip:
     description: IP address for the API/UI endpoint
 {% if openshift_openstack_use_lbaas_load_balancer and openshift_openstack_load_balancer_floating_ip %}
@@ -158,6 +159,8 @@ outputs:
     value: { get_attr: [api_lb, show, provider] }
 {% endif %}
 
+=======
+>>>>>>> Fix and cleanup not required dns bits
 conditions:
   no_floating: {% if openshift_openstack_provider_network_name %}true{% else %}false{% endif %}
 
@@ -578,6 +581,7 @@ resources:
         str_replace:
           template: Security group for cluster_id OpenShift infrastructure cluster nodes
           params:
+<<<<<<< HEAD
             cluster_id: {{ openshift_openstack_full_dns_domain }}
       rules: {{ openshift_openstack_infra_secgroup_rules|to_json }}
   {% if openshift_openstack_num_cns > 0 %}
@@ -598,6 +602,20 @@ resources:
   {% endif %}
 {% endif %}
 
+=======
+            cluster_id: {{ openshift_openstack_stack_name }}
+      rules:
+        - direction: ingress
+          protocol: tcp
+          port_range_min: 80
+          port_range_max: 80
+        - direction: ingress
+          protocol: tcp
+          port_range_min: 443
+          port_range_max: 443
+
+{% if openshift_openstack_num_masters|int > 1 %}
+>>>>>>> Fix and cleanup not required dns bits
   lb-secgrp:
     type: OS::Neutron::SecurityGroup
     properties:
@@ -1032,6 +1050,7 @@ resources:
     depends_on:
       - interface
 {% endif %}
+<<<<<<< HEAD
 
   cns:
     type: OS::Heat::ResourceGroup
@@ -1180,3 +1199,5 @@ resources:
       protocol: HTTPS
       listener: { get_resource: router_lb_listener_https }
 {% endif %}
+=======
+>>>>>>> Fix and cleanup not required dns bits
