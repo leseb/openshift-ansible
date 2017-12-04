@@ -603,6 +603,65 @@ def get_current_config(facts):
     return current_config
 
 
+<<<<<<< HEAD
+=======
+def build_kubelet_args(facts):
+    """Build node kubelet_args
+
+In the node-config.yaml file, kubeletArgument sub-keys have their
+values provided as a list. Hence the gratuitous use of ['foo'] below.
+    """
+    cloud_cfg_path = os.path.join(
+        facts['common']['config_base'],
+        'cloudprovider')
+
+    # We only have to do this stuff on hosts that are nodes
+    if 'node' in facts:
+        # Any changes to the kubeletArguments parameter are stored
+        # here first.
+        kubelet_args = {}
+
+        if 'cloudprovider' in facts:
+            # EVERY cloud is special <3
+            if 'kind' in facts['cloudprovider']:
+                if facts['cloudprovider']['kind'] == 'aws':
+                    kubelet_args['cloud-provider'] = ['aws']
+                    kubelet_args['cloud-config'] = [cloud_cfg_path + '/aws.conf']
+                if facts['cloudprovider']['kind'] == 'openstack':
+                    kubelet_args['cloud-provider'] = ['openstack']
+                    kubelet_args['cloud-config'] = [cloud_cfg_path + '/openstack.conf']
+                if facts['cloudprovider']['kind'] == 'gce':
+                    kubelet_args['cloud-provider'] = ['gce']
+                    kubelet_args['cloud-config'] = [cloud_cfg_path + '/gce.conf']
+
+        # Automatically add node-labels to the kubeletArguments
+        # parameter. See BZ1359848 for additional details.
+        #
+        # Ref: https://bugzilla.redhat.com/show_bug.cgi?id=1359848
+        if 'labels' in facts['node'] and isinstance(facts['node']['labels'], dict):
+            # tl;dr: os_node_labels="{'foo': 'bar', 'a': 'b'}" turns
+            # into ['foo=bar', 'a=b']
+            #
+            # On the openshift_node_labels inventory variable we loop
+            # over each key-value tuple (from .items()) and join the
+            # key to the value with an '=' character, this produces a
+            # list.
+            #
+            # map() seems to be returning an itertools.imap object
+            # instead of a list. We cast it to a list ourselves.
+            # pylint: disable=unnecessary-lambda
+            labels_str = list(map(lambda x: '='.join(x), facts['node']['labels'].items()))
+            if labels_str != '':
+                kubelet_args['node-labels'] = labels_str
+
+        # If we've added items to the kubelet_args dict then we need
+        # to merge the new items back into the main facts object.
+        if kubelet_args != {}:
+            facts = merge_facts({'node': {'kubelet_args': kubelet_args}}, facts, [])
+    return facts
+
+
+>>>>>>> Remove unused protected_facts_to_overwrite
 def build_controller_args(facts):
     """ Build master controller_args """
     cloud_cfg_path = os.path.join(facts['common']['config_base'],
@@ -1014,7 +1073,13 @@ class OpenShiftFacts(object):
     # Disabling too-many-arguments, this should be cleaned up as a TODO item.
     # pylint: disable=too-many-arguments,no-value-for-parameter
     def __init__(self, role, filename, local_facts,
+<<<<<<< HEAD
                  additive_facts_to_overwrite=None):
+=======
+                 additive_facts_to_overwrite=None,
+                 openshift_env=None,
+                 openshift_env_structures=None):
+>>>>>>> Remove unused protected_facts_to_overwrite
         self.changed = False
         self.filename = filename
         if role not in self.known_roles:
@@ -1036,23 +1101,45 @@ class OpenShiftFacts(object):
             self.system_facts = get_all_facts(module)['ansible_facts']  # noqa: F405
 
         self.facts = self.generate_facts(local_facts,
+<<<<<<< HEAD
                                          additive_facts_to_overwrite)
 
     def generate_facts(self,
                        local_facts,
                        additive_facts_to_overwrite):
+=======
+                                         additive_facts_to_overwrite,
+                                         openshift_env,
+                                         openshift_env_structures)
+
+    def generate_facts(self,
+                       local_facts,
+                       additive_facts_to_overwrite,
+                       openshift_env,
+                       openshift_env_structures):
+>>>>>>> Remove unused protected_facts_to_overwrite
         """ Generate facts
 
             Args:
                 local_facts (dict): local_facts for overriding generated defaults
                 additive_facts_to_overwrite (list): additive facts to overwrite in jinja
                                                     '.' notation ex: ['master.named_certificates']
+<<<<<<< HEAD
+=======
+                openshift_env (dict): openshift_env facts for overriding generated defaults
+>>>>>>> Remove unused protected_facts_to_overwrite
             Returns:
                 dict: The generated facts
         """
 
         local_facts = self.init_local_facts(local_facts,
+<<<<<<< HEAD
                                             additive_facts_to_overwrite)
+=======
+                                            additive_facts_to_overwrite,
+                                            openshift_env,
+                                            openshift_env_structures)
+>>>>>>> Remove unused protected_facts_to_overwrite
         roles = local_facts.keys()
 
         defaults = self.get_defaults(roles)
@@ -1063,6 +1150,10 @@ class OpenShiftFacts(object):
         facts = merge_facts(facts,
                             local_facts,
                             additive_facts_to_overwrite)
+<<<<<<< HEAD
+=======
+        facts = migrate_oauth_template_facts(facts)
+>>>>>>> Remove unused protected_facts_to_overwrite
         facts['current_config'] = get_current_config(facts)
         facts = set_url_facts_if_unset(facts)
         facts = set_sdn_facts_if_unset(facts, self.system_facts)
@@ -1199,13 +1290,25 @@ class OpenShiftFacts(object):
     # This should be cleaned up as a TODO item.
     # pylint: disable=too-many-branches, too-many-locals
     def init_local_facts(self, facts=None,
+<<<<<<< HEAD
                          additive_facts_to_overwrite=None):
+=======
+                         additive_facts_to_overwrite=None,
+                         openshift_env=None,
+                         openshift_env_structures=None):
+>>>>>>> Remove unused protected_facts_to_overwrite
         """ Initialize the local facts
 
             Args:
                 facts (dict): local facts to set
                 additive_facts_to_overwrite (list): additive facts to overwrite in jinja
                                                     '.' notation ex: ['master.named_certificates']
+<<<<<<< HEAD
+=======
+                openshift_env (dict): openshift env facts to set
+
+
+>>>>>>> Remove unused protected_facts_to_overwrite
             Returns:
                 dict: The result of merging the provided facts with existing
                       local facts
@@ -1217,6 +1320,39 @@ class OpenShiftFacts(object):
         if facts is not None:
             facts_to_set[self.role] = facts
 
+<<<<<<< HEAD
+=======
+        if openshift_env != {} and openshift_env is not None:
+            for fact, value in iteritems(openshift_env):
+                oo_env_facts = dict()
+                current_level = oo_env_facts
+                keys = self.split_openshift_env_fact_keys(fact, openshift_env_structures)[1:]
+
+                if len(keys) > 0 and keys[0] != self.role:
+                    continue
+
+                # Build a dictionary from the split fact keys.
+                # After this loop oo_env_facts is the resultant dictionary.
+                # For example:
+                # fact = "openshift_metrics_install_metrics"
+                # value = 'true'
+                # keys = ['metrics', 'install', 'metrics']
+                # result = {'metrics': {'install': {'metrics': 'true'}}}
+                for i, _ in enumerate(keys):
+                    # This is the last key. Set the value.
+                    if i == (len(keys) - 1):
+                        current_level[keys[i]] = value
+                    # This is a key other than the last key. Set as
+                    # dictionary and continue.
+                    else:
+                        current_level[keys[i]] = dict()
+                        current_level = current_level[keys[i]]
+
+                facts_to_set = merge_facts(orig=facts_to_set,
+                                           new=oo_env_facts,
+                                           additive_facts_to_overwrite=[])
+
+>>>>>>> Remove unused protected_facts_to_overwrite
         local_facts = get_local_facts_from_file(self.filename)
 
         migrated_facts = migrate_local_facts(local_facts)
@@ -1266,6 +1402,11 @@ def main():
                       choices=OpenShiftFacts.known_roles),
             local_facts=dict(default=None, type='dict', required=False),
             additive_facts_to_overwrite=dict(default=[], type='list', required=False),
+<<<<<<< HEAD
+=======
+            openshift_env=dict(default={}, type='dict', required=False),
+            openshift_env_structures=dict(default=[], type='list', required=False)
+>>>>>>> Remove unused protected_facts_to_overwrite
         ),
         supports_check_mode=True,
         add_file_common_args=True,
@@ -1278,13 +1419,24 @@ def main():
     role = module.params['role']  # noqa: F405
     local_facts = module.params['local_facts']  # noqa: F405
     additive_facts_to_overwrite = module.params['additive_facts_to_overwrite']  # noqa: F405
+<<<<<<< HEAD
+=======
+    openshift_env = module.params['openshift_env']  # noqa: F405
+    openshift_env_structures = module.params['openshift_env_structures']  # noqa: F405
+>>>>>>> Remove unused protected_facts_to_overwrite
 
     fact_file = '/etc/ansible/facts.d/openshift.fact'
 
     openshift_facts = OpenShiftFacts(role,
                                      fact_file,
                                      local_facts,
+<<<<<<< HEAD
                                      additive_facts_to_overwrite)
+=======
+                                     additive_facts_to_overwrite,
+                                     openshift_env,
+                                     openshift_env_structures)
+>>>>>>> Remove unused protected_facts_to_overwrite
 
     file_params = module.params.copy()  # noqa: F405
     file_params['path'] = fact_file
