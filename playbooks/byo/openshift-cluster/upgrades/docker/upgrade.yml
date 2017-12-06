@@ -1,2 +1,8 @@
 ---
+<<<<<<< HEAD
+=======
+# Playbook to upgrade Docker to the max allowable version for an OpenShift cluster.
+- import_playbook: ../../../../init/evaluate_groups.yml
+
+>>>>>>> Include Deprecation: Convert to import_playbook
 - import_playbook: ../../../../common/openshift-cluster/upgrades/docker/docker_upgrade.yml

@@ -6,6 +6,7 @@
     g_new_node_hosts: []
 
 - import_playbook: ../initialize_nodes_to_upgrade.yml
+<<<<<<< HEAD
 
 - import_playbook: ../../../../init/basic_facts.yml
   vars:
@@ -25,16 +26,30 @@
 - import_playbook: ../../../../init/sanity_checks.yml
   vars:
     l_sanity_check_hosts: "{{ groups['oo_nodes_to_upgrade'] | union(groups['oo_masters_to_config']) | union(groups['oo_etcd_to_config']) }}"
+=======
+>>>>>>> Include Deprecation: Convert to import_playbook
 
 - name: Check for appropriate Docker versions
   hosts: oo_masters_to_config:oo_nodes_to_upgrade:oo_etcd_to_config
   roles:
   - openshift_facts
   tasks:
+<<<<<<< HEAD
   - import_role:
       name: container_runtime
       tasks_from: docker_upgrade_check.yml
     when: docker_upgrade | default(True) | bool
+=======
+  - set_fact:
+      repoquery_cmd: "{{ 'dnf repoquery --latest-limit 1 -d 0' if ansible_pkg_mgr == 'dnf' else 'repoquery --plugins' }}"
+
+  - fail:
+      msg: Cannot upgrade Docker on Atomic operating systems.
+    when: openshift.common.is_atomic | bool
+
+  - include_tasks: upgrade_check.yml
+    when: docker_upgrade is not defined or docker_upgrade | bool
+>>>>>>> Include Deprecation: Convert to import_playbook
 
 
 # If a node fails, halt everything, the admin will need to clean up and we
@@ -83,10 +98,15 @@
     - l_docker_upgrade_drain_result is failed
     - openshift_upgrade_nodes_drain_timeout | default(0) | int == 0
 
+<<<<<<< HEAD
   - import_tasks: tasks/upgrade.yml
     when:
     - l_docker_upgrade is defined
     - l_docker_upgrade | bool
+=======
+  - include_tasks: tasks/upgrade.yml
+    when: l_docker_upgrade is defined and l_docker_upgrade | bool
+>>>>>>> Include Deprecation: Convert to import_playbook
 
   - name: Set node schedulability
     oc_adm_manage_node:

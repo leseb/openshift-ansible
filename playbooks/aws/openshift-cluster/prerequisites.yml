@@ -4,5 +4,8 @@
 - import_playbook: provision_ssh_keypair.yml
 
 - import_playbook: provision_sec_group.yml
+<<<<<<< HEAD
 
 - import_playbook: provision_iam_role.yml
+=======
+>>>>>>> Include Deprecation: Convert to import_playbook

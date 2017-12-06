@@ -9,4 +9,10 @@
   - name: recalculate the dynamic inventory
     import_role:
       name: openshift_gcp
+<<<<<<< HEAD:playbooks/gcp/openshift-cluster/provision.yml
       tasks_from: dynamic_inventory.yml
+=======
+
+- name: run the cluster deploy
+  import_playbook: ../deploy_cluster.yml
+>>>>>>> Include Deprecation: Convert to import_playbook:playbooks/gcp/provision.yml

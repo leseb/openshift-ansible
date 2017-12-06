@@ -4,4 +4,8 @@
 #
 # Upgrades nodes only, but requires the control plane to have already been upgraded.
 #
+<<<<<<< HEAD:playbooks/byo/openshift-cluster/upgrades/v4_0/upgrade_nodes.yml
 - import_playbook: ../../../../common/openshift-cluster/upgrades/v4_0/upgrade_nodes.yml
+=======
+- import_playbook: ../../../../common/openshift-cluster/upgrades/v3_8/upgrade_nodes.yml
+>>>>>>> Include Deprecation: Convert to import_playbook:playbooks/byo/openshift-cluster/upgrades/v3_8/upgrade_nodes.yml

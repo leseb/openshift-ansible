@@ -52,6 +52,10 @@
   register: result
   until: result | success
 
+<<<<<<< HEAD
 - include: restart.yml
 >>>>>>> retry package operations
+=======
+- include_tasks: restart.yml
+>>>>>>> Include Deprecation: Convert to import_playbook
   when: not skip_docker_restart | default(False) | bool

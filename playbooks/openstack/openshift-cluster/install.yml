@@ -32,6 +32,9 @@
 
 - name: run the cluster deploy
   import_playbook: ../../deploy_cluster.yml
+<<<<<<< HEAD
 
 - name: Show information about the deployed cluster
   import_playbook: cluster-info.yml
+=======
+>>>>>>> Include Deprecation: Convert to import_playbook

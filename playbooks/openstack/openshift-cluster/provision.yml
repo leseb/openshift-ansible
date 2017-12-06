@@ -2,8 +2,14 @@
 - name: Create the OpenStack resources for cluster installation
   import_playbook: provision_resources.yml
 
+<<<<<<< HEAD
 - name: Evaluate OpenStack groups from the dynamic inventory
   import_playbook: evaluate_groups.yml
+=======
+# NOTE(shadower): Bring in the host groups:
+- name: evaluate groups
+  import_playbook: ../../init/evaluate_groups.yml
+>>>>>>> Include Deprecation: Convert to import_playbook
 
 - name: Evaluate remaining cluster groups
   import_playbook: ../../init/evaluate_groups.yml
@@ -25,7 +31,7 @@
 <<<<<<< HEAD
 =======
 - name: set common facts
-  include: ../../init/facts.yml
+  import_playbook: ../../init/facts.yml
 
 >>>>>>> Fix and cleanup not required dns bits
 
