@@ -163,7 +163,7 @@
   - openshift_openstack_full_dns_domain is not match("(.*\.)*" + openshift_openstack_nsupdate_zone + "$")
 =======
 # Check that custom images are available
-- include: custom_image_check.yaml
+- include_tasks: custom_image_check.yaml
   with_items:
   - "{{ openshift_openstack_master_image }}"
   - "{{ openshift_openstack_infra_image }}"
@@ -172,7 +172,7 @@
   - "{{ openshift_openstack_etcd_image }}"
 
 # Check that custom flavors are available
-- include: custom_flavor_check.yaml
+- include_tasks: custom_flavor_check.yaml
   with_items:
   - "{{ openshift_openstack_master_flavor }}"
   - "{{ openshift_openstack_infra_flavor }}"

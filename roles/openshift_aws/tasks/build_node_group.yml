@@ -82,6 +82,7 @@
   delay: 3
   when: openshift_aws_create_iam_role
 
+<<<<<<< HEAD
 - name: Set scale group instances autonaming
   set_fact:
     l_instance_tags: "{{ l_instance_tags | combine({'Name': l_node_group_name }) }}"
@@ -95,4 +96,13 @@
 - when:
   - openshift_aws_create_scale_group
   - asgs.results|length != 2
+=======
+- when: openshift_aws_create_iam_role
+  include_tasks: iam_role.yml
+
+- when: openshift_aws_create_launch_config
+  include_tasks: launch_config.yml
+
+- when: openshift_aws_create_scale_group
+>>>>>>> Include Deprecation: Convert to include_tasks
   include_tasks: scale_group.yml

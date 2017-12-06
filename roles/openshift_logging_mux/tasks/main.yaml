@@ -11,6 +11,7 @@
     msg: openshift_logging_mux_default_namespaces is not supported; use openshift_logging_mux_namespaces instead.
   when: openshift_logging_mux_default_namespaces is defined
 
+<<<<<<< HEAD
 - name: Ensure that Logging Mux has nodes to run on
   import_role:
     name: openshift_control_plane
@@ -18,6 +19,9 @@
   vars:
     openshift_master_ensure_nodes_selector: "{{ openshift_logging_mux_nodeselector | map_to_pairs }}"
     openshift_master_ensure_nodes_service: Logging Mux
+=======
+- include_tasks: determine_version.yaml
+>>>>>>> Include Deprecation: Convert to include_tasks
 
 # allow passing in a tempdir
 - name: Create temp directory for doing work in

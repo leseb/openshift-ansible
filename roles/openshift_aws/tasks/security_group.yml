@@ -6,6 +6,7 @@
       "tag:Name": "{{ openshift_aws_vpc_name }}"
   register: vpcout
 
+<<<<<<< HEAD
 - name: create the node group sgs
   ec2_group:
     name: "{{ item.value.name}}"
@@ -30,3 +31,13 @@
     resource: "{{ item.group_id }}"
     region: "{{ openshift_aws_region }}"
   with_items: "{{ k8s_sg_create.results }}"
+=======
+- include_tasks: security_group_create.yml
+  vars:
+    l_security_groups: "{{ openshift_aws_node_security_groups }}"
+
+- include_tasks: security_group_create.yml
+  when: openshift_aws_node_security_groups_extra is defined
+  vars:
+    l_security_groups: "{{ openshift_aws_node_security_groups_extra | default({}) }}"
+>>>>>>> Include Deprecation: Convert to include_tasks

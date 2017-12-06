@@ -12,9 +12,15 @@
   when: ansible_selinux.config_mode != "enforcing"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 - include_tasks: container-storage-setup.yml
 =======
 - include: container-storage-setup.yml
 
 - include: node-network.yml
 >>>>>>> Fix and cleanup not required dns bits
+=======
+- include_tasks: container-storage-setup.yml
+
+- include_tasks: node-network.yml
+>>>>>>> Include Deprecation: Convert to include_tasks

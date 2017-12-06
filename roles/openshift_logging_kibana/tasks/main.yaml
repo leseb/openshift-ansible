@@ -1,6 +1,7 @@
 ---
 # fail is we don't have an endpoint for ES to connect to?
 
+<<<<<<< HEAD
 - name: Ensure that Kibana has nodes to run on
   import_role:
     name: openshift_control_plane
@@ -8,6 +9,16 @@
   vars:
     openshift_master_ensure_nodes_selector: "{{ openshift_logging_kibana_nodeselector | map_to_pairs }}"
     openshift_master_ensure_nodes_service: Kibana
+=======
+- name: Set kibana image facts
+  set_fact:
+    openshift_logging_kibana_image_prefix: "{{ openshift_logging_kibana_image_prefix | default(__openshift_logging_kibana_image_prefix) }}"
+    openshift_logging_kibana_image_version: "{{ openshift_logging_kibana_image_version | default(__openshift_logging_kibana_image_version) }}"
+    openshift_logging_kibana_proxy_image_prefix: "{{ openshift_logging_kibana_proxy_image_prefix | default(__openshift_logging_kibana_proxy_image_prefix) }}"
+    openshift_logging_kibana_proxy_image_version: "{{ openshift_logging_kibana_proxy_image_version | default(__openshift_logging_kibana_proxy_image_version) }}"
+
+- include_tasks: determine_version.yaml
+>>>>>>> Include Deprecation: Convert to include_tasks
 
 # allow passing in a tempdir
 - name: Create temp directory for doing work in

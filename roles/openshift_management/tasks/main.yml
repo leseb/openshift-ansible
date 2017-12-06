@@ -65,7 +65,12 @@
 # For local/external NFS backed installations
 - name: "Create the required App and DB PVs using {{ openshift_management_storage_class }}"
   include_tasks: storage/create_nfs_pvs.yml
+<<<<<<< HEAD
   when: openshift_management_storage_class in ['nfs', 'nfs_external']
+=======
+  when:
+    - openshift_management_storage_class in ['nfs', 'nfs_external']
+>>>>>>> Include Deprecation: Convert to include_tasks
 
 ######################################################################
 # CREATE APP

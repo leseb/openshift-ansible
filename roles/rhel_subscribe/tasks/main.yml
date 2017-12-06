@@ -110,7 +110,11 @@
   changed_when: "'Successfully attached a subscription' in openshift_pool_attached.stdout"
   when: rhsub_pool not in openshift_pool_attached.stdout
 
+<<<<<<< HEAD
 - import_tasks: satellite.yml
+=======
+- include_tasks: enterprise.yml
+>>>>>>> Include Deprecation: Convert to include_tasks
   when:
     - rhsub_server is defined
     - rhsub_server

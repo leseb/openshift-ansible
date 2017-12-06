@@ -36,7 +36,62 @@
   - 'router'
   when: glusterfs_is_native or glusterfs_heketi_is_native
 
+<<<<<<< HEAD
 - import_tasks: glusterfs_deploy.yml
+=======
+- name: Delete pre-existing heketi resources
+  oc_obj:
+    namespace: "{{ glusterfs_namespace }}"
+    kind: "{{ item.kind }}"
+    name: "{{ item.name | default(omit) }}"
+    selector: "{{ item.selector | default(omit) }}"
+    state: absent
+  with_items:
+  - kind: "template,route,service,dc,jobs,secret"
+    selector: "deploy-heketi"
+  - kind: "svc"
+    name: "heketi-storage-endpoints"
+  - kind: "secret"
+    name: "heketi-{{ glusterfs_name | default }}-topology-secret"
+  - kind: "secret"
+    name: "heketi-{{ glusterfs_name | default }}-config-secret"
+  - kind: "template,route,service,dc"
+    name: "heketi-{{ glusterfs_name | default }}"
+  - kind: "svc"
+    name: "heketi-db-{{ glusterfs_name | default }}-endpoints"
+  - kind: "sa"
+    name: "heketi-{{ glusterfs_name | default }}-service-account"
+  - kind: "secret"
+    name: "heketi-{{ glusterfs_name | default }}-admin-secret"
+  failed_when: False
+  when: glusterfs_heketi_wipe
+
+- name: Wait for deploy-heketi pods to terminate
+  oc_obj:
+    namespace: "{{ glusterfs_namespace }}"
+    kind: pod
+    state: list
+    selector: "glusterfs=deploy-heketi-{{ glusterfs_name }}-pod"
+  register: deploy_heketi_pod
+  until: "deploy_heketi_pod.results.results[0]['items'] | count == 0"
+  delay: 10
+  retries: "{{ (glusterfs_timeout | int / 10) | int }}"
+  when: glusterfs_heketi_wipe
+
+- name: Wait for heketi pods to terminate
+  oc_obj:
+    namespace: "{{ glusterfs_namespace }}"
+    kind: pod
+    state: list
+    selector: "glusterfs=heketi-{{ glusterfs_name }}-pod"
+  register: heketi_pod
+  until: "heketi_pod.results.results[0]['items'] | count == 0"
+  delay: 10
+  retries: "{{ (glusterfs_timeout | int / 10) | int }}"
+  when: glusterfs_heketi_wipe
+
+- include_tasks: glusterfs_deploy.yml
+>>>>>>> Include Deprecation: Convert to include_tasks
   when: glusterfs_is_native
 
 - name: Start glusterd (external)
@@ -57,7 +112,55 @@
 # that Ansible can properly parse the tasks.
 - import_tasks: heketi_pod_check.yml
 
+<<<<<<< HEAD
 - import_tasks: heketi_init_deploy.yml
+=======
+- name: Set heketi admin key
+  set_fact:
+    glusterfs_heketi_admin_key: "{{ glusterfs_heketi_admin_secret.results.decoded.key }}"
+  when:
+  - glusterfs_is_native
+  - glusterfs_heketi_admin_secret.results.results[0]
+
+- name: Generate heketi admin key
+  set_fact:
+    glusterfs_heketi_admin_key: "{{ 32 | oo_generate_secret }}"
+  when:
+  - glusterfs_heketi_is_native
+  - glusterfs_heketi_admin_key is undefined
+
+- name: Generate heketi user key
+  set_fact:
+    glusterfs_heketi_user_key: "{{ 32 | oo_generate_secret }}"
+  until: "glusterfs_heketi_user_key != glusterfs_heketi_admin_key"
+  delay: 1
+  retries: 10
+  when:
+  - glusterfs_heketi_is_native
+  - glusterfs_heketi_user_key is undefined
+
+- name: Copy heketi private key
+  copy:
+    src: "{{ glusterfs_heketi_ssh_keyfile | default(omit)  }}"
+    content: "{{ '' if glusterfs_heketi_ssh_keyfile is undefined else omit }}"
+    dest: "{{ mktemp.stdout }}/private_key"
+
+- name: Create heketi config secret
+  oc_secret:
+    namespace: "{{ glusterfs_namespace }}"
+    state: present
+    name: "heketi-{{ glusterfs_name }}-config-secret"
+    force: True
+    files:
+    - name: heketi.json
+      path: "{{ mktemp.stdout }}/heketi.json"
+    - name: private_key
+      path: "{{ mktemp.stdout }}/private_key"
+  when:
+  - glusterfs_heketi_is_native
+
+- include_tasks: heketi_deploy_part1.yml
+>>>>>>> Include Deprecation: Convert to include_tasks
   when:
   - glusterfs_heketi_is_native
   - glusterfs_heketi_deploy_is_missing
@@ -74,7 +177,11 @@
   - glusterfs_heketi_is_missing
   - glusterfs_heketi_topology_load
 
+<<<<<<< HEAD
 - import_tasks: heketi_deploy.yml
+=======
+- include_tasks: heketi_deploy_part2.yml
+>>>>>>> Include Deprecation: Convert to include_tasks
   when:
   - glusterfs_heketi_is_native
   - glusterfs_heketi_is_missing
@@ -107,6 +214,7 @@
       - "{{ mktemp.stdout }}/glusterfs-storageclass.yml"
   when: glusterfs_storageclass
 
+<<<<<<< HEAD
 - import_tasks: glusterblock_deploy.yml
   when: glusterfs_block_deploy
 
@@ -119,3 +227,10 @@
   - glusterfs_s3_account is defined
   - glusterfs_s3_user is defined
   - glusterfs_s3_password is defined
+=======
+- include_tasks: glusterblock_deploy.yml
+  when: glusterfs_block_deploy
+
+- include_tasks: gluster_s3_deploy.yml
+  when: glusterfs_s3_deploy
+>>>>>>> Include Deprecation: Convert to include_tasks

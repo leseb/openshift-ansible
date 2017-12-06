@@ -335,6 +335,7 @@
   when:
     openshift_logging_install_eventrouter | default(false) | bool
 
+<<<<<<< HEAD
 # Update asset config in openshift-web-console namespace
 - name: Add Kibana route information to web console asset config
   include_role:
@@ -346,3 +347,7 @@
       value: "https://{{ openshift_logging_kibana_hostname }}"
   when:
   - openshift_web_console_install | default(true) | bool
+=======
+
+- include_tasks: update_master_config.yaml
+>>>>>>> Include Deprecation: Convert to include_tasks

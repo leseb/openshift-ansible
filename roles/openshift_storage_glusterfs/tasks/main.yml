@@ -1,11 +1,19 @@
 ---
 - import_tasks: mktemp.yml
 
+<<<<<<< HEAD
 - import_tasks: glusterfs_config.yml
   when:
   - groups.glusterfs | default([]) | count > 0
 
 - import_tasks: glusterfs_registry.yml
+=======
+- include_tasks: glusterfs_config.yml
+  when:
+  - groups.glusterfs | default([]) | count > 0
+
+- include_tasks: glusterfs_registry.yml
+>>>>>>> Include Deprecation: Convert to include_tasks
   when: >
     groups.glusterfs_registry | default([]) | count > 0
     or (openshift_hosted_registry_storage_kind | default(none) == 'glusterfs')

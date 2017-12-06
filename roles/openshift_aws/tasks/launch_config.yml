@@ -13,6 +13,7 @@
   when:
   - (ec2sgs.security_groups | map(attribute='group_name') | list | sort) != (openshift_aws_launch_config_security_groups[openshift_aws_node_group.group] | sort)
 
+<<<<<<< HEAD
 # Create the scale group config
 - name: Create the node scale group launch config
   ec2_lc:
@@ -30,3 +31,9 @@
     ebs_optimized: False
     volumes: "{{ l_node_group_config[openshift_aws_node_group.group].volumes }}"
     assign_public_ip: True
+=======
+- include_tasks: launch_config_create.yml
+  with_dict: "{{ l_nodes_to_build }}"
+  loop_control:
+    loop_var: launch_config_item
+>>>>>>> Include Deprecation: Convert to include_tasks
