@@ -337,6 +337,7 @@ class OpenShiftAnsibleSyntaxCheck(Command):
                 # Check for usage of include: directive
                 result = self.deprecate_include(yaml_contents, yaml_file)
                 has_errors = result or has_errors
+<<<<<<< HEAD
 
         if not has_errors:
             print('...PASSED')
@@ -368,6 +369,8 @@ class OpenShiftAnsibleSyntaxCheck(Command):
             for playbook in invalid_include:
                 print('{}{}{}'.format(self.FAIL, playbook, self.ENDC))
             has_errors = True
+=======
+>>>>>>> Update deprecation checks - include:
 
         if not has_errors:
             print('...PASSED')
