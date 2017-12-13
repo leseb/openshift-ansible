@@ -81,9 +81,39 @@
 >>>>>>> retry package operations
     notify: refresh cache
 
+<<<<<<< HEAD
   - name: Record that openshift_repos already ran
     set_fact:
       r_openshift_repos_has_run: True
+=======
+  # Singleton block
+  - when: r_openshift_repos_has_run is not defined
+    block:
+
+    - include_tasks: rhel_repos.yml
+      when:
+      - ansible_distribution == 'RedHat'
+      - deployment_type == 'openshift-enterprise'
+      - (rhel_subscription_user or rhsub_user) is defined
+      - (rhel_subscription_password or rhsub_pass) is defined
+
+    - include_tasks: centos_repos.yml
+      when:
+      - ansible_os_family == "RedHat"
+      - ansible_distribution != "Fedora"
+      - openshift_deployment_type == 'origin'
+      - openshift_enable_origin_repo | default(true) | bool
+
+    - name: Ensure clean repo cache in the event repos have been changed manually
+      debug:
+        msg: "First run of openshift_repos"
+      changed_when: true
+      notify: refresh cache
+
+    - name: Record that openshift_repos already ran
+      set_fact:
+        r_openshift_repos_has_run: True
+>>>>>>> Commit to stabalize RHSM operations.  This code is derived from contrib
 
   # Force running ALL handlers now, because we expect repo cache to be cleared
   # if changes have been made.
