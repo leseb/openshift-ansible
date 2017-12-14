@@ -1,6 +1,48 @@
 ---
 - name: Install the systemd units
+<<<<<<< HEAD
   import_tasks: systemd_units.yml
+=======
+  include_tasks: systemd_units.yml
+
+- name: Pull container images
+  include_tasks: container_images.yml
+  when: openshift.common.is_containerized | bool
+
+- name: Start and enable openvswitch service
+  systemd:
+    name: openvswitch.service
+    enabled: yes
+    state: started
+    daemon_reload: yes
+  when:
+    - openshift.common.is_containerized | bool
+    - openshift_node_use_openshift_sdn | default(true) | bool
+  register: ovs_start_result
+  until: not (ovs_start_result is failed)
+  retries: 3
+  delay: 30
+
+- set_fact:
+    ovs_service_status_changed: "{{ ovs_start_result is changed }}"
+
+- file:
+    dest: "{{ l2_openshift_node_kubelet_args['config'] }}"
+    state: directory
+  when: ('config' in l2_openshift_node_kubelet_args) | bool
+
+# TODO: add the validate parameter when there is a validation command to run
+- name: Create the Node config
+  template:
+    dest: "{{ openshift.common.config_base }}/node/node-config.yaml"
+    src: node.yaml.v1.j2
+    backup: true
+    owner: root
+    group: root
+    mode: 0600
+  notify:
+    - restart node
+>>>>>>> Deprecate using Ansible tests as filters
 
 - name: Configure Node Environment Variables
   lineinfile:
@@ -61,20 +103,24 @@
         state: started
         daemon_reload: yes
       register: node_start_result
-      until: not node_start_result | failed
+      until: not node_start_result is failed
       retries: 1
       delay: 30
       ignore_errors: true
 
     - name: Dump logs from node service if it failed
       command: journalctl --no-pager -n 100 -u {{ openshift_service_type }}-node
-      when: node_start_result | failed
+      when: node_start_result is failed
 
     - name: Abort if node failed to start
       fail:
         msg: Node failed to start please inspect the logs and try again
-      when: node_start_result | failed
+      when: node_start_result is failed
 
     - set_fact:
+<<<<<<< HEAD
         node_service_status_changed: "{{ node_start_result | changed }}"
 >>>>>>> Remove openshift.common.service_type
+=======
+        node_service_status_changed: "{{ node_start_result is changed }}"
+>>>>>>> Deprecate using Ansible tests as filters

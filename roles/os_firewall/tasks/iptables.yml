@@ -33,8 +33,12 @@
     - iptables-services
   when: not r_os_firewall_is_atomic | bool
   register: result
+<<<<<<< HEAD
   until: result | success
 >>>>>>> retry package operations
+=======
+  until: result is succeeded
+>>>>>>> Deprecate using Ansible tests as filters
 
 - name: Start and enable iptables service
   systemd:

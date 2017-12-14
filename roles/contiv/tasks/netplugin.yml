@@ -103,9 +103,12 @@
 - name: systemd reload
   command: systemctl daemon-reload
   when: docker_updated is changed
+<<<<<<< HEAD
 
 - name: Netplugin | Flush handlers
   meta: flush_handlers
+=======
+>>>>>>> Deprecate using Ansible tests as filters
 
 - name: Netplugin | Restart docker
   service:

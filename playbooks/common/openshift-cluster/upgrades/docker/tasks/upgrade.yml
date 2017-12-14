@@ -58,7 +58,7 @@
 =======
   package: name=docker{{ '-' + docker_version }} state=present
   register: result
-  until: result | success
+  until: result is succeeded
 
 <<<<<<< HEAD
 - include: restart.yml

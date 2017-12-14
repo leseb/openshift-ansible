@@ -7,10 +7,14 @@
   run_once: true
   register: result
 <<<<<<< HEAD
+<<<<<<< HEAD
   until: result is succeeded
 =======
   until: result | success
 >>>>>>> retry package operations
+=======
+  until: result is succeeded
+>>>>>>> Deprecate using Ansible tests as filters
 
 - file:
     path: "{{ item }}"

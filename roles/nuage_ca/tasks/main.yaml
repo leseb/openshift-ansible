@@ -10,8 +10,12 @@
   package: name=openssl state=present
   when: not openshift.common.is_atomic | bool
   register: result
+<<<<<<< HEAD
   until: result | success
 >>>>>>> retry package operations
+=======
+  until: result is succeeded
+>>>>>>> Deprecate using Ansible tests as filters
 
 - name: Create CA directory
   file: path="{{ nuage_ca_dir }}" state=directory

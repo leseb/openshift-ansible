@@ -92,11 +92,16 @@
     - inventory_hostname in groups.oo_nodes_to_upgrade
     register: l_docker_upgrade_drain_result
     until: not (l_docker_upgrade_drain_result is failed)
+<<<<<<< HEAD
     retries: "{{ 1 if ( openshift_upgrade_nodes_drain_timeout | default(0) | int ) == 0 else 0 }}"
     delay: 5
     failed_when:
     - l_docker_upgrade_drain_result is failed
     - openshift_upgrade_nodes_drain_timeout | default(0) | int == 0
+=======
+    retries: 60
+    delay: 60
+>>>>>>> Deprecate using Ansible tests as filters
 
 <<<<<<< HEAD
   - import_tasks: tasks/upgrade.yml

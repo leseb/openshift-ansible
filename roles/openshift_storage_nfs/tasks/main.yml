@@ -12,8 +12,12 @@
 =======
   package: name=nfs-utils state=present
   register: result
+<<<<<<< HEAD
   until: result | success
 >>>>>>> retry package operations
+=======
+  until: result is succeeded
+>>>>>>> Deprecate using Ansible tests as filters
 
 - name: Configure NFS
   lineinfile:

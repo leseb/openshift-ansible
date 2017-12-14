@@ -40,7 +40,7 @@
   when:
   - not openshift.common.is_containerized | bool
   register: result
-  until: result | success
+  until: result is succeeded
 
 - name: Create r_openshift_master_data_dir
   file:
@@ -91,7 +91,7 @@
   - not openshift.common.is_atomic | bool
   with_items: "{{ openshift.master.identity_providers }}"
   register: result
-  until: result | success
+  until: result is succeeded
 
 - name: Ensure htpasswd directory exists
   file:
@@ -166,7 +166,7 @@
     register: l_already_set
 
   - set_fact:
-      openshift_push_via_dns: "{{ openshift.common.version_gte_3_6 or (l_already_set.stdout is defined and l_already_set.stdout | match('OPENSHIFT_DEFAULT_REGISTRY=docker-registry.default.svc:5000')) }}"
+      openshift_push_via_dns: "{{ openshift.common.version_gte_3_6 or (l_already_set.stdout is defined and l_already_set.stdout is match('OPENSHIFT_DEFAULT_REGISTRY=docker-registry.default.svc:5000')) }}"
 
 - name: Set fact of all etcd host IPs
   openshift_facts:
@@ -229,17 +229,17 @@
   - openshift.master.cluster_method == 'native'
   - inventory_hostname == openshift_master_hosts[0]
   register: l_start_result
-  until: not l_start_result | failed
+  until: not (l_start_result is failed)
   retries: 1
   delay: 60
 
 - name: Dump logs from master-api if it failed
   command: journalctl --no-pager -n 100 -u {{ openshift_service_type }}-master-api
   when:
-  - l_start_result | failed
+  - l_start_result is failed
 
 - set_fact:
-    master_api_service_status_changed: "{{ l_start_result | changed }}"
+    master_api_service_status_changed: "{{ l_start_result is changed }}"
   when:
   - openshift.master.cluster_method == 'native'
   - inventory_hostname == openshift_master_hosts[0]
@@ -259,17 +259,17 @@
   - openshift.master.cluster_method == 'native'
   - inventory_hostname != openshift_master_hosts[0]
   register: l_start_result
-  until: not l_start_result | failed
+  until: not (l_start_result is failed)
   retries: 1
   delay: 60
 
 - name: Dump logs from master-api if it failed
   command: journalctl --no-pager -n 100 -u {{ openshift_service_type }}-master-api
   when:
-  - l_start_result | failed
+  - l_start_result is failed
 
 - set_fact:
-    master_api_service_status_changed: "{{ l_start_result | changed }}"
+    master_api_service_status_changed: "{{ l_start_result is changed }}"
   when:
   - openshift.master.cluster_method == 'native'
   - inventory_hostname != openshift_master_hosts[0]
@@ -289,17 +289,18 @@
   when:
   - openshift.master.cluster_method == 'native'
   register: l_start_result
-  until: not l_start_result | failed
+  until: not (l_start_result is failed)
   retries: 1
   delay: 60
 
 - name: Dump logs from master-controllers if it failed
   command: journalctl --no-pager -n 100 -u {{ openshift_service_type }}-master-controllers
   when:
-  - l_start_result | failed
+  - l_start_result is failed
 
 - name: Set fact master_controllers_service_status_changed
   set_fact:
+<<<<<<< HEAD
     master_controllers_service_status_changed: "{{ l_start_result | changed }}"
   when:
   - openshift.master.cluster_method == 'native'
@@ -325,6 +326,9 @@
   shell: echo {{ openshift_master_cluster_password | quote }} | passwd --stdin hacluster
   when:
   - l_install_result | changed
+=======
+    master_controllers_service_status_changed: "{{ l_start_result is changed }}"
+>>>>>>> Deprecate using Ansible tests as filters
 
 - name: node bootstrap settings
   include_tasks: bootstrap.yml

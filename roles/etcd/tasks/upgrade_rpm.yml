@@ -19,10 +19,14 @@
     state: latest
   register: result
 <<<<<<< HEAD:roles/etcd/tasks/upgrade_rpm.yml
+<<<<<<< HEAD:roles/etcd/tasks/upgrade_rpm.yml
   until: result is succeeded
 =======
   until: result | success
 >>>>>>> retry package operations:roles/etcd/tasks/upgrade/upgrade_rpm.yml
+=======
+  until: result is succeeded
+>>>>>>> Deprecate using Ansible tests as filters:roles/etcd/tasks/upgrade/upgrade_rpm.yml
 
 - import_tasks: validate_etcd_conf.yml
 

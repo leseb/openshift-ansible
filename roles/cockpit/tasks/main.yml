@@ -20,8 +20,12 @@
     - "{{ cockpit_plugins }}"
   when: not openshift.common.is_containerized | bool
   register: result
+<<<<<<< HEAD
   until: result | success
 >>>>>>> retry package operations
+=======
+  until: result is succeeded
+>>>>>>> Deprecate using Ansible tests as filters
 
 - name: Enable cockpit-ws
   systemd:

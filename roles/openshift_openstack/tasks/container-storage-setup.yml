@@ -8,7 +8,11 @@
         group: root
         mode: 0644
   when:
+<<<<<<< HEAD
     - ansible_distribution_version is version('7.4', '>=')
+=======
+    - ansible_distribution_version is version_compare('7.4', '>=')
+>>>>>>> Deprecate using Ansible tests as filters
     - ansible_distribution == "RedHat"
 
 - block:
@@ -20,7 +24,11 @@
         group: root
         mode: 0644
   when:
+<<<<<<< HEAD
     - ansible_distribution_version is version('7.4', '<')
+=======
+    - ansible_distribution_version is version_compare('7.4', '<')
+>>>>>>> Deprecate using Ansible tests as filters
     - ansible_distribution == "RedHat"
 
 - block:

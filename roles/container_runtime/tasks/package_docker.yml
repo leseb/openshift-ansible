@@ -19,6 +19,7 @@
   package:
     name: "{{ pkg_list | join(',') }}"
     state: present
+<<<<<<< HEAD
   register: result
   until: result is succeeded
   vars:
@@ -31,6 +32,14 @@
   register: result
   until: result | success
 >>>>>>> retry package operations:roles/docker/tasks/package_docker.yml
+=======
+  when:
+  - not (openshift.common.is_atomic | bool)
+  - not (curr_docker_version is skipped)
+  - not (curr_docker_version.stdout != '')
+  register: result
+  until: result is succeeded
+>>>>>>> Deprecate using Ansible tests as filters
 
 - block:
   # Extend the default Docker service unit file when using iptables-services
@@ -157,6 +166,7 @@
 
 - set_fact:
     docker_service_status_changed: "{{ (r_docker_package_docker_start_result is changed) and (r_docker_already_running_result.stdout != 'ActiveState=active' ) }}"
+<<<<<<< HEAD
 
 - name: Check for docker_storage_path/overlay2
   stat:
@@ -168,5 +178,7 @@
            semanage fcontext -a -e /var/lib/docker/overlay2 "{{ docker_storage_path }}/overlay2"
            restorecon -R -v "{{ docker_storage_path }}/overlay2"
   when: dsp_stat.stat.exists
+=======
+>>>>>>> Deprecate using Ansible tests as filters
 
 - import_tasks: common/post.yml

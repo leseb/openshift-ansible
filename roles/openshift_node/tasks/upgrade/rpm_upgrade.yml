@@ -17,8 +17,11 @@
   command: "{{ ansible_pkg_mgr }} install -y --downloadonly {{ openshift_node_upgrade_rpm_list | join(' ')}}"
   register: result
   until: result is succeeded
+<<<<<<< HEAD
   failed_when:
     - result.stdout is search(".*No package .* available.*") or result is failed
+=======
+>>>>>>> Deprecate using Ansible tests as filters
   vars:
     openshift_node_upgrade_rpm_list:
       - "{{ openshift_service_type }}{{ openshift_pkg_version }}"
@@ -36,6 +39,7 @@
   package: name=PyYAML state=present
   when: not openshift.common.is_atomic | bool
   register: result
+<<<<<<< HEAD
   until: result | success
 
 - name: Install Node service file
@@ -53,3 +57,6 @@
   command: systemctl daemon-reload
   when: l_node_unit | changed
 >>>>>>> retry package operations
+=======
+  until: result is succeeded
+>>>>>>> Deprecate using Ansible tests as filters

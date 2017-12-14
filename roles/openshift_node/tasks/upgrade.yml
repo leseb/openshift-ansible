@@ -15,6 +15,7 @@
   command: "{{ ansible_pkg_mgr }} install -y docker{{ '-' + docker_version }}"
   register: result
   until: result is succeeded
+<<<<<<< HEAD
 =======
 - name: Stop node and openvswitch services
   service:
@@ -57,6 +58,8 @@
     # We will restart Docker ourselves after everything is ready:
     skip_docker_restart: True
 >>>>>>> Remove openshift.common.service_type
+=======
+>>>>>>> Deprecate using Ansible tests as filters
   when:
   - l_docker_upgrade is defined
   - l_docker_upgrade | bool

@@ -5,10 +5,14 @@
     state=latest
   register: result
 <<<<<<< HEAD
+<<<<<<< HEAD
   until: result is succeeded
 =======
   until: result | success
 >>>>>>> retry package operations
+=======
+  until: result is succeeded
+>>>>>>> Deprecate using Ansible tests as filters
 
 - name: PkgMgr RHEL/CentOS | Get openstack ocata rpm
   get_url:
@@ -28,10 +32,14 @@
     - ovs_install
   register: result
 <<<<<<< HEAD
+<<<<<<< HEAD
   until: result is succeeded
 =======
   until: result | success
 >>>>>>> retry package operations
+=======
+  until: result is succeeded
+>>>>>>> Deprecate using Ansible tests as filters
 
 - name: PkgMgr RHEL/CentOS | Install ovs
   yum:
@@ -45,7 +53,11 @@
     - ovs_install
   register: result
 <<<<<<< HEAD
+<<<<<<< HEAD
   until: result is succeeded
 =======
   until: result | success
 >>>>>>> retry package operations
+=======
+  until: result is succeeded
+>>>>>>> Deprecate using Ansible tests as filters

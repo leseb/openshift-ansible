@@ -9,8 +9,12 @@
     state: present
   with_items: "{{ r_openshift_node_image_prep_packages }}"
   register: result
+<<<<<<< HEAD
   until: result | success
 >>>>>>> retry package operations
+=======
+  until: result is succeeded
+>>>>>>> Deprecate using Ansible tests as filters
 
 - name: create the directory for node
   file:

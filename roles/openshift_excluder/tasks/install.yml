@@ -14,10 +14,14 @@
     - ansible_pkg_mgr == "yum"
     register: result
 <<<<<<< HEAD
+<<<<<<< HEAD
     until: result is succeeded
 =======
     until: result | success
 >>>>>>> retry package operations
+=======
+    until: result is succeeded
+>>>>>>> Deprecate using Ansible tests as filters
 
 
   # For DNF we do not need the "*" and if we add it, it causes an error because
@@ -33,10 +37,14 @@
     - ansible_pkg_mgr == "dnf"
     register: result
 <<<<<<< HEAD
+<<<<<<< HEAD
     until: result is succeeded
 =======
     until: result | success
 >>>>>>> retry package operations
+=======
+    until: result is succeeded
+>>>>>>> Deprecate using Ansible tests as filters
 
   - name: Install openshift excluder - yum
     package:
@@ -47,10 +55,14 @@
     - ansible_pkg_mgr == "yum"
     register: result
 <<<<<<< HEAD
+<<<<<<< HEAD
     until: result is succeeded
 =======
     until: result | success
 >>>>>>> retry package operations
+=======
+    until: result is succeeded
+>>>>>>> Deprecate using Ansible tests as filters
 
   # For DNF we do not need the "*" and if we add it, it causes an error because
   # it's not a valid pkg_spec
@@ -65,10 +77,14 @@
     - ansible_pkg_mgr == "dnf"
     register: result
 <<<<<<< HEAD
+<<<<<<< HEAD
     until: result is succeeded
 =======
     until: result | success
 >>>>>>> retry package operations
+=======
+    until: result is succeeded
+>>>>>>> Deprecate using Ansible tests as filters
 
   - set_fact:
       r_openshift_excluder_install_ran: True

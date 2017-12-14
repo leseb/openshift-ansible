@@ -13,7 +13,7 @@
   package: name=haproxy state=present
   when: not openshift.common.is_containerized | bool
   register: result
-  until: result | success
+  until: result is succeeded
 
 - name: Pull haproxy image
   command: >

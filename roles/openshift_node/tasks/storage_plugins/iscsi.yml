@@ -34,5 +34,9 @@
   package: name=iscsi-initiator-utils state=present
   when: not openshift.common.is_atomic | bool
   register: result
+<<<<<<< HEAD
   until: result | success
 >>>>>>> retry package operations
+=======
+  until: result is succeeded
+>>>>>>> Deprecate using Ansible tests as filters

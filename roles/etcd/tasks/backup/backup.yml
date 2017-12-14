@@ -47,8 +47,12 @@
   - r_etcd_common_embedded_etcd | bool
   - not l_ostree_booted.stat.exists | bool
   register: result
+<<<<<<< HEAD
   until: result | success
 >>>>>>> retry package operations
+=======
+  until: result is succeeded
+>>>>>>> Deprecate using Ansible tests as filters
 
 - name: Check selinux label of '{{ etcd_data_dir }}'
   command: >

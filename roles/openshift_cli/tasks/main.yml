@@ -14,7 +14,7 @@
 >>>>>>> Remove openshift.common.service_type
   when: not openshift.common.is_containerized | bool
   register: result
-  until: result | success
+  until: result is succeeded
 
 - block:
   - name: Pull CLI Image
@@ -61,5 +61,9 @@
   package: name=bash-completion state=present
   when: not openshift.common.is_containerized | bool
   register: result
+<<<<<<< HEAD
   until: result | success
 >>>>>>> retry package operations
+=======
+  until: result is succeeded
+>>>>>>> Deprecate using Ansible tests as filters

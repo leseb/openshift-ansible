@@ -44,6 +44,7 @@
     state: present
   register: result
 <<<<<<< HEAD
+<<<<<<< HEAD
   until: result is succeeded
 
 - name: Is host already registered?
@@ -53,6 +54,9 @@
 =======
   until: result | success
 >>>>>>> retry package operations
+=======
+  until: result is succeeded
+>>>>>>> Deprecate using Ansible tests as filters
 
 <<<<<<< HEAD
 - name: Register host using user/password
@@ -69,6 +73,7 @@
     username: "{{ rhel_subscription_user }}"
     password: "{{ rhel_subscription_pass }}"
   register: rh_subscription
+<<<<<<< HEAD
 <<<<<<< HEAD
   until: rh_subscription is succeeded
   when:
@@ -128,6 +133,9 @@
     - rhsub_server
 =======
   until: rh_subscription | succeeded
+=======
+  until: rh_subscription is succeeded
+>>>>>>> Deprecate using Ansible tests as filters
   when:
     - "'not registered' in rh_subscribed.stdout"
     - rhel_subscription_user is defined

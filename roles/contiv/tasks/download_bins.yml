@@ -10,10 +10,14 @@
     state: installed
   register: result
 <<<<<<< HEAD
+<<<<<<< HEAD
   until: result is succeeded
 =======
   until: result | success
 >>>>>>> retry package operations
+=======
+  until: result is succeeded
+>>>>>>> Deprecate using Ansible tests as filters
 
 - name: Download Bins | Download Contiv tar file
   get_url:
