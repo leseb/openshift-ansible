@@ -8,6 +8,11 @@
     when:
     - openshift_deployment_type == 'openshift-enterprise'
     - ansible_distribution == "RedHat"
+<<<<<<< HEAD
     - (rhsub_user is defined and rhsub_pass is defined) or (rhsub_ak is defined and rhsub_orgid is defined)
+=======
+    - rhsub_user | default(False)
+    - rhsub_pass | default(False)
+>>>>>>> Move repo and subscribe to prerequisites
   - role: openshift_repos
   - role: os_update_latest

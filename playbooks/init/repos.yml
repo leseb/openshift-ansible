@@ -19,9 +19,14 @@
     when:
     - ansible_distribution == 'RedHat'
     - deployment_type == 'openshift-enterprise'
+<<<<<<< HEAD
     - (rhel_subscription_user or rhsub_user) is defined
     - (rhel_subscription_password or rhsub_pass) is defined
 >>>>>>> Commit to stabalize RHSM operations.  This code is derived from contrib
+=======
+    - rhsub_user | default(False)
+    - rhsub_pass | default(False)
+>>>>>>> Move repo and subscribe to prerequisites
   - name: initialize openshift repos
     import_role:
       name: openshift_repos

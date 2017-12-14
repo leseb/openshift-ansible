@@ -1,9 +1,13 @@
 ---
 - name: Satellite preparation
 <<<<<<< HEAD
+<<<<<<< HEAD
   command: "rpm -Uvh http://{{ rhsub_server }}/pub/katello-ca-consumer-latest.noarch.rpm"
 =======
   command: "rpm -Uvh http://{{ rhel_subscription_server }}/pub/katello-ca-consumer-latest.noarch.rpm"
 >>>>>>> Commit to stabalize RHSM operations.  This code is derived from contrib
+=======
+  command: "rpm -Uvh http://{{ rhsub_server }}/pub/katello-ca-consumer-latest.noarch.rpm"
+>>>>>>> Move repo and subscribe to prerequisites
   args:
     creates: /etc/rhsm/ca/katello-server-ca.pem
