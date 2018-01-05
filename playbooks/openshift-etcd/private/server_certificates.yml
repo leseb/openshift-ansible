@@ -2,7 +2,13 @@
 - name: Create etcd server certificates for etcd hosts
   hosts: oo_etcd_to_config
   any_errors_fatal: true
+<<<<<<< HEAD
   tasks:
+=======
+  roles:
+    - role: openshift_etcd_facts
+  post_tasks:
+>>>>>>> Migrate to import_role for static role inclusion
     - import_role:
         name: etcd
         tasks_from: server_certificates.yml

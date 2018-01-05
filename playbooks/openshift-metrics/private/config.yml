@@ -18,6 +18,18 @@
   roles:
   - role: openshift_metrics
 
+<<<<<<< HEAD
+=======
+- name: OpenShift Metrics
+  hosts: oo_masters:!oo_first_master
+  serial: 1
+  tasks:
+  - name: Setup the non-first masters configs
+    import_role:
+      name: openshift_metrics
+      tasks_from: update_master_config.yaml
+
+>>>>>>> Migrate to import_role for static role inclusion
 - name: Metrics Install Checkpoint End
   hosts: all
   gather_facts: false

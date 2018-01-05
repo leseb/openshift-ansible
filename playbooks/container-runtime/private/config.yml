@@ -8,18 +8,31 @@
     - role: container_runtime
   tasks:
     - import_role:
+<<<<<<< HEAD
         name: openshift_excluder
         tasks_from: enable.yml
       vars:
         r_openshift_excluder_action: enable
         r_openshift_excluder_enable_openshift_excluder: false
     - import_role:
+=======
+>>>>>>> Migrate to import_role for static role inclusion
         name: container_runtime
         tasks_from: package_docker.yml
       when:
         - not openshift_use_crio_only | bool
     - import_role:
         name: container_runtime
+<<<<<<< HEAD
         tasks_from: package_crio.yml
+=======
+        tasks_from: systemcontainer_docker.yml
+      when:
+        - openshift_docker_use_system_container | bool
+        - not openshift_use_crio_only | bool
+    - import_role:
+        name: container_runtime
+        tasks_from: systemcontainer_crio.yml
+>>>>>>> Migrate to import_role for static role inclusion
       when:
         - openshift_use_crio | bool

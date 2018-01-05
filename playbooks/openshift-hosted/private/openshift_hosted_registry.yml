@@ -2,6 +2,12 @@
 - name: Create Hosted Resources - registry
   hosts: oo_first_master
   tasks:
+<<<<<<< HEAD
+=======
+  - set_fact:
+      openshift_hosted_registry_registryurl: "{{ hostvars[groups.oo_first_master.0].openshift.master.registry_url }}"
+    when: "'master' in hostvars[groups.oo_first_master.0].openshift and 'registry_url' in hostvars[groups.oo_first_master.0].openshift.master"
+>>>>>>> Migrate to import_role for static role inclusion
   - import_role:
       name: openshift_hosted
       tasks_from: registry.yml

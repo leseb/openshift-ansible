@@ -16,6 +16,7 @@
 - name: node bootstrap config
   hosts: oo_nodes_to_config
   tasks:
+<<<<<<< HEAD
   - import_role:
       name: openshift_node
       tasks_from: bootstrap.yml
@@ -39,6 +40,11 @@
         tasks_from: static.yml
       vars:
         openshift_control_plane_apply_cluster_signing_config: False
+=======
+    - import_role:
+        name: openshift_node
+        tasks_from: bootstrap.yml
+>>>>>>> Migrate to import_role for static role inclusion
 
 - name: Re-enable excluders
   import_playbook: enable_excluders.yml

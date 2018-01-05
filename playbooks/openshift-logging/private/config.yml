@@ -133,6 +133,17 @@
   roles:
   - openshift_logging
 
+<<<<<<< HEAD
+=======
+- name: Update Master configs
+  hosts: oo_masters:!oo_first_master
+  tasks:
+  - block:
+    - import_role:
+        name: openshift_logging
+        tasks_from: update_master_config
+
+>>>>>>> Migrate to import_role for static role inclusion
 - name: Logging Install Checkpoint End
   hosts: all
   gather_facts: false

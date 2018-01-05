@@ -58,7 +58,35 @@
     name: "aggregated-logging-curator"
     namespace: "{{ openshift_logging_namespace }}"
   when:
+<<<<<<< HEAD
     - openshift_logging_curator_image_pull_secret == ''
+=======
+    - openshift_logging_image_pull_secret == ''
+
+# configmap
+- copy:
+    src: curator.yml
+    dest: "{{ tempdir }}/curator.yml"
+  changed_when: no
+
+- import_role:
+    name: openshift_logging
+    tasks_from: patch_configmap_files.yaml
+  vars:
+    configmap_name: "logging-curator"
+    configmap_namespace: "logging"
+    configmap_file_names:
+      - current_file: "config.yaml"
+        new_file: "{{ tempdir }}/curator.yml"
+
+- name: Set Curator configmap
+  oc_configmap:
+    state: present
+    name: "logging-curator"
+    namespace: "{{ openshift_logging_namespace }}"
+    from_file:
+      config.yaml: "{{ tempdir }}/curator.yml"
+>>>>>>> Migrate to import_role for static role inclusion
 
 # secret
 - name: Set Curator secret

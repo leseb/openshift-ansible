@@ -212,6 +212,7 @@
   changed_when: no
 
 # create diff between current configmap files and our current files
+<<<<<<< HEAD
 - template:
     src: "log4j2.properties.j2"
     dest: "{{ tempdir }}/log4j2.properties"
@@ -220,6 +221,9 @@
   changed_when: no
 
 - include_role:
+=======
+- import_role:
+>>>>>>> Migrate to import_role for static role inclusion
     name: openshift_logging
     tasks_from: patch_configmap_files.yaml
   vars:

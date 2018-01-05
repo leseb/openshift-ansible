@@ -47,7 +47,13 @@
       msg: Cannot upgrade Docker on Atomic operating systems.
     when: openshift.common.is_atomic | bool
 
+<<<<<<< HEAD
   - include_tasks: upgrade_check.yml
+=======
+  - import_role:
+      name: container_runtime
+      tasks_from: docker_upgrade_check.yml
+>>>>>>> Migrate to import_role for static role inclusion
     when: docker_upgrade is not defined or docker_upgrade | bool
 >>>>>>> Include Deprecation: Convert to import_playbook
 

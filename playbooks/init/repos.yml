@@ -7,11 +7,15 @@
   tasks:
   - name: subscribe instances to Red Hat Subscription Manager
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> Migrate to import_role for static role inclusion
     import_role:
       name: rhel_subscribe
     when:
     - ansible_distribution == 'RedHat'
     - openshift_deployment_type == 'openshift-enterprise'
+<<<<<<< HEAD
     - (rhsub_user is defined and rhsub_pass is defined) or (rhsub_ak is defined and rhsub_orgid is defined)
 =======
     include_role:
@@ -27,6 +31,10 @@
     - rhsub_user | default(False)
     - rhsub_pass | default(False)
 >>>>>>> Move repo and subscribe to prerequisites
+=======
+    - rhsub_user is defined
+    - rhsub_pass is defined
+>>>>>>> Migrate to import_role for static role inclusion
   - name: initialize openshift repos
     import_role:
       name: openshift_repos

@@ -1,6 +1,16 @@
 ---
 - name: Create the OpenStack resources for cluster installation
+<<<<<<< HEAD
   import_playbook: provision_resources.yml
+=======
+  hosts: localhost
+  tasks:
+  - name: provision cluster
+    import_role:
+      name: openshift_openstack
+      tasks_from: provision.yml
+
+>>>>>>> Migrate to import_role for static role inclusion
 
 <<<<<<< HEAD
 - name: Evaluate OpenStack groups from the dynamic inventory
@@ -41,7 +51,11 @@
   any_errors_fatal: true
   hosts: localhost
   tasks:
+<<<<<<< HEAD
   - name: Add the DNS records
+=======
+  - name: Populate DNS entries
+>>>>>>> Migrate to import_role for static role inclusion
     import_role:
       name: openshift_openstack
       tasks_from: populate-dns.yml
@@ -70,12 +84,28 @@
     - ansible_distribution == "RedHat"
     - (rhsub_user is defined and rhsub_pass is defined) or (rhsub_ak is defined and rhsub_orgid is defined)
 
+<<<<<<< HEAD
   - name: Configuring proper repositories
+=======
+  - name: Enable required YUM repositories
+>>>>>>> Migrate to import_role for static role inclusion
     import_role:
       name: openshift_repos
     when:
     - ansible_distribution == "RedHat"
     - (rhsub_user is defined and rhsub_pass is defined) or (rhsub_ak is defined and rhsub_orgid is defined)
 
+<<<<<<< HEAD
 - name: Show information about the deployed cluster
   import_playbook: cluster-info.yml
+=======
+  - name: Install dependencies
+    import_role:
+      name: openshift_openstack
+      tasks_from: node-packages.yml
+
+  - name: Configure Node
+    import_role:
+      name: openshift_openstack
+      tasks_from: node-configuration.yml
+>>>>>>> Migrate to import_role for static role inclusion

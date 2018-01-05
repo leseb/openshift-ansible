@@ -135,8 +135,16 @@
       tasks_from: master.yaml
     when: openshift_use_kuryr | default(false) | bool
 
+<<<<<<< HEAD
   - name: setup bootstrap settings
     import_tasks: tasks/enable_bootstrap.yml
+=======
+  - name: Setup the node group config maps
+    import_role:
+      name: openshift_node_group
+    when: openshift_master_bootstrap_enabled | default(false) | bool
+    run_once: True
+>>>>>>> Migrate to import_role for static role inclusion
 
   post_tasks:
   - name: Create group for deployment type

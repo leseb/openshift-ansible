@@ -10,6 +10,7 @@
     debug:
       msg: "openshift_aws_region={{ openshift_aws_region | default('us-east-1') }}"
 
+<<<<<<< HEAD
 - import_playbook: provision_s3.yml
 
 - import_playbook: provision_elb.yml
@@ -18,6 +19,9 @@
   hosts: localhost
   tasks:
   - name: provision instances
+=======
+  - name: provision cluster
+>>>>>>> Migrate to import_role for static role inclusion
     import_role:
       name: openshift_aws
       tasks_from: provision_masters.yml
