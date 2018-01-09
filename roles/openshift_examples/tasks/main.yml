@@ -17,7 +17,11 @@
   run_once: True
 
 - name: Chmod local temp dir for OpenShift examples copy
+<<<<<<< HEAD
   local_action: file path="{{ copy_examples_mktemp.stdout }}" mode=0777
+=======
+  local_action: command chmod 777 "{{ copy_examples_mktemp.stdout }}"
+>>>>>>> Chmod temp dirs created on localhost
   run_once: True
 
 - name: Create tar of OpenShift examples
@@ -28,7 +32,11 @@
     warn: no
 
 - name: Chmod local temp dir for OpenShift examples copy
+<<<<<<< HEAD
   local_action: file path="{{ copy_examples_mktemp.stdout }}/openshift-examples.tar" mode=0744
+=======
+  local_action: command chmod 744 "{{ copy_examples_mktemp.stdout }}/openshift-examples.tar"
+>>>>>>> Chmod temp dirs created on localhost
   run_once: True
 
 - name: Create the remote OpenShift examples directory

@@ -137,7 +137,11 @@
   when: master_certs_missing | bool
 
 - name: Chmod local temp directory for syncing certs
+<<<<<<< HEAD
   local_action: file path="{{ g_master_certs_mktemp.stdout }}" mode=0777
+=======
+  local_action: command chmod 777 "{{ g_master_certs_mktemp.stdout }}"
+>>>>>>> Chmod temp dirs created on localhost
   changed_when: False
   when: master_certs_missing | bool
 

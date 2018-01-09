@@ -34,7 +34,11 @@
     changed_when: false
 
   - name: Chmod local temp directory for syncing certs
+<<<<<<< HEAD
     local_action: file path="{{ g_etcd_mktemp.stdout }}" mode=0777
+=======
+    local_action: command chmod 777 "{{ g_etcd_mktemp.stdout }}"
+>>>>>>> Chmod temp dirs created on localhost
     changed_when: false
 
 - name: Distribute etcd CA to etcd hosts
