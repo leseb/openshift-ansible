@@ -1,1 +1,10 @@
 ---
+<<<<<<< HEAD
+=======
+__tsb_files_location: "../files/"
+
+__tsb_template_file: "apiserver-template.yaml"
+__tsb_config_file: "apiserver-config.yaml"
+__tsb_rbac_file: "rbac-template.yaml"
+__tsb_broker_file: "template-service-broker-registration.yaml"
+>>>>>>> moving files to their correct <role>/files dir for the openshift_web_console and template_service_broker roles

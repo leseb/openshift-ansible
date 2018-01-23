@@ -1,1 +1,9 @@
 ---
+<<<<<<< HEAD
+=======
+__console_files_location: "../files/"
+
+__console_template_file: "console-template.yaml"
+__console_rbac_file: "console-rbac-template.yaml"
+__console_config_file: "console-config.yaml"
+>>>>>>> moving files to their correct <role>/files dir for the openshift_web_console and template_service_broker roles
