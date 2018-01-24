@@ -62,6 +62,7 @@
   - import_role:
       name: openshift_node
       tasks_from: upgrade.yml
+<<<<<<< HEAD
 
   # Run the upgrade hook prior to make the node schedulable again.
   - debug: msg="Running node upgrade hook {{ openshift_node_upgrade_hook }}"
@@ -70,11 +71,14 @@
   - include_tasks: "{{ openshift_node_upgrade_hook }}"
     when: openshift_node_upgrade_hook is defined
 
+=======
+>>>>>>> Label masters with node-role.kubernetes.io/master. This PR also sets these labels
   - import_role:
       name: openshift_manage_node
       tasks_from: config.yml
     vars:
       openshift_master_host: "{{ groups.oo_first_master.0 }}"
+<<<<<<< HEAD
 
   # Run the post-upgrade hook if defined:
   - debug: msg="Running node post-upgrade hook {{ openshift_node_upgrade_post_hook }}"
@@ -116,6 +120,8 @@
 =======
     until: node_schedulable is succeeded
     when: node_unschedulable is changed
+=======
+>>>>>>> Label masters with node-role.kubernetes.io/master. This PR also sets these labels
 
 - name: Re-enable excluders
   hosts: oo_nodes_to_upgrade:!oo_masters_to_config

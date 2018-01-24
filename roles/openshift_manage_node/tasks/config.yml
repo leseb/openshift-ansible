@@ -1,8 +1,13 @@
 ---
 - name: Set node schedulability
   oc_adm_manage_node:
+<<<<<<< HEAD
     node: "{{ l_kubelet_node_name | lower }}"
     schedulable: "{{ 'true' if openshift_schedulable | default(true) | bool else 'false' }}"
+=======
+    node: "{{ openshift.node.nodename | lower }}"
+    schedulable: "{{ 'true' if l_openshift_manage_schedulable | bool else 'false' }}"
+>>>>>>> Label masters with node-role.kubernetes.io/master. This PR also sets these labels
   retries: 10
   delay: 5
   register: node_schedulable
@@ -10,6 +15,7 @@
   when: "'nodename' in openshift.node"
   delegate_to: "{{ openshift_master_host }}"
 
+<<<<<<< HEAD
 - name: Wait for sync DS to set annotations on all nodes
   oc_obj:
     state: list
@@ -26,4 +32,28 @@
       node_status.results.results[0]['items'] | length
   retries: 180
   delay: 10
+=======
+- name: Label nodes
+  oc_label:
+    name: "{{ openshift.node.nodename }}"
+    kind: node
+    state: add
+    labels: "{{ openshift_node_labels | lib_utils_oo_dict_to_list_of_dict }}"
+    namespace: default
+  when:
+    - "'nodename' in openshift.node"
+    - openshift_node_labels | default({}) != {}
+  delegate_to: "{{ openshift_master_host }}"
+
+- name: Label master nodes
+  oc_label:
+    name: "{{ openshift.node.nodename }}"
+    kind: node
+    state: add
+    labels: "{{ openshift_master_node_labels | lib_utils_oo_dict_to_list_of_dict }}"
+    namespace: default
+  when:
+    - "'nodename' in openshift.node"
+    - "'oo_masters_to_config' in group_names"
+>>>>>>> Label masters with node-role.kubernetes.io/master. This PR also sets these labels
   delegate_to: "{{ openshift_master_host }}"

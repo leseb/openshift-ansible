@@ -311,6 +311,7 @@
   - import_role:
       name: openshift_node
       tasks_from: upgrade.yml
+<<<<<<< HEAD
     vars:
       openshift_node_upgrade_in_progress: True
   - name: Set node schedulability
@@ -324,3 +325,10 @@
     until: node_schedulable is succeeded
     when: node_unschedulable is changed
 >>>>>>> Deprecate using Ansible tests as filters
+=======
+  - import_role:
+      name: openshift_manage_node
+      tasks_from: config.yml
+    vars:
+      openshift_master_host: "{{ groups.oo_first_master.0 }}"
+>>>>>>> Label masters with node-role.kubernetes.io/master. This PR also sets these labels

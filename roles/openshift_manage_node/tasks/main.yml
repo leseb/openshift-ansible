@@ -12,6 +12,7 @@
   delegate_to: "{{ openshift_master_host }}"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 - include_tasks: config.yml
 =======
 - name: Set node schedulability
@@ -37,3 +38,6 @@
     - openshift_node_labels | default({}) != {}
   delegate_to: "{{ openshift_master_host }}"
 >>>>>>> Deprecate using Ansible tests as filters
+=======
+- include_tasks: config.yml
+>>>>>>> Label masters with node-role.kubernetes.io/master. This PR also sets these labels
