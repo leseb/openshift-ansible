@@ -71,6 +71,7 @@ objects:
               port: 8443
               scheme: HTTPS
           livenessProbe:
+<<<<<<< HEAD
             exec:
               command:
                 - /bin/sh
@@ -82,6 +83,12 @@ objects:
                     echo 'webconsole-config.yaml has changed.'; \
                     exit 1; \
                   fi && curl -k -f https://0.0.0.0:8443/console/
+=======
+            httpGet:
+              path: /
+              port: 8443
+              scheme: HTTPS
+>>>>>>> Add resource requests to console template
           resources:
             requests:
               cpu: 100m
