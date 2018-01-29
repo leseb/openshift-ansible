@@ -15,11 +15,15 @@
 - name: Update registry environment variables when pushing via dns
   # OPENSHIFT_DEFAULT_REGISTRY is deprecated - keep until 3.11
   set_fact:
+<<<<<<< HEAD
     openshift_hosted_registry_env_vars: "{{ {'OPENSHIFT_DEFAULT_REGISTRY': item,
                                              'REGISTRY_OPENSHIFT_SERVER_ADDR': item}
                                            | combine(openshift_hosted_registry_env_vars) }}"
   with_items:
   - "docker-registry.default.svc:5000"
+=======
+    openshift_hosted_registry_env_vars: "{{ openshift_hosted_registry_env_vars | combine({'REGISTRY_OPENSHIFT_SERVER_ADDR':'docker-registry.default.svc:5000'}) }}"
+>>>>>>> Revert "Revert "use non-deprecated REGISTRY_OPENSHIFT_SERVER_ADDR variable to set the registry hostname""
   when: openshift_push_via_dns | bool
 
 - name: Update registry proxy settings for dc/docker-registry
