@@ -7,6 +7,7 @@
 <<<<<<< HEAD
 =======
 
+<<<<<<< HEAD
 # Create service signer cert when missing. Service signer certificate
 # is added to master config in the master_config_upgrade hook.
 - name: Determine if service signer cert must be created
@@ -365,4 +366,12 @@
       tasks_from: config.yml
     vars:
       openshift_master_host: "{{ groups.oo_first_master.0 }}"
+<<<<<<< HEAD
 >>>>>>> Label masters with node-role.kubernetes.io/master. This PR also sets these labels
+=======
+      openshift_manage_node_is_master: true
+=======
+- name: Upgrade Masters
+  import_playbook: ../../../openshift-master/private/upgrade.yml
+>>>>>>> Move common master upgrade playbooks to openshift-master
+>>>>>>> Move common master upgrade playbooks to openshift-master
