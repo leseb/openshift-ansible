@@ -4,6 +4,7 @@
   gather_facts: no
   tasks:
   - name: include bootstrapping tasks
+<<<<<<< HEAD
     import_tasks: tasks/enable_bootstrap.yml
 
 - name: Enable bootstrapping configuration
@@ -12,3 +13,6 @@
   tasks:
   - name: include bootstrapping tasks
     import_tasks: tasks/enable_bootstrap_config.yml
+=======
+    include_tasks: tasks/enable_bootstrap.yml
+>>>>>>> Adding node autoapprover.
