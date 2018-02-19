@@ -2,12 +2,21 @@
 - import_tasks: mktemp.yml
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 - import_tasks: glusterfs_config.yml
   when:
   - groups.glusterfs | default([]) | count > 0
 
 - import_tasks: glusterfs_registry.yml
 =======
+=======
+- name: Copy the admin client config
+  command: >
+    cp {{ openshift.common.config_base }}/master/admin.kubeconfig {{ mktemp.stdout }}/admin.kubeconfig
+  changed_when: False
+  check_mode: no
+
+>>>>>>> GlusterFS - Invoke oc binary with the admin.kubeconfig token rather than default token from $HOME/.kube/config
 - include_tasks: glusterfs_config.yml
   when:
   - groups.glusterfs | default([]) | count > 0
