@@ -152,7 +152,12 @@
   - reload systemd units
   - restart dnsmasq
 
+<<<<<<< HEAD
 # Need to flush handlers here so dnsmasq is restarted and daemon-reload
+=======
+- include_tasks: journald.yml
+
+>>>>>>> Move journald setup to node tasks from master
 - meta: flush_handlers
 
 # Restart all services

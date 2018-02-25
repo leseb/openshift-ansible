@@ -16,6 +16,23 @@
 - name: setup firewall
   import_tasks: firewall.yml
 
+<<<<<<< HEAD
+=======
+- name: Update journald config
+  include_tasks: journald.yml
+
+#### Disable SWAP #####
+# https://docs.openshift.com/container-platform/3.4/admin_guide/overcommit.html#disabling-swap-memory
+# swapoff is a custom module in lib_utils that comments out swap entries in
+# /etc/fstab and runs swapoff -a, if necessary.
+- name: Disable swap
+  swapoff: {}
+  when: openshift_disable_swap | default(true) | bool
+
+- name: include node installer
+  include_tasks: install.yml
+
+>>>>>>> Move journald setup to node tasks from master
 - name: Restart cri-o
   systemd:
     name: cri-o
