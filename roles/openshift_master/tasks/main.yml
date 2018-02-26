@@ -263,11 +263,19 @@
 - name: Dump logs from master-api if it failed
   command: journalctl --no-pager -n 100 -u {{ openshift_service_type }}-master-api
   when:
+<<<<<<< HEAD
   - l_start_result is failed
+=======
+  - openshift_cloudprovider_kind is defined
+  - openshift_cloudprovider_kind == 'vsphere'
+  - openshift_version | version_compare('3.9', '>=')
+  - inventory_hostname == openshift_master_hosts[0]
+>>>>>>> changed logic due to failures in CI
 
 - set_fact:
     master_api_service_status_changed: "{{ l_start_result is changed }}"
   when:
+<<<<<<< HEAD
   - openshift.master.cluster_method == 'native'
   - inventory_hostname != openshift_master_hosts[0]
 
@@ -289,6 +297,11 @@
   until: not (l_start_result is failed)
   retries: 1
   delay: 60
+=======
+  - openshift_cloudprovider_kind is defined
+  - openshift_cloudprovider_kind == 'vsphere'
+  - openshift_version | version_compare('3.9', '>=')
+>>>>>>> changed logic due to failures in CI
 
 - name: Dump logs from master-controllers if it failed
   command: journalctl --no-pager -n 100 -u {{ openshift_service_type }}-master-controllers
