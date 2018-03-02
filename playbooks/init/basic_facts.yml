@@ -61,11 +61,29 @@
   tasks:
   - when: not (osm_default_node_selector is defined)
     block:
+<<<<<<< HEAD
     - set_fact:
         # l_existing_config_master_config is set in openshift_control_plane/tasks/check_existing_config.yml
         openshift_master_config_node_selector: "{{ l_existing_config_master_config.projectConfig.defaultNodeSelector }}"
       when:
       - l_existing_config_master_config is defined
+=======
+    - stat:
+        path: "/etc/origin/master/master-config.yaml"
+      register: master_config_path_check
+
+    - slurp:
+        src: "/etc/origin/master/master-config.yaml"
+      register: openshift_master_config_encoded_contents
+      when: master_config_path_check.stat.exists
+
+    - set_fact:
+        openshift_master_config_node_selector: "{{ l_existing_config_master_config.projectConfig.defaultNodeSelector }}"
+      vars:
+        l_existing_config_master_config: "{{ (openshift_master_config_encoded_contents.content | b64decode | from_yaml) }}"
+      when:
+      - master_config_path_check.stat.exists
+>>>>>>> Bug 1548641- upgrade now properly sets labels and selectors
       - l_existing_config_master_config.projectConfig is defined
       - l_existing_config_master_config.projectConfig.defaultNodeSelector is defined
       - l_existing_config_master_config.projectConfig.defaultNodeSelector != ''

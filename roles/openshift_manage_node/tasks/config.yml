@@ -57,3 +57,12 @@
     - "'oo_masters_to_config' in group_names"
 >>>>>>> Label masters with node-role.kubernetes.io/master. This PR also sets these labels
   delegate_to: "{{ openshift_master_host }}"
+<<<<<<< HEAD
+=======
+  vars:
+    l_node_labels: "{{ openshift_node_labels | default({}) }}"
+    l_master_labels: "{{ openshift_manage_node_is_master | ternary(openshift_master_node_labels, {}) }}"
+    l_all_labels: "{{ l_node_labels | combine(l_master_labels) }}"
+
+- import_tasks: set_default_node_role.yml
+>>>>>>> Bug 1548641- upgrade now properly sets labels and selectors

@@ -123,6 +123,8 @@
   tasks:
   - include_tasks: ../cleanup_unused_images.yml
 
+- import_playbook: label_nodes.yml
+
 - import_playbook: ../upgrade_control_plane.yml
   vars:
     master_config_hook: "v3_7/master_config_upgrade.yml"
@@ -140,5 +142,6 @@
     systemd:
       name: "{{ openshift.common.service_type }}-master-controllers"
       state: started
+
 
 - import_playbook: ../post_control_plane.yml
