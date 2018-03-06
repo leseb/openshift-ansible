@@ -328,7 +328,7 @@ resources:
         str_replace:
           template: openshift-ansible-cluster_id-api-lb
           params:
-            cluster_id: {{ openshift_openstack_stack_name }}
+            cluster_id: {{ openshift_openstack_full_dns_domain }}
       vip_address: {{ openshift_openstack_kuryr_service_subnet_cidr | ipaddr('1') | ipaddr('address') }}
       vip_subnet: { get_resource: service_subnet }
 
@@ -339,7 +339,7 @@ resources:
         str_replace:
           template: openshift-ansible-cluster_id-api-lb-listener
           params:
-            cluster_id: {{ openshift_openstack_stack_name }}
+            cluster_id: {{ openshift_openstack_full_dns_domain }}
       loadbalancer: { get_resource: api_lb }
       protocol: HTTPS
       protocol_port: 443
@@ -351,7 +351,7 @@ resources:
         str_replace:
           template: openshift-ansible-cluster_id-api-lb-pool
           params:
-            cluster_id: {{ openshift_openstack_stack_name }}
+            cluster_id: {{ openshift_openstack_full_dns_domain }}
       protocol: HTTPS
       lb_algorithm: ROUND_ROBIN
       listener: { get_resource: api_lb_listener }
@@ -363,8 +363,12 @@ resources:
         str_replace:
           template: openshift-ansible-cluster_id-pod-net
           params:
+<<<<<<< HEAD
             cluster_id: {{ openshift_openstack_stack_name }}
 >>>>>>> Kuryr var generation in OSt dynamic inventory
+=======
+            cluster_id: {{ openshift_openstack_full_dns_domain }}
+>>>>>>> Fix the DNS server name issue for OpenStack
 
   pod_subnet:
     type: OS::Neutron::Subnet
@@ -385,10 +389,14 @@ resources:
           template: openshift-ansible-cluster_id-pod-subnet
           params:
 <<<<<<< HEAD
+<<<<<<< HEAD
             cluster_id: {{ openshift_openstack_full_dns_domain }}
 =======
             cluster_id: {{ openshift_openstack_stack_name }}
 >>>>>>> Kuryr var generation in OSt dynamic inventory
+=======
+            cluster_id: {{ openshift_openstack_full_dns_domain }}
+>>>>>>> Fix the DNS server name issue for OpenStack
       dns_nameservers:
 {% for nameserver in openshift_openstack_dns_nameservers %}
         - {{ nameserver }}
@@ -402,10 +410,14 @@ resources:
           template: openshift-ansible-cluster_id-service-net
           params:
 <<<<<<< HEAD
+<<<<<<< HEAD
             cluster_id: {{ openshift_openstack_full_dns_domain }}
 =======
             cluster_id: {{ openshift_openstack_stack_name }}
 >>>>>>> Kuryr var generation in OSt dynamic inventory
+=======
+            cluster_id: {{ openshift_openstack_full_dns_domain }}
+>>>>>>> Fix the DNS server name issue for OpenStack
 
   service_subnet:
     type: OS::Neutron::Subnet
@@ -422,6 +434,7 @@ resources:
           template: openshift-ansible-cluster_id-service-subnet
           params:
 <<<<<<< HEAD
+<<<<<<< HEAD
             cluster_id: {{ openshift_openstack_full_dns_domain }}
 
 {% endif %}
@@ -429,6 +442,9 @@ resources:
 {% if not openshift_openstack_node_subnet_name %}
 =======
             cluster_id: {{ openshift_openstack_stack_name }}
+=======
+            cluster_id: {{ openshift_openstack_full_dns_domain }}
+>>>>>>> Fix the DNS server name issue for OpenStack
 
 {% endif %}
 
@@ -441,7 +457,10 @@ resources:
           template: openshift-ansible-cluster_id-net
           params:
             cluster_id: {{ openshift_openstack_full_dns_domain }}
+<<<<<<< HEAD
 {% endif %}
+=======
+>>>>>>> Fix the DNS server name issue for OpenStack
 
 {% if not openshift_openstack_node_subnet_name %}
   subnet:
@@ -551,7 +570,7 @@ resources:
           str_replace:
             template: openshift-ansible-cluster_id-service-subnet-router-port
             params:
-              cluster_id: {{ openshift_openstack_stack_name }}
+              cluster_id: {{ openshift_openstack_full_dns_domain }}
 
   service_subnet_interface:
     type: OS::Neutron::RouterInterface
@@ -585,6 +604,7 @@ resources:
           template: Basic ssh/icmp security group for cluster_id OpenShift cluster
           params:
             cluster_id: {{ openshift_openstack_full_dns_domain }}
+<<<<<<< HEAD
       rules: {{ openshift_openstack_common_secgroup_rules|to_json }}
 
 {% if openshift_use_kuryr|default(false)|bool %}
@@ -597,6 +617,8 @@ resources:
           params:
             cluster_id: {{ openshift_openstack_full_dns_domain }}
       description: Give services and nodes access to the pods
+=======
+>>>>>>> Fix the DNS server name issue for OpenStack
       rules:
       - ethertype: IPv4
         remote_ip_prefix: {{ openshift_openstack_kuryr_service_subnet_cidr }}
@@ -616,7 +638,7 @@ resources:
         str_replace:
           template: openshift-ansible-cluster_id-pod-service-secgrp
           params:
-            cluster_id: {{ openshift_openstack_stack_name }}
+            cluster_id: {{ openshift_openstack_full_dns_domain }}
       description: Give services and nodes access to the pods
       rules:
       - ethertype: IPv4
@@ -668,7 +690,57 @@ resources:
           template: Security group for cluster_id OpenShift cluster master
           params:
             cluster_id: {{ openshift_openstack_full_dns_domain }}
+<<<<<<< HEAD
       rules: {{ openshift_openstack_master_secgroup_rules|to_json }}
+=======
+      rules:
+        - direction: ingress
+          protocol: tcp
+          port_range_min: 4001
+          port_range_max: 4001
+        - direction: ingress
+          protocol: tcp
+          port_range_min: {{ openshift_master_api_port|default(8443) }}
+          port_range_max: {{ openshift_master_api_port|default(8443) }}
+        - direction: ingress
+          protocol: tcp
+          port_range_min: {{ openshift_master_console_port|default(8443) }}
+          port_range_max: {{ openshift_master_console_port|default(8443) }}
+        - direction: ingress
+          protocol: tcp
+          port_range_min: 8053
+          port_range_max: 8053
+        - direction: ingress
+          protocol: udp
+          port_range_min: 8053
+          port_range_max: 8053
+        - direction: ingress
+          protocol: tcp
+          port_range_min: 24224
+          port_range_max: 24224
+        - direction: ingress
+          protocol: udp
+          port_range_min: 24224
+          port_range_max: 24224
+        - direction: ingress
+          protocol: tcp
+          port_range_min: 2224
+          port_range_max: 2224
+        - direction: ingress
+          protocol: udp
+          port_range_min: 5404
+          port_range_max: 5405
+        - direction: ingress
+          protocol: tcp
+          port_range_min: 9090
+          port_range_max: 9090
+{% if openshift_use_flannel|default(False)|bool %}
+        - direction: ingress
+          protocol: tcp
+          port_range_min: 2379
+          port_range_max: 2379
+{% endif %}
+>>>>>>> Fix the DNS server name issue for OpenStack
 
   etcd-secgrp:
     type: OS::Neutron::SecurityGroup
@@ -683,7 +755,22 @@ resources:
           template: Security group for cluster_id etcd cluster
           params:
             cluster_id: {{ openshift_openstack_full_dns_domain }}
+<<<<<<< HEAD
       rules: {{ openshift_openstack_etcd_secgroup_rules|to_json }}
+=======
+      rules:
+        - direction: ingress
+          protocol: tcp
+          port_range_min: 2379
+          port_range_max: 2379
+          remote_mode: remote_group_id
+          remote_group_id: { get_resource: master-secgrp }
+        - direction: ingress
+          protocol: tcp
+          port_range_min: 2380
+          port_range_max: 2380
+          remote_mode: remote_group_id
+>>>>>>> Fix the DNS server name issue for OpenStack
 
   node-secgrp:
     type: OS::Neutron::SecurityGroup
@@ -698,7 +785,51 @@ resources:
           template: Security group for cluster_id OpenShift cluster nodes
           params:
             cluster_id: {{ openshift_openstack_full_dns_domain }}
+<<<<<<< HEAD
       rules: {{ openshift_openstack_node_secgroup_rules|to_json }}
+=======
+      rules:
+        # NOTE(shadower): the 53 rules are needed for Kuryr
+        - direction: ingress
+          protocol: tcp
+          port_range_min: 53
+          port_range_max: 53
+        - direction: ingress
+          protocol: udp
+          port_range_min: 53
+          port_range_max: 53
+        - direction: ingress
+          protocol: tcp
+          port_range_min: 10250
+          port_range_max: 10250
+          remote_mode: remote_group_id
+        - direction: ingress
+          protocol: tcp
+          port_range_min: 10255
+          port_range_max: 10255
+          remote_mode: remote_group_id
+        - direction: ingress
+          protocol: udp
+          port_range_min: 10255
+          port_range_max: 10255
+          remote_mode: remote_group_id
+        - direction: ingress
+          protocol: udp
+          port_range_min: 4789
+          port_range_max: 4789
+          remote_mode: remote_group_id
+        - direction: ingress
+          protocol: tcp
+          port_range_min: 30000
+          port_range_max: 32767
+          remote_ip_prefix: {{ openshift_openstack_node_ingress_cidr }}
+        - direction: ingress
+          protocol: tcp
+          port_range_min: 30000
+          port_range_max: 32767
+          remote_ip_prefix: "{{ openshift_openstack_subnet_cidr }}"
+{% endif %}
+>>>>>>> Fix the DNS server name issue for OpenStack
 
   infra-secgrp:
     type: OS::Neutron::SecurityGroup
@@ -713,9 +844,27 @@ resources:
           template: Security group for cluster_id OpenShift infrastructure cluster nodes
           params:
 <<<<<<< HEAD
+<<<<<<< HEAD
             cluster_id: {{ openshift_openstack_full_dns_domain }}
       rules: {{ openshift_openstack_infra_secgroup_rules|to_json }}
   {% if openshift_openstack_num_cns > 0 %}
+=======
+            cluster_id: {{ openshift_openstack_full_dns_domain }}
+      rules:
+        - direction: ingress
+          protocol: tcp
+          port_range_min: 80
+          port_range_max: 80
+        - direction: ingress
+          protocol: tcp
+          port_range_min: 443
+          port_range_max: 443
+        - direction: ingress
+          protocol: tcp
+          port_range_min: 1936
+          port_range_max: 1936
+
+>>>>>>> Fix the DNS server name issue for OpenStack
   cns-secgrp:
     type: OS::Neutron::SecurityGroup
     properties:
@@ -729,12 +878,15 @@ resources:
           template: Security group for cluster_id OpenShift cns cluster nodes
           params:
             cluster_id: {{ openshift_openstack_full_dns_domain }}
+<<<<<<< HEAD
       rules: {{ openshift_openstack_cns_secgroup_rules|to_json }}
   {% endif %}
 {% endif %}
 
 =======
             cluster_id: {{ openshift_openstack_stack_name }}
+=======
+>>>>>>> Fix the DNS server name issue for OpenStack
       rules:
         - direction: ingress
           protocol: tcp
@@ -775,8 +927,13 @@ resources:
             str_replace:
               template: hostname-%index%domain_suffix
               params:
+<<<<<<< HEAD
                 hostname: {{ openshift_openstack_etcd_hostname }}
                 domain_suffix: {{ l_hostname_domain_suffix }}
+=======
+                cluster_id: {{ openshift_openstack_full_dns_domain }}
+                k8s_type: {{ openshift_openstack_etcd_hostname }}
+>>>>>>> Fix the DNS server name issue for OpenStack
           cluster_env: {{ openshift_openstack_public_dns_domain }}
           cluster_id:  {{ openshift_openstack_full_dns_domain }}
           group:
@@ -860,8 +1017,13 @@ resources:
             str_replace:
               template: hostname-%index%domain_suffix
               params:
+<<<<<<< HEAD
                 hostname: {{ openshift_openstack_lb_hostname }}
                 domain_suffix: {{ l_hostname_domain_suffix }}
+=======
+                cluster_id: {{ openshift_openstack_full_dns_domain }}
+                k8s_type: {{ openshift_openstack_lb_hostname }}
+>>>>>>> Fix the DNS server name issue for OpenStack
           cluster_env: {{ openshift_openstack_public_dns_domain }}
           cluster_id:  {{ openshift_openstack_full_dns_domain }}
           group:
@@ -929,8 +1091,13 @@ resources:
             str_replace:
               template: hostname-%index%domain_suffix
               params:
+<<<<<<< HEAD
                 hostname: {{ openshift_openstack_master_hostname }}
                 domain_suffix: {{ l_hostname_domain_suffix }}
+=======
+                cluster_id: {{ openshift_openstack_full_dns_domain }}
+                k8s_type: {{ openshift_openstack_master_hostname }}
+>>>>>>> Fix the DNS server name issue for OpenStack
           cluster_env: {{ openshift_openstack_public_dns_domain }}
           cluster_id:  {{ openshift_openstack_full_dns_domain }}
           group:
@@ -1025,8 +1192,13 @@ resources:
             str_replace:
               template: hostname-%index%domain_suffix
               params:
+<<<<<<< HEAD
                 hostname: {{ openshift_openstack_node_hostname }}
                 domain_suffix: {{ l_hostname_domain_suffix }}
+=======
+                cluster_id: {{ openshift_openstack_full_dns_domain }}
+                sub_type_k8s_type: {{ openshift_openstack_node_hostname }}
+>>>>>>> Fix the DNS server name issue for OpenStack
           cluster_env: {{ openshift_openstack_public_dns_domain }}
           cluster_id:  {{ openshift_openstack_full_dns_domain }}
           group:
@@ -1102,8 +1274,13 @@ resources:
             str_replace:
               template: hostname-%index%domain_suffix
               params:
+<<<<<<< HEAD
                 hostname: {{ openshift_openstack_infra_hostname }}
                 domain_suffix: {{ l_hostname_domain_suffix }}
+=======
+                cluster_id: {{ openshift_openstack_full_dns_domain }}
+                sub_type_k8s_type: {{ openshift_openstack_infra_hostname }}
+>>>>>>> Fix the DNS server name issue for OpenStack
           cluster_env: {{ openshift_openstack_public_dns_domain }}
           cluster_id:  {{ openshift_openstack_full_dns_domain }}
           group:
@@ -1194,8 +1371,13 @@ resources:
             str_replace:
               template: hostname-%index%domain_suffix
               params:
+<<<<<<< HEAD
                 hostname: {{ openshift_openstack_cns_hostname }}
                 domain_suffix: {{ l_hostname_domain_suffix }}
+=======
+                cluster_id: {{ openshift_openstack_full_dns_domain }}
+                sub_type_k8s_type: {{ openshift_openstack_cns_hostname }}
+>>>>>>> Fix the DNS server name issue for OpenStack
           cluster_env: {{ openshift_openstack_public_dns_domain }}
           cluster_id:  {{ openshift_openstack_full_dns_domain }}
           group:
