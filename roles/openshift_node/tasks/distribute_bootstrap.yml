@@ -1,4 +1,12 @@
 ---
+<<<<<<< HEAD
+=======
+- name: Gather node information
+  openshift_facts:
+    role: node
+    local_facts:
+      bootstrapped: true
+>>>>>>> Switch the master to always run with bootstrapping on
 
 - name: Copy master bootstrap config locally
   slurp:
@@ -23,8 +31,13 @@
     name: "{{ openshift_service_type }}-node"
     state: restarted
     enabled: yes
+<<<<<<< HEAD
     no_block: yes
   register: node_start
+=======
+  register: node_start
+  ignore_errors: yes
+>>>>>>> Switch the master to always run with bootstrapping on
 
 - when: node_start is failed
   block:

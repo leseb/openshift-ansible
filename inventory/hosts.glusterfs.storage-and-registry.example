@@ -44,9 +44,15 @@ node1   openshift_node_group_name="node-config-compute"
 node2   openshift_node_group_name="node-config-compute"
 # A hosted registry, by default, will only be deployed on nodes labeled
 # "node-role.kubernetes.io/infra=true".
+<<<<<<< HEAD
 node3   openshift_node_group_name="node-config-infra"
 node4   openshift_node_group_name="node-config-infra"
 node5   openshift_node_group_name="node-config-infra"
+=======
+node3   openshift_node_labels="{'region': 'infra'}" openshift_schedulable=True
+node4   openshift_node_labels="{'region': 'infra'}" openshift_schedulable=True
+node5   openshift_node_labels="{'region': 'infra'}" openshift_schedulable=True
+>>>>>>> Switch the master to always run with bootstrapping on
 
 [etcd]
 master

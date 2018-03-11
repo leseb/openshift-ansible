@@ -1,8 +1,12 @@
 ---
 - import_role:
 <<<<<<< HEAD
+<<<<<<< HEAD
     name: openshift_control_plane
 =======
     name: openshift_master
 >>>>>>> Migrate to import_role for static role inclusion
+=======
+    name: openshift_control_plane
+>>>>>>> Switch the master to always run with bootstrapping on
     tasks_from: restart.yml

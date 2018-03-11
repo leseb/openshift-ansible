@@ -1,5 +1,6 @@
 ---
 <<<<<<< HEAD
+<<<<<<< HEAD
 # This role is meant to be used with import_role and tasks_from.
 =======
 - name: Set hostname and ip facts
@@ -142,3 +143,7 @@
 =======
     etcd_service_status_changed: "{{ start_result is changed }}"
 >>>>>>> Deprecate using Ansible tests as filters
+=======
+- name: Configure etcd with static pods
+  import_tasks: static.yml
+>>>>>>> Switch the master to always run with bootstrapping on

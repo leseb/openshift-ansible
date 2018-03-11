@@ -1,9 +1,16 @@
 ---
 # Upgrade predicates
+<<<<<<< HEAD
 - import_tasks: upgrade_predicates.yml
 
 # Upgrade priorities
 - import_tasks: upgrade_priorities.yml
+=======
+- include_tasks: upgrade_predicates.yml
+
+# Upgrade priorities
+- include_tasks: upgrade_priorities.yml
+>>>>>>> Switch the master to always run with bootstrapping on
 
 # Update scheduler
 - name: Update scheduler config

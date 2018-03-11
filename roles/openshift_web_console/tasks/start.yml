@@ -1,4 +1,5 @@
 ---
+<<<<<<< HEAD
 - name: Verify that the console is running
   oc_obj:
     namespace: openshift-web-console
@@ -9,6 +10,17 @@
   until:
   - console_deployment.results.results[0].status.readyReplicas is defined
   - console_deployment.results.results[0].status.readyReplicas > 0
+=======
+- name: Verify that the web console is running
+  command: >
+    curl -k https://webconsole.openshift-web-console.svc/healthz
+  args:
+    # Disables the following warning:
+    # Consider using get_url or uri module rather than running curl
+    warn: no
+  register: endpoint_health
+  until: endpoint_health.stdout == 'ok'
+>>>>>>> Switch the master to always run with bootstrapping on
   retries: 60
   delay: 10
   changed_when: false
@@ -16,38 +28,62 @@
   ignore_errors: yes
 
 # Log the result of `oc status`, `oc get pods`, `oc get events`, and `oc logs deployment/webconsole` for troubleshooting failures.
+<<<<<<< HEAD
 - when: (console_deployment.results.results[0].status.readyReplicas is not defined) or (console_deployment.results.results[0].status.readyReplicas == 0)
   block:
   - name: Check status in the openshift-web-console namespace
     command: >
       {{ openshift_client_binary }} status --config={{ openshift.common.config_base }}/master/admin.kubeconfig -n openshift-web-console
+=======
+- when: endpoint_health.stdout != 'ok'
+  block:
+  - name: Check status in the openshift-web-console namespace
+    command: >
+      {{ openshift_client_binary }} status --config={{ mktemp.stdout }}/admin.kubeconfig -n openshift-web-console
+>>>>>>> Switch the master to always run with bootstrapping on
     register: endpoint_status
     ignore_errors: true
   - debug:
       msg: "{{ endpoint_status.stdout_lines }}"
   - name: Get pods in the openshift-web-console namespace
     command: >
+<<<<<<< HEAD
       {{ openshift_client_binary }} get pods --config={{ openshift.common.config_base }}/master/admin.kubeconfig -n openshift-web-console -o wide
+=======
+      {{ openshift_client_binary }} get pods --config={{ mktemp.stdout }}/admin.kubeconfig -n openshift-web-console -o wide
+>>>>>>> Switch the master to always run with bootstrapping on
     register: endpoint_pods
     ignore_errors: true
   - debug:
       msg: "{{ endpoint_pods.stdout_lines }}"
   - name: Get events in the openshift-web-console namespace
     command: >
+<<<<<<< HEAD
       {{ openshift_client_binary }} get events --config={{ openshift.common.config_base }}/master/admin.kubeconfig -n openshift-web-console
+=======
+      {{ openshift_client_binary }} get events --config={{ mktemp.stdout }}/admin.kubeconfig -n openshift-web-console
+>>>>>>> Switch the master to always run with bootstrapping on
     register: endpoint_events
     ignore_errors: true
   - debug:
       msg: "{{ endpoint_events.stdout_lines }}"
   - name: Get console pod logs
     command: >
+<<<<<<< HEAD
       {{ openshift_client_binary }} logs deployment/webconsole --tail=50 --config={{ openshift.common.config_base }}/master/admin.kubeconfig -n openshift-web-console
+=======
+      {{ openshift_client_binary }} logs deployment/webconsole --tail=50 --config={{ mktemp.stdout }}/admin.kubeconfig -n openshift-web-console
+>>>>>>> Switch the master to always run with bootstrapping on
     register: endpoint_log
     ignore_errors: true
   - debug:
       msg: "{{ endpoint_log.stdout_lines }}"
 
+<<<<<<< HEAD
 - when: (console_deployment.results.results[0].status.readyReplicas is not defined) or (console_deployment.results.results[0].status.readyReplicas == 0)
+=======
+- when: endpoint_health.stdout != 'ok'
+>>>>>>> Switch the master to always run with bootstrapping on
   block:
   - name: Report console errors
     fail:

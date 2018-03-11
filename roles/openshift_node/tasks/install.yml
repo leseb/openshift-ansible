@@ -6,6 +6,7 @@
     state: present
   register: result
   until: result is succeeded
+<<<<<<< HEAD
   vars:
     pkg_list:
     - "{{ openshift_service_type }}-node{{ (openshift_pkg_version | default('')) | lib_utils_oo_image_tag_to_rpm_version(include_dash=True) }}"
@@ -47,3 +48,12 @@
     register: pull_result
     changed_when: "'Downloaded newer image' in pull_result.stdout"
 >>>>>>> retry package operations
+=======
+  with_items:
+  - name: "{{ openshift_service_type }}-node{{ (openshift_pkg_version | default('')) | lib_utils_oo_image_tag_to_rpm_version(include_dash=True) }}"
+  - name: "{{ openshift_service_type }}-clients{{ (openshift_pkg_version | default('')) | lib_utils_oo_image_tag_to_rpm_version(include_dash=True) }}"
+  - name: "conntrack-tools"
+  when:
+  - not openshift_is_containerized | bool
+  - item['install'] | default(True) | bool
+>>>>>>> Switch the master to always run with bootstrapping on

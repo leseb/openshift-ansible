@@ -4,6 +4,9 @@
   command: >
     atomic pull --storage=ostree {{ 'docker:' if system_images_registry == 'docker' else system_images_registry + '/' }}{{ openshift.node.node_system_image }}:{{ openshift_image_tag }}
   register: pull_result
+  retries: 3
+  delay: 5
+  until: pull_result.rc == 0
   changed_when: "'Pulling layer' in pull_result.stdout"
 
 - name: Install or Update node system container
@@ -15,3 +18,32 @@
     - "DOCKER_SERVICE={{ openshift_docker_service_name }}.service"
     - "MASTER_SERVICE={{ openshift_service_type }}.service"
     state: latest
+<<<<<<< HEAD
+=======
+  vars:
+    # We need to evaluate some variables here to ensure
+    # l_bind_docker_reg_auth is evaluated after registry_auth.yml has been
+    # processed.
+
+    # Determine if we want to include auth credentials mount.
+    l_node_syscon_auth_mounts_l: "{{ l_bind_docker_reg_auth | ternary(openshift_node_syscon_auth_mounts_l,[]) }}"
+
+    # Join any user-provided mounts and auth_mounts into a combined list.
+    l_node_syscon_add_mounts_l: "{{ openshift_node_syscon_add_mounts_l | union(l_node_syscon_auth_mounts_l) }}"
+
+    # We must prepend a ',' here to ensure the value is inserted properly into an
+    # existing json list in the container's config.json
+    # lib_utils_oo_l_of_d_to_csv is a custom filter plugin in roles/lib_utils/oo_filters.py
+    l_node_syscon_add_mounts: ",{{ l_node_syscon_add_mounts_l | lib_utils_oo_l_of_d_to_csv }}"
+    # if we have just a ',' then both mount lists were empty, we don't want to add
+    # anything to config.json
+    l_node_syscon_add_mounts2: "{{ (l_node_syscon_add_mounts != ',') | bool | ternary(l_node_syscon_add_mounts,'') }}"
+
+# TODO: network manager on RHEL is failing to execute 99-origin-dns.sh with signal 13, an immediate
+# restart seems to allow the job to configure. Only occurs with system containers.
+- name: Restart network manager to ensure networking configuration is in place
+  systemd:
+    name: NetworkManager
+    enabled: yes
+    state: restarted
+>>>>>>> Switch the master to always run with bootstrapping on

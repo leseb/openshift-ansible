@@ -9,7 +9,13 @@
 - include_tasks: "upgrade/{{ master_config_hook }}"
   when: master_config_hook is defined
 
+<<<<<<< HEAD
 - import_tasks: set_loopback_context.yml
+=======
+- include_tasks: systemd_units.yml
+
+- include_tasks: set_loopback_context.yml
+>>>>>>> Switch the master to always run with bootstrapping on
 
 - name: Check for ca-bundle.crt
   stat:
@@ -61,6 +67,7 @@
     src: "{{ openshift.common.config_base }}/master/master-config.yaml"
     key: 'projectConfig.defaultNodeSelector'
     value: '{{ hostvars[groups.oo_first_master.0].l_osm_default_node_selector }}'
+<<<<<<< HEAD
   when: openshift_upgrade_target is version('3.9', '>=')
 
 - name: Remove use of pod presets from master config
@@ -97,3 +104,6 @@
     key: "kubernetesMasterConfig.controllerArguments.pv-recycler-pod-template-filepath-hostpath"
     value:
     - /etc/origin/master/recycler_pod.yaml
+=======
+  when: openshift_upgrade_target | version_compare('3.9', '>=')
+>>>>>>> Switch the master to always run with bootstrapping on

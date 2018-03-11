@@ -135,6 +135,10 @@
   - role: openshift_master_facts
   post_tasks:
   - import_role:
+<<<<<<< HEAD
       name: openshift_master
 >>>>>>> Migrate to import_role for static role inclusion
+=======
+      name: openshift_control_plane
+>>>>>>> Switch the master to always run with bootstrapping on
       tasks_from: update_etcd_client_urls.yml

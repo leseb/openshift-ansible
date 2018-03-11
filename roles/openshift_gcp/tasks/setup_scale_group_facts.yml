@@ -33,6 +33,13 @@
 - name: Add masters to requisite groups
   add_host:
     name: "{{ hostvars[item].gce_name }}"
+<<<<<<< HEAD
     groups: masters, etcd
     openshift_node_group_name: "{{ openshift_gcp_node_group_mapping['masters'] }}"
   with_items: "{{ groups['tag_ocp-master'] }}"
+=======
+    groups: bootstrap_nodes
+    openshift_node_bootstrap: True
+  with_items: "{{ groups['tag_ocp-node'] | default([]) | intersect(groups['tag_ocp-bootstrap'] | default([])) }}"
+  when: not (openshift_node_bootstrap | default(True))
+>>>>>>> Switch the master to always run with bootstrapping on

@@ -11,8 +11,11 @@
 - name: run the init
   import_playbook: ../../init/main.yml
 
+<<<<<<< HEAD
 - import_playbook: ../../openshift-checks/private/install.yml
 
+=======
+>>>>>>> Switch the master to always run with bootstrapping on
 - name: ensure master nodes are ready for bootstrapping
   import_playbook: ../../openshift-node/private/bootstrap.yml
 
@@ -21,6 +24,9 @@
 
 - name: run the GCP specific post steps
   import_playbook: install_gcp.yml
+
+- name: configure any nodes that aren't bootstrapped
+  import_playbook: ../../openshift-node/private/config.yml
 
 - name: install components
   import_playbook: ../../common/private/components.yml

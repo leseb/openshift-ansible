@@ -2,6 +2,14 @@ kind: MasterConfig
 apiVersion: v1
 admissionConfig:
   pluginConfig:{{ openshift.master.admission_plugin_config | default(None) | lib_utils_to_padded_yaml(level=2) }}
+<<<<<<< HEAD
+=======
+    PodPreset:
+      configuration:
+        kind: DefaultAdmissionConfig
+        apiVersion: v1
+        disable: false
+>>>>>>> Switch the master to always run with bootstrapping on
 aggregatorConfig:
   proxyClientInfo:
     certFile: aggregator-front-proxy.crt

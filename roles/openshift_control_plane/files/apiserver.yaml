@@ -14,7 +14,11 @@ spec:
   priorityClassName: system-node-critical
   containers:
   - name: api
+<<<<<<< HEAD
     image: docker.io/openshift/origin:v3.11.0
+=======
+    image: openshift/origin:v3.10.0
+>>>>>>> Switch the master to always run with bootstrapping on
     command: ["/bin/bash", "-c"]
     args:
     - |
@@ -42,14 +46,20 @@ spec:
         port: 8443
         path: healthz
       initialDelaySeconds: 45
+<<<<<<< HEAD
       timeoutSeconds: 10
+=======
+>>>>>>> Switch the master to always run with bootstrapping on
     readinessProbe:
       httpGet:
         scheme: HTTPS
         port: 8443
         path: healthz/ready
       initialDelaySeconds: 10
+<<<<<<< HEAD
       timeoutSeconds: 10
+=======
+>>>>>>> Switch the master to always run with bootstrapping on
   volumes:
   - name: master-config
     hostPath:

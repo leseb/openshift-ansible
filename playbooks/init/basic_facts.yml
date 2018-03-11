@@ -29,6 +29,7 @@
     - openshift_deployment_type is undefined
     - deployment_type is defined
 
+<<<<<<< HEAD
 - name: Retrieve existing master configs and validate
   hosts: oo_masters_to_config
   gather_facts: no
@@ -39,6 +40,26 @@
   - import_role:
       name: openshift_control_plane
       tasks_from: check_existing_config.yml
+=======
+  - name: check for node already bootstrapped
+    stat:
+      path: "/etc/origin/node/bootstrap-node-config.yaml"
+    register: bootstrap_node_config_path_check
+  - name: initialize_facts set fact openshift_is_bootstrapped
+    set_fact:
+      openshift_is_bootstrapped: "{{ bootstrap_node_config_path_check.stat.exists }}"
+
+  - name: initialize_facts set fact openshift_is_atomic and openshift_is_containerized
+    set_fact:
+      openshift_is_atomic: "{{ ostree_booted.stat.exists }}"
+      openshift_is_containerized: "{{ ostree_booted.stat.exists or (containerized | default(false) | bool) }}"
+
+  - name: Set use_crio to True if cri-o rpm is requested
+    set_fact:
+      openshift_use_crio: True
+    when:
+    - openshift_crio_use_rpm | default(False) | bool
+>>>>>>> Switch the master to always run with bootstrapping on
 
   - when:
     - l_existing_config_master_config is defined

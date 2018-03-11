@@ -15,7 +15,11 @@
     when: openshift_node_reboot_instance_before_cleanup | default(false)
 
 - name: Configure nodes
+<<<<<<< HEAD
   hosts: oo_nodes_to_config
+=======
+  hosts: oo_nodes_to_config:!oo_exclude_nodes_to_config
+>>>>>>> Switch the master to always run with bootstrapping on
   tasks:
   - name: Set gquota for slash filesystem
     import_role:

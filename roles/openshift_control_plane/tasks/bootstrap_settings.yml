@@ -9,4 +9,10 @@
     - key: kubernetesMasterConfig.controllerArguments.cluster-signing-key-file
       value:
       - /etc/origin/master/ca.key
+<<<<<<< HEAD:roles/openshift_control_plane/tasks/bootstrap_settings.yml
   notify: restart master
+=======
+  notify:
+  - restart master controllers
+  - restart master api
+>>>>>>> Switch the master to always run with bootstrapping on:roles/openshift_control_plane/tasks/bootstrap_settings.yml

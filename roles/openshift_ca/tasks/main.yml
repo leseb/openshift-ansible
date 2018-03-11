@@ -57,9 +57,12 @@
 - name: Determine if front-proxy CA must be created
   stat:
     path: "{{ openshift_ca_config_dir }}/{{ item }}"
+<<<<<<< HEAD
     get_checksum: false
     get_attributes: false
     get_mime: false
+=======
+>>>>>>> Switch the master to always run with bootstrapping on
   register: g_master_front_proxy_ca_stat_result
   with_items:
   - front-proxy-ca.crt

@@ -9,13 +9,21 @@
   template:
     dest: "/etc/systemd/system/{{ openshift_service_type }}-node.service"
 <<<<<<< HEAD
+<<<<<<< HEAD
     src: "node.service.j2"
 =======
     src: "{{ openshift.common.is_containerized | bool | ternary('openshift.docker.node.service', 'node.service.j2') }}"
+=======
+    src: "node.service.j2"
+>>>>>>> Switch the master to always run with bootstrapping on
   when: not l_is_node_system_container | bool
 >>>>>>> Remove openshift.common.service_type
   notify:
   - reload systemd units
+<<<<<<< HEAD
+=======
+  - restart node
+>>>>>>> Switch the master to always run with bootstrapping on
 
 - import_tasks: config/configure-node-settings.yml
 - import_tasks: configure-proxy-settings.yml

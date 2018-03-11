@@ -163,6 +163,7 @@
     enabled: yes
   register: node_start
   ignore_errors: yes
+<<<<<<< HEAD
 
 - when: node_start is failed
   block:
@@ -186,6 +187,29 @@
   - "'results' in control_plane_pods"
   - "'results' in control_plane_pods.results"
   - control_plane_pods.results.results | length > 0
+=======
+
+- when: node_start is failed
+  block:
+  - name: Get node logs
+    command: journalctl --no-pager -n 300 -u {{ openshift_service_type }}-node
+    register: logs_node
+    ignore_errors: true
+  - debug:
+      msg: "{{ logs_node.stdout_lines }}"
+  - fail:
+      msg: Node start failed.
+
+- name: Verify that the control plane is running
+  command: >
+    curl -k {{ openshift.master.api_url }}/healthz/ready
+  args:
+    # Disables the following warning:
+    # Consider using get_url or uri module rather than running curl
+    warn: no
+  register: control_plane_health
+  until: control_plane_health.stdout == 'ok'
+>>>>>>> Switch the master to always run with bootstrapping on
   retries: 60
   delay: 5
   with_items:

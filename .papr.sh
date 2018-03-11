@@ -65,9 +65,12 @@ upload_journals() {
 
 trap upload_journals ERR
 
+<<<<<<< HEAD
 # run the prerequisites play
 ansible-playbook -vvv -i $PAPR_INVENTORY $PAPR_EXTRAVARS playbooks/prerequisites.yml
 
+=======
+>>>>>>> Switch the master to always run with bootstrapping on
 # run the actual installer
 ansible-playbook -vvv -i $PAPR_INVENTORY $PAPR_EXTRAVARS playbooks/deploy_cluster.yml
 

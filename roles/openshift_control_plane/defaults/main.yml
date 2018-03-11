@@ -29,6 +29,29 @@ l_osm_disabled_features_list:
 - S2IBuilder
 - WebConsole
 
+<<<<<<< HEAD
+=======
+l_osm_id_providers_dict:
+  openshift-enterprise:
+  - name: 'deny_all'
+    challenge: True
+    login: True
+    kind: 'DenyAllPasswordIdentityProvider'
+  origin:
+  - name: 'allow_all'
+    challenge: True
+    login: True
+    kind: 'AllowAllPasswordIdentityProvider'
+
+openshift_master_identity_providers: "{{ l_osm_id_providers_dict[openshift_deployment_type] }}"
+
+l_osm_disabled_features: "{{ openshift_deployment_subtype == 'registry' | bool }}"
+l_osm_disabled_features_list:
+- Builder
+- S2IBuilder
+- WebConsole
+
+>>>>>>> Switch the master to always run with bootstrapping on
 
 openshift_master_dns_port: 8053
 osm_project_request_template: ''
@@ -115,6 +138,12 @@ openshift_master_use_persistentlocalvolumes: "{{ openshift_persistentlocalstorag
 openshift_master_image_config_latest_default: "{{ openshift_image_config_latest | default(False) }}"
 openshift_master_image_config_latest: "{{ openshift_master_image_config_latest_default }}"
 
+<<<<<<< HEAD
+=======
+openshift_master_config_dir_default: "{{ openshift.common.config_base ~ '/master' if openshift is defined and 'common' in openshift else '/etc/origin/master' }}"
+openshift_master_config_dir: "{{ openshift_master_config_dir_default }}"
+
+>>>>>>> Switch the master to always run with bootstrapping on
 openshift_master_csr_sa: node-bootstrapper
 openshift_master_csr_namespace: openshift-infra
 

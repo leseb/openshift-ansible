@@ -133,6 +133,7 @@
 
   - import_role:
 <<<<<<< HEAD
+<<<<<<< HEAD
       name: openshift_control_plane
       tasks_from: upgrade.yml
 
@@ -145,11 +146,14 @@
     - openshift_cloudprovider_kind == 'vsphere'
 =======
       name: openshift_master
+=======
+      name: openshift_control_plane
+>>>>>>> Switch the master to always run with bootstrapping on
       tasks_from: upgrade.yml
 
   - name: update vsphere provider master config
     include_role:
-      name: openshift_master
+      name: openshift_control_plane
       tasks_from: update-vsphere
     when:
     - openshift_cloudprovider_kind is defined
@@ -158,8 +162,11 @@
 
   - name: Setup and enable bootstrapping options
     include_tasks: tasks/enable_bootstrap.yml
+<<<<<<< HEAD
     when: openshift_master_bootstrap_enabled | default(false) | bool
 >>>>>>> Move common master upgrade playbooks to openshift-master
+=======
+>>>>>>> Switch the master to always run with bootstrapping on
 
   # Run the upgrade hook prior to restarting services/system if defined:
   - debug: msg="Running master upgrade hook {{ openshift_master_upgrade_hook }}"

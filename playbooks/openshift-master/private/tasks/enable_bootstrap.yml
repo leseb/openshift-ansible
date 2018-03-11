@@ -2,19 +2,27 @@
 - name: Setup the master bootstrap settings
   import_role:
 <<<<<<< HEAD
+<<<<<<< HEAD
     name: openshift_control_plane
 =======
     name: openshift_master
 >>>>>>> Adding node autoapprover.
+=======
+    name: openshift_control_plane
+>>>>>>> Switch the master to always run with bootstrapping on
     tasks_from: bootstrap_settings.yml
 
 - name: Setup the bootstrap kubeconfig
   import_role:
 <<<<<<< HEAD
+<<<<<<< HEAD
     name: openshift_control_plane
     tasks_from: bootstrap.yml
 =======
     name: openshift_master
+=======
+    name: openshift_control_plane
+>>>>>>> Switch the master to always run with bootstrapping on
     tasks_from: bootstrap.yml
 
 - name: Setup the node group config maps
@@ -26,4 +34,9 @@
   import_role:
     name: openshift_bootstrap_autoapprover
   run_once: True
+<<<<<<< HEAD
 >>>>>>> Adding node autoapprover.
+=======
+  when:
+  - openshift_master_bootstrap_auto_approve | default(False) | bool
+>>>>>>> Switch the master to always run with bootstrapping on

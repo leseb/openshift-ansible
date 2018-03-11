@@ -390,7 +390,12 @@ debug_level=2
 #
 # An OpenShift router will be created during install if there are
 # nodes present with labels matching the default router selector,
+<<<<<<< HEAD
 # "node-role.kubernetes.io/infra=true".
+=======
+# "node-role.kubernetes.io/infra=true". Set openshift_node_labels per node as needed in
+# order to label nodes.
+>>>>>>> Switch the master to always run with bootstrapping on
 #
 # Example:
 # [nodes]
@@ -445,7 +450,12 @@ debug_level=2
 #
 # An OpenShift registry will be created during install if there are
 # nodes present with labels matching the default registry selector,
+<<<<<<< HEAD
 # "node-role.kubernetes.io/infra=true".
+=======
+# "node-role.kubernetes.io/infra=true". Set openshift_node_labels per node as needed in
+# order to label nodes.
+>>>>>>> Switch the master to always run with bootstrapping on
 #
 # Example:
 # [nodes]

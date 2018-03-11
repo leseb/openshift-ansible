@@ -1,6 +1,10 @@
 ---
 # TODO: abstract me into a relatively generic task
+<<<<<<< HEAD
 - name: Verify that the catalog api server is running
+=======
+- name: Verify that the web console is running
+>>>>>>> Switch the master to always run with bootstrapping on
   command: >
     curl -k https://apiserver.kube-service-catalog.svc/healthz
   args:
@@ -9,7 +13,11 @@
     warn: no
   register: endpoint_health
   until: endpoint_health.stdout == 'ok'
+<<<<<<< HEAD
   retries: "{{ openshift_service_catalog_retries }}"
+=======
+  retries: 60
+>>>>>>> Switch the master to always run with bootstrapping on
   delay: 10
   changed_when: false
   # Ignore errors so we can log troubleshooting info on failures.
@@ -41,7 +49,11 @@
       msg: "{{ endpoint_events.stdout_lines }}"
   - name: Get pod logs
     command: >
+<<<<<<< HEAD
       {{ openshift_client_binary }} logs daemonset/apiserver --tail=200 --config=/etc/origin/master/admin.kubeconfig -n kube-service-catalog
+=======
+      {{ openshift_client_binary }} logs daemonset/apiserver --tail=50 --config=/etc/origin/master/admin.kubeconfig -n kube-service-catalog
+>>>>>>> Switch the master to always run with bootstrapping on
     register: endpoint_log
     ignore_errors: true
   - debug:

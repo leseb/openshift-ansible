@@ -29,6 +29,12 @@ ocp-master
 ocp-master
 
 [nodes]
+<<<<<<< HEAD
 ocp-master openshift_schedulable=true openshift_node_group_name="node-config-master-infra"
 ocp-node1 openshift_node_group_name="node-config-infra" openshift_node_group_name="node-config-compute"
 ocp-node2 openshift_node_group_name="node-config-infra" openshift_node_group_name="node-config-compute"
+=======
+ocp-master openshift_schedulable=true openshift_node_labels="{'node-role.kubernetes.io/infra':'true'}"
+ocp-node1
+ocp-node2
+>>>>>>> Switch the master to always run with bootstrapping on

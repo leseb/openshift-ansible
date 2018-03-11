@@ -1,10 +1,10 @@
 ---
+# We exclude all nodes that have already been bootstrapped or have requested not to be bootstrapped
 - name: Evaluate node groups
   hosts: localhost
-  become: no
   connection: local
   tasks:
-  - name: Evaluate oo_exclude_nodes_to_config as all nodes that have already been bootstrapped
+  - name: Evaluate oo_exclude_nodes_to_config as all nodes that shouldn't be configured for bootstrapping
     add_host:
       name: "{{ item }}"
       groups: oo_exclude_nodes_to_config
@@ -12,14 +12,7 @@
       ansible_become: "{{ g_sudo | default(omit) }}"
     with_items: "{{ groups.oo_nodes_to_config | default([]) }}"
     when:
-    - hostvars[item].openshift is defined
-    - hostvars[item].openshift.common is defined
-<<<<<<< HEAD
-    - hostvars[item].openshift.common.is_containerized | bool
-    - (item in groups.oo_nodes_to_config and item in groups.oo_masters_to_config)
-=======
-    - hostvars[item].openshift_is_bootstrapped | bool
->>>>>>> Switch the master to always run with bootstrapping on
+    - (not (hostvars[item].openshift_node_bootstrap | default(True) | bool)) or (hostvars[item].openshift_is_bootstrapped | bool)
     changed_when: False
 
 - name: Disable excluders
