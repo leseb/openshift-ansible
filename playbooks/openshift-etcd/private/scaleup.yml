@@ -96,7 +96,11 @@
   hosts: oo_masters_to_config
   serial: 1
 <<<<<<< HEAD
+<<<<<<< HEAD
   tasks:
+=======
+  pre_tasks:
+>>>>>>> Remove etcd_hosts and etcd_urls from openshift_facts
   - set_fact:
       openshift_master_etcd_hosts: "{{ hostvars
                                        | lib_utils_oo_select_keys(groups['oo_etcd_to_config'] | union(groups['oo_new_etcd_to_config'] | default([]) ))
@@ -113,6 +117,7 @@
     vars:
       l_use_ssl: "{{ openshift_master_etcd_use_ssl | default(True) | bool}}"
 
+<<<<<<< HEAD
   - import_role:
       name: openshift_control_plane
 =======
@@ -124,6 +129,8 @@
                                      | lib_utils_oo_collect('openshift.common.hostname')
                                      | default(none, true) }}"
     openshift_master_etcd_port: "{{ (etcd_client_port | default('2379')) if (groups.oo_etcd_to_config is defined and groups.oo_etcd_to_config) else none }}"
+=======
+>>>>>>> Remove etcd_hosts and etcd_urls from openshift_facts
   roles:
   - role: openshift_master_facts
   post_tasks:

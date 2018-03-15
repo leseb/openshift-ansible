@@ -55,6 +55,7 @@
     - node
     - .config_managed
 
+<<<<<<< HEAD
   - set_fact:
       openshift_master_etcd_port: "{{ (etcd_client_port | default('2379')) if (groups.oo_etcd_to_config is defined and groups.oo_etcd_to_config) else none }}"
       openshift_master_etcd_hosts: "{{ hostvars
@@ -63,6 +64,8 @@
                                        | oo_collect('openshift.common.hostname')
                                        | default(none, true) }}"
 >>>>>>> Remove openshift.common.service_type
+=======
+>>>>>>> Remove etcd_hosts and etcd_urls from openshift_facts
   roles:
   - openshift_facts
   tasks:
@@ -102,6 +105,14 @@
 - name: Configure masters
   hosts: oo_masters_to_config
   any_errors_fatal: true
+<<<<<<< HEAD
+=======
+  vars:
+    openshift_master_count: "{{ openshift.master.master_count }}"
+    openshift_master_session_auth_secrets: "{{ hostvars[groups.oo_first_master.0].openshift.master.session_auth_secrets }}"
+    openshift_master_session_encryption_secrets: "{{ hostvars[groups.oo_first_master.0].openshift.master.session_encryption_secrets }}"
+    openshift_ca_host: "{{ groups.oo_first_master.0 }}"
+>>>>>>> Remove etcd_hosts and etcd_urls from openshift_facts
   pre_tasks:
   - name: Prepare the bootstrap node config on masters for self-hosting
     import_role:

@@ -38,6 +38,14 @@
       public_console_url: "{{ openshift_master_public_console_url | default(None) }}"
       logging_public_url: "{{ openshift_master_logging_public_url | default(None) }}"
       logout_url: "{{ openshift_master_logout_url | default(None) }}"
+<<<<<<< HEAD
+=======
+      extension_scripts: "{{ openshift_master_extension_scripts | default(None) }}"
+      extension_stylesheets: "{{ openshift_master_extension_stylesheets | default(None) }}"
+      extensions: "{{ openshift_master_extensions | default(None) }}"
+      embedded_kube: "{{ openshift_master_embedded_kube | default(None) }}"
+      embedded_dns: "{{ openshift_master_embedded_dns | default(None) }}"
+>>>>>>> Remove etcd_hosts and etcd_urls from openshift_facts
       bind_addr: "{{ openshift_master_bind_addr | default(None) }}"
       session_max_seconds: "{{ openshift_master_session_max_seconds | default(None) }}"
       session_name: "{{ openshift_master_session_name | default(None) }}"

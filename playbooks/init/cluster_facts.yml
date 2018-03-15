@@ -62,9 +62,12 @@
       role: node
       local_facts:
         sdn_mtu: "{{ openshift_node_sdn_mtu | default(None) }}"
+<<<<<<< HEAD
   - name: set_fact l_kubelet_node_name
     set_fact:
       l_kubelet_node_name: "{{ openshift_kubelet_name_override | default(openshift.node.nodename) }}"
+=======
+>>>>>>> Remove etcd_hosts and etcd_urls from openshift_facts
 
 - name: Initialize etcd host variables
   hosts: oo_masters_to_config
