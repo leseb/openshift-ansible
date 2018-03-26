@@ -5,7 +5,11 @@
 
 # NOTE: oc_adm_policy_user does not support -z (yet)
 - name: Add dockergc as privileged
+<<<<<<< HEAD
   command: "{{ openshift_client_binary }}  adm policy add-scc-to-user -z dockergc privileged"
+=======
+  shell: "{{ openshift_client_binary }}  adm policy add-scc-to-user -z dockergc privileged"
+>>>>>>> Master components should not have configurable labels
 #  oc_adm_policy_user:
 #    user: dockergc
 #    resource_kind: scc

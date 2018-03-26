@@ -1,5 +1,9 @@
 ---
 openshift_service_catalog_remove: false
+<<<<<<< HEAD
+=======
+openshift_service_catalog_async_bindings_enabled: false
+>>>>>>> Master components should not have configurable labels
 
 # Feature Gates
 openshift_service_catalog_async_bindings_enabled: true
