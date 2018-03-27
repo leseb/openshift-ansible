@@ -175,15 +175,21 @@
     delete_after: yes
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> catalog: create service and ssl certs for controller manager
 - name: Set Controller Manager service
   oc_service:
     name: controller-manager
     namespace: kube-service-catalog
     state: present
+<<<<<<< HEAD
     annotations:
       service.alpha.openshift.io/serving-cert-secret-name: controllermanager-ssl
       prometheus.io/scrape: "true"
       prometheus.io/scheme: https
+=======
+>>>>>>> catalog: create service and ssl certs for controller manager
     ports:
     - name: secure
       port: 443
@@ -194,8 +200,11 @@
     session_affinity: None
     service_type: ClusterIP
 
+<<<<<<< HEAD
 =======
 >>>>>>> Switch the master to always run with bootstrapping on
+=======
+>>>>>>> catalog: create service and ssl certs for controller manager
 - name: Delete temp directory
   file:
     name: "{{ mktemp.stdout }}"
