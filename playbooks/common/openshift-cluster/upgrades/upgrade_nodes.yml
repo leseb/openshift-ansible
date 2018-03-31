@@ -64,8 +64,13 @@
       tasks_from: upgrade.yml
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> Fix node upgrade hooks
+=======
+    vars:
+      r_node_dynamic_config_name: "{{ openshift_node_group_name | default('node-config-compute') }}"
+>>>>>>> Upgrade to 3.10 with static pods
 
   # Run the upgrade hook prior to make the node schedulable again.
   - debug: msg="Running node upgrade hook {{ openshift_node_upgrade_hook }}"

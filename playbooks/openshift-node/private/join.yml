@@ -1,5 +1,6 @@
 ---
 <<<<<<< HEAD
+<<<<<<< HEAD
 - name: Node Join Checkpoint Start
   hosts: all
   gather_facts: false
@@ -35,6 +36,8 @@
     - (hostvars[item].openshift_is_bootstrapped | bool) or (hostvars[item].openshift_node_bootstrap | default(True) | bool)
     changed_when: False
 
+=======
+>>>>>>> Upgrade to 3.10 with static pods
 - name: Distribute bootstrap and start nodes
   hosts: oo_nodes_to_bootstrap
 >>>>>>> Switch the master to always run with bootstrapping on

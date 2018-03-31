@@ -102,10 +102,17 @@ spec:
             ) &
             break
           done
+<<<<<<< HEAD
           mkdir -p /etc/origin/node/tmp
           # periodically refresh both node-config.yaml and relabel the node
           while true; do
             if ! oc extract "configmaps/${name}" -n openshift-node --to=/etc/origin/node/tmp --confirm --request-timeout=10s --config /etc/origin/node/node.kubeconfig "--token=$( cat /var/run/secrets/kubernetes.io/serviceaccount/token )"  > /dev/null; then
+=======
+
+          # periodically refresh both node-config.yaml and relabel the node
+          while true; do
+            if ! oc extract "configmaps/${name}" -n openshift-node --to=/etc/origin/node --confirm --request-timeout=10s --config /etc/origin/node/node.kubeconfig "--token=$( cat /var/run/secrets/kubernetes.io/serviceaccount/token )"  > /dev/null; then
+>>>>>>> Upgrade to 3.10 with static pods
               echo "error: Unable to retrieve latest config for node" 2>&1
               sleep 15 &
               wait $!
@@ -138,10 +145,15 @@ spec:
                   fi
                 fi
               else
+<<<<<<< HEAD
                 echo "error: The downloaded node configuration is invalid, retrying later" 2>&1
                 sleep 10 &
                 wait $!
                 continue
+=======
+                echo "error: The downloaded node configuration is invalid, exiting" 2>&1
+                exit 1
+>>>>>>> Upgrade to 3.10 with static pods
               fi
               if ! pkill -U 0 -f '(^|/)hyperkube kubelet '; then
                 echo "error: Unable to restart Kubelet" 2>&1
@@ -190,6 +202,7 @@ spec:
       - name: host-sysconfig-node
         hostPath:
           path: /etc/sysconfig
+<<<<<<< HEAD
       - hostPath:
           path: /var/run/dbus
         name: var-run-dbus
@@ -199,3 +212,5 @@ spec:
       # Sync daemonset should tolerate all taints to make sure it runs on all nodes
       tolerations:
       - operator: "Exists"
+=======
+>>>>>>> Upgrade to 3.10 with static pods

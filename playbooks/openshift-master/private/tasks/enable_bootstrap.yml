@@ -24,6 +24,7 @@
     name: openshift_control_plane
 >>>>>>> Switch the master to always run with bootstrapping on
     tasks_from: bootstrap.yml
+<<<<<<< HEAD
 
 - name: Setup the node group config maps
   import_role:
@@ -40,3 +41,5 @@
   when:
   - openshift_master_bootstrap_auto_approve | default(False) | bool
 >>>>>>> Switch the master to always run with bootstrapping on
+=======
+>>>>>>> Upgrade to 3.10 with static pods

@@ -1,10 +1,21 @@
 ---
+<<<<<<< HEAD
+=======
+- name: Update oreg value
+  yedit:
+    src: "{{ openshift.common.config_base }}/node/node-config.yaml"
+    key: 'imageConfig.format'
+    value: "{{ oreg_url | default(oreg_url_node) }}"
+  when: oreg_url is defined or oreg_url_node is defined
+
+>>>>>>> Upgrade to 3.10 with static pods
 - name: Ensure the node static pod directory exists
   file:
     path: "{{ openshift.common.config_base }}/node/pods"
     state: directory
     mode: 0755
 
+<<<<<<< HEAD
 - name: Ensure docker-registry directory exists
   file:
     state: directory
@@ -17,6 +28,41 @@
     state: link
     force: yes
     follow: no
+=======
+- name: Update node-config for static pods
+  yedit:
+    src: "{{ openshift.common.config_base }}/node/node-config.yaml"
+    edits:
+    - key: kubeletArguments.pod-manifest-path
+      value:
+      - "{{ openshift.common.config_base }}/node/pods"
+
+# https://bugzilla.redhat.com/show_bug.cgi?id=1518912
+# - name: Clean up IPAM data
+#   file:
+#     path: "/var/lib/cni/networks/openshift-sdn/"
+#     state: absent
+
+- name: Uninstall openvswitch
+  package:
+    name: openvswitch
+    state: absent
+  when: not openshift_is_atomic | bool
+
+- name: Remove old service information
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+  - /etc/systemd/system/docker.service.d/docker-sdn-ovs.conf
+  - /etc/systemd/system/atomic-openshift-node-dep.service
+  - /etc/systemd/system/origin-node-dep.service
+  - /etc/systemd/system/openvswitch.service
+
+- name: Move existing credentials and configuration into bootstrap configuration
+  import_tasks: bootstrap_changes.yml
+  when: openshift_node_bootstrap | default(True) | bool
+>>>>>>> Upgrade to 3.10 with static pods
 
 - name: Reset selinux context
   command: restorecon -RF {{ openshift_node_data_dir }}/openshift.local.volumes
@@ -24,6 +70,7 @@
   - ansible_selinux is defined
   - ansible_selinux.status == 'enabled'
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 - name: Update systemd units
   import_tasks: ../systemd_units.yml
@@ -40,6 +87,11 @@
     regexp: '^pause_image ='
   when: crio_conf.stat.exists == True
 =======
+=======
+- name: Update systemd units
+  import_tasks: ../systemd_units.yml
+
+>>>>>>> Upgrade to 3.10 with static pods
 # NOTE: This is needed to make sure we are using the correct set
 #       of systemd unit files. The RPMs lay down defaults but
 #       the install/upgrade may override them in /etc/systemd/system/.

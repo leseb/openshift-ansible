@@ -9,9 +9,16 @@
 
 - name: run node config setup
   import_playbook: disable_excluders.yml
+<<<<<<< HEAD
+=======
+  vars:
+    l_node_group: oo_nodes_to_config
+>>>>>>> Upgrade to 3.10 with static pods
 
 - name: run node config
   import_playbook: configure_nodes.yml
+  vars:
+    l_node_group: oo_nodes_to_config
 
 - name: node bootstrap config
   hosts: oo_nodes_to_config
@@ -35,6 +42,7 @@
         name: openshift_control_plane
         tasks_from: static_shim.yml
 
+<<<<<<< HEAD
     - import_role:
         name: openshift_control_plane
         tasks_from: static.yml
@@ -46,8 +54,14 @@
         tasks_from: bootstrap.yml
 >>>>>>> Migrate to import_role for static role inclusion
 
+=======
+>>>>>>> Upgrade to 3.10 with static pods
 - name: Re-enable excluders
   import_playbook: enable_excluders.yml
+  vars:
+    l_node_group: oo_nodes_to_config
 
 - name: Remove any undesired artifacts from build
   import_playbook: clean_image.yml
+  vars:
+    l_node_group: oo_nodes_to_config

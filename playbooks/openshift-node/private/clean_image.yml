@@ -16,10 +16,14 @@
 
 - name: Configure nodes
 <<<<<<< HEAD
+<<<<<<< HEAD
   hosts: oo_nodes_to_config
 =======
   hosts: oo_nodes_to_config:!oo_exclude_nodes_to_config
 >>>>>>> Switch the master to always run with bootstrapping on
+=======
+  hosts: "{{ l_node_group }}"
+>>>>>>> Upgrade to 3.10 with static pods
   tasks:
   - name: Set gquota for slash filesystem
     import_role:

@@ -1,4 +1,5 @@
 ---
+<<<<<<< HEAD
 # INPUT r_etcd_upgrade_version?
 
 # F23 GA'd with etcd 2.0, currently has 2.2 in updates
@@ -34,3 +35,10 @@
   command: "{{ l_etcd_restart_command }}"
 
 - import_tasks: verify_cluster_health.yml
+=======
+- include_tasks: upgrade/upgrade_static.yml
+  when: openshift_master_bootstrap_enabled | default(False) | bool
+
+- include_tasks: upgrade/upgrade_rpm.yml
+  when: not openshift_master_bootstrap_enabled | default(False) | bool
+>>>>>>> Upgrade to 3.10 with static pods

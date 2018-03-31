@@ -122,6 +122,28 @@
     with_items: "{{ g_new_node_hosts | default(g_node_hosts | default([], true), true) }}"
     changed_when: no
 
+<<<<<<< HEAD
+=======
+  - name: Evaluate oo_nodes_to_bootstrap
+    add_host:
+      name: "{{ item }}"
+      groups: oo_nodes_to_bootstrap
+      ansible_ssh_user: "{{ g_ssh_user | default(omit) }}"
+      ansible_become: "{{ g_sudo | default(omit) }}"
+    with_items: "{{ g_new_node_hosts | default(g_node_hosts | default([], true), true) }}"
+    changed_when: no
+    when: hostvars[item].openshift_node_bootstrap | default(True) | bool
+
+  - name: Add masters to oo_nodes_to_bootstrap
+    add_host:
+      name: "{{ item }}"
+      groups: oo_nodes_to_bootstrap
+      ansible_ssh_user: "{{ g_ssh_user | default(omit) }}"
+      ansible_become: "{{ g_sudo | default(omit) }}"
+    with_items: "{{ groups.oo_masters | default([]) }}"
+    changed_when: no
+
+>>>>>>> Upgrade to 3.10 with static pods
   - name: Evaluate oo_lb_to_config
     add_host:
       name: "{{ item }}"

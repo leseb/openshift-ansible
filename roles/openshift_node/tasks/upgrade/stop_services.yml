@@ -4,6 +4,10 @@
     name: "{{ item }}"
     state: stopped
   with_items:
+<<<<<<< HEAD
+=======
+  - openvswitch
+>>>>>>> Upgrade to 3.10 with static pods
   - "{{ openshift_service_type }}-node"
   failed_when: false
 

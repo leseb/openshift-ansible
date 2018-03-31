@@ -90,6 +90,10 @@
         console_url: "{{ openshift_master_console_url | default(None) }}"
         console_use_ssl: "{{ openshift_master_console_use_ssl | default(None) }}"
         public_console_url: "{{ openshift_master_public_console_url | default(None) }}"
+  - openshift_facts:
+      role: node
+      local_facts:
+        bootstrapped: true
 
 - import_playbook: certificates.yml
 
@@ -100,7 +104,11 @@
   tasks:
   - import_role:
       name: openshift_control_plane
+<<<<<<< HEAD
       tasks_from: generate_session_secrets.yml
+=======
+      tasks_from: check_existing_config
+>>>>>>> Upgrade to 3.10 with static pods
 
 - name: Configure masters
   hosts: oo_masters_to_config
@@ -122,6 +130,7 @@
   - name: Have the masters automatically pull their configuration
     import_role:
       name: openshift_node_group
+<<<<<<< HEAD
       tasks_from: bootstrap_config.yml
 =======
       tasks_from: bootstrap
@@ -136,6 +145,12 @@
     - line: "BOOTSTRAP_CONFIG_NAME={{ openshift_node_group_master | default('node-config-master') }}"
       regexp: "^BOOTSTRAP_CONFIG_NAME=.*"
 >>>>>>> Switch the master to always run with bootstrapping on
+=======
+      tasks_from: bootstrap_config
+    vars:
+      r_node_dynamic_config_name: "{{ openshift_node_group_name | default('node-config-master') }}"
+      r_node_dynamic_config_force: True
+>>>>>>> Upgrade to 3.10 with static pods
 
   roles:
   - role: openshift_master_facts
@@ -159,6 +174,14 @@
   - role: calico
     when: openshift_use_calico | default(false) | bool
   tasks:
+<<<<<<< HEAD
+=======
+  - name: Set up automatic node config reconcilation
+    run_once: True
+    import_role:
+      name: openshift_node_group
+      tasks_from: sync
+>>>>>>> Upgrade to 3.10 with static pods
   - import_role:
       name: kuryr
       tasks_from: master.yaml
@@ -215,8 +238,27 @@
       name: openshift_node_group
       tasks_from: sync.yml
 
+<<<<<<< HEAD
 - name: Ensure inventory labels are assigned to masters
 =======
+=======
+- name: Deploy the central bootstrap configuration
+  hosts: oo_first_master
+  gather_facts: no
+  tasks:
+  - name: setup bootstrap settings
+    import_tasks: tasks/enable_bootstrap_config.yml
+
+- name: Ensure inventory labels are assigned to masters
+  hosts: oo_masters_to_config
+  gather_facts: no
+  roles:
+  - role: openshift_manage_node
+    openshift_master_host: "{{ groups.oo_first_master.0 }}"
+    openshift_manage_node_is_master: "{{ ('oo_masters_to_config' in group_names) | bool }}"
+    openshift_node_master_api_url: "{{ hostvars[groups.oo_first_master.0].openshift.master.api_url }}"
+
+>>>>>>> Upgrade to 3.10 with static pods
 - name: Re-enable excluder if it was previously enabled
 >>>>>>> Switch the master to always run with bootstrapping on
   hosts: oo_masters_to_config

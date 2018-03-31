@@ -198,8 +198,11 @@
   # copy to this location to bypass initial bootstrap request
   - /etc/origin/node/node.kubeconfig
 
+<<<<<<< HEAD
 - import_tasks: pre_pull_poll.yml
 
+=======
+>>>>>>> Upgrade to 3.10 with static pods
 - name: Start and enable self-hosting node
   systemd:
     name: "{{ openshift_service_type }}-node"

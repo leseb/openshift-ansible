@@ -1,6 +1,10 @@
 ---
 - name: Disable excluders
+<<<<<<< HEAD
   hosts: oo_nodes_to_config
+=======
+  hosts: "{{ l_node_group }}"
+>>>>>>> Upgrade to 3.10 with static pods
   gather_facts: no
   roles:
   - role: openshift_excluder

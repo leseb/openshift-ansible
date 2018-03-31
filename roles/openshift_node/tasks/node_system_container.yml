@@ -1,4 +1,22 @@
 ---
+<<<<<<< HEAD
+=======
+# system containers create their own service unit files based on templates
+# that are part of the container image.
+# oc_atomic_container will create a systemd service unit file in
+# /etc/systemd/system/origin-node.service (origin) or
+# /etc/systemd/system/atomic-openshift-node.service (enterprise)
+
+# TODO: remove when system container is fixed to not include it
+- name: Ensure old system path is set
+  file:
+    state: directory
+    path: "{{ item }}"
+    mode: '0750'
+  with_items:
+  - "/etc/origin/openvswitch"
+  - "/var/lib/kubelet"
+>>>>>>> Upgrade to 3.10 with static pods
 
 - name: Pre-pull node system container image
   command: >

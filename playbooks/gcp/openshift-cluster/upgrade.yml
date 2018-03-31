@@ -11,4 +11,8 @@
       all_nodes: true
 
 - name: run the upgrade
+<<<<<<< HEAD
   import_playbook: ../../common/openshift-cluster/upgrades/v4_0/upgrade.yml
+=======
+  import_playbook: ../../common/openshift-cluster/upgrades/v3_10/upgrade.yml
+>>>>>>> Upgrade to 3.10 with static pods

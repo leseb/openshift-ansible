@@ -122,10 +122,13 @@
   when: not openshift.common.is_containerized | bool
 >>>>>>> Remove openshift.common.service_type
 
+<<<<<<< HEAD
 # TODO(michaelgugino): Remove in 3.12
 - import_tasks: selinux_container_cgroup.yml
 
 <<<<<<< HEAD
+=======
+>>>>>>> Upgrade to 3.10 with static pods
 - include_tasks: "{{ node_config_hook }}"
   when: node_config_hook is defined
 =======
@@ -164,6 +167,7 @@
 - import_tasks: upgrade/restart.yml
 
 - name: Approve node certificates when bootstrapping
+<<<<<<< HEAD
   oc_csr_approve:
     oc_bin: "{{ hostvars[groups.oo_first_master.0]['first_master_client_binary'] }}"
     oc_conf: "{{ openshift.common.config_base }}/master/admin.kubeconfig"
@@ -173,5 +177,26 @@
   register: node_upgrade_oc_csr_approve
   retries: 30
   until: node_upgrade_oc_csr_approve is succeeded
+=======
+  oc_adm_csr:
+    nodes: "{{ openshift.common.hostname | lower }}"
+    timeout: 180
+    fail_on_timeout: true
+  delegate_to: "{{ groups.oo_first_master.0 }}"
+  ignore_errors: true
+  when: openshift_node_bootstrap | default(True) | bool
+
+- name: Wait for node to be ready
+  oc_obj:
+    state: list
+    kind: node
+    name: "{{ openshift.common.hostname | lower }}"
+  register: node_output
+  delegate_to: "{{ groups.oo_first_master.0 }}"
+  until: node_output.results.returncode == 0 and node_output.results.results[0].status.conditions | selectattr('type', 'match', '^Ready$') | map(attribute='status') | join | bool == True
+  # Give the node three minutes to come back online.
+  retries: 36
+  delay: 5
+>>>>>>> Upgrade to 3.10 with static pods
 
 - import_tasks: journald.yml

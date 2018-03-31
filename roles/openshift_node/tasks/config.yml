@@ -5,6 +5,7 @@
 =======
   include_tasks: systemd_units.yml
 
+<<<<<<< HEAD
 - name: Pull container images
   include_tasks: container_images.yml
   when: openshift.common.is_containerized | bool
@@ -25,6 +26,11 @@
 
 - set_fact:
     ovs_service_status_changed: "{{ ovs_start_result is changed }}"
+=======
+- name: Install Node system container
+  import_tasks: node_system_container.yml
+  when: l_is_node_system_container | bool
+>>>>>>> Upgrade to 3.10 with static pods
 
 - file:
     dest: "{{ l2_openshift_node_kubelet_args['config'] }}"

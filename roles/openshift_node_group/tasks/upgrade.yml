@@ -2,14 +2,22 @@
 - name: Ensure all node groups have bootstrap settings
   include_tasks: create_config.yml
   vars:
+<<<<<<< HEAD
     l_openshift_node_group_name: "{{ node_group.name }}"
     l_openshift_node_group_edits:
+=======
+    openshift_node_group_name: "{{ node_group.name }}"
+    openshift_node_group_edits:
+>>>>>>> Upgrade to 3.10 with static pods
     - key: servingInfo.certFile
       value: ""
     - key: servingInfo.keyFile
       value: ""
+<<<<<<< HEAD
     - key: servingInfo.clientCA
       value: "client-ca.crt"
+=======
+>>>>>>> Upgrade to 3.10 with static pods
     - key: kubeletArguments.pod-manifest-path
       value:
       - /etc/origin/node/pods
@@ -25,9 +33,13 @@
     - key: kubeletArguments.cert-dir
       value:
       - /etc/origin/node/certificates
+<<<<<<< HEAD
     - key: masterKubeConfig
       value: node.kubeconfig
     l_openshift_node_group_labels: "{{ node_group.labels }}"
+=======
+    openshift_node_group_labels: "{{ node_group.labels | default([]) }}"
+>>>>>>> Upgrade to 3.10 with static pods
   with_items: "{{ openshift_node_groups }}"
   loop_control:
     loop_var: node_group

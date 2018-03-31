@@ -29,7 +29,10 @@ spec:
       serviceAccountName: sdn
       hostNetwork: true
       hostPID: true
+<<<<<<< HEAD
       priorityClassName: system-node-critical
+=======
+>>>>>>> Upgrade to 3.10 with static pods
       containers:
       - name: openvswitch
         image: " "
