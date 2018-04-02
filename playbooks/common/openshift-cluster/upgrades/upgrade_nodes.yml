@@ -63,6 +63,9 @@
       name: openshift_node
       tasks_from: upgrade.yml
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> Fix node upgrade hooks
 
   # Run the upgrade hook prior to make the node schedulable again.
   - debug: msg="Running node upgrade hook {{ openshift_node_upgrade_hook }}"
@@ -71,8 +74,11 @@
   - include_tasks: "{{ openshift_node_upgrade_hook }}"
     when: openshift_node_upgrade_hook is defined
 
+<<<<<<< HEAD
 =======
 >>>>>>> Label masters with node-role.kubernetes.io/master. This PR also sets these labels
+=======
+>>>>>>> Fix node upgrade hooks
   - import_role:
       name: openshift_manage_node
       tasks_from: config.yml
@@ -96,6 +102,13 @@
           ('glusterfs' in groups and inventory_hostname in groups['glusterfs'])
           or ('glusterfs_registry' in groups and inventory_hostname in groups['glusterfs_registry'])
 
+  # Run the post-upgrade hook if defined:
+  - debug: msg="Running node post-upgrade hook {{ openshift_node_upgrade_post_hook }}"
+    when: openshift_node_upgrade_post_hook is defined
+
+  - include_tasks: "{{ openshift_node_upgrade_post_hook }}"
+    when: openshift_node_upgrade_post_hook is defined
+
 - name: Re-enable excluders
   hosts: oo_nodes_to_upgrade:!oo_masters_to_config
   tasks:
@@ -103,6 +116,7 @@
       name: openshift_excluder
     vars:
       r_openshift_excluder_action: enable
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
   - name: Set node schedulability
@@ -131,3 +145,5 @@
     vars:
       r_openshift_excluder_action: enable
 >>>>>>> Deprecate using Ansible tests as filters
+=======
+>>>>>>> Fix node upgrade hooks
