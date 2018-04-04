@@ -27,8 +27,13 @@ authConfig:
     - X-Remote-Extra-
 apiLevels:
 - v1
+<<<<<<< HEAD
 {% if openshift.master.audit_config is defined %}
 auditConfig:{{ openshift.master.audit_config | lib_utils_to_padded_yaml(level=1) }}
+=======
+{% if openshift_master_audit_config is defined %}
+auditConfig:{{ openshift_master_audit_config | lib_utils_to_padded_yaml(level=1) }}
+>>>>>>> Remove unused/obsolete items from openshift_master_facts
 {% endif %}
 controllerConfig:
   election:

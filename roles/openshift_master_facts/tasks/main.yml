@@ -39,6 +39,7 @@
       logging_public_url: "{{ openshift_master_logging_public_url | default(None) }}"
       logout_url: "{{ openshift_master_logout_url | default(None) }}"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
       extension_scripts: "{{ openshift_master_extension_scripts | default(None) }}"
       extension_stylesheets: "{{ openshift_master_extension_stylesheets | default(None) }}"
@@ -46,13 +47,21 @@
       embedded_kube: "{{ openshift_master_embedded_kube | default(None) }}"
       embedded_dns: "{{ openshift_master_embedded_dns | default(None) }}"
 >>>>>>> Remove etcd_hosts and etcd_urls from openshift_facts
+=======
+>>>>>>> Remove unused/obsolete items from openshift_master_facts
       bind_addr: "{{ openshift_master_bind_addr | default(None) }}"
       session_max_seconds: "{{ openshift_master_session_max_seconds | default(None) }}"
       session_name: "{{ openshift_master_session_name | default(None) }}"
       ldap_ca: "{{ openshift_master_ldap_ca | default(lookup('file', openshift_master_ldap_ca_file) if openshift_master_ldap_ca_file is defined else None) }}"
       openid_ca: "{{ openshift_master_openid_ca | default(lookup('file', openshift_master_openid_ca_file) if openshift_master_openid_ca_file is defined else None) }}"
+<<<<<<< HEAD
       github_ca: "{{ openshift_master_github_ca | default(lookup('file', openshift_master_github_ca_file) if openshift_master_github_ca_file is defined else None) }}"
       registry_url: "{{ oreg_url | default(None) }}"
+=======
+      registry_url: "{{ oreg_url_master | default(oreg_url) | default(None) }}"
+      sdn_cluster_network_cidr: "{{ osm_cluster_network_cidr | default(None) }}"
+      sdn_host_subnet_length: "{{ osm_host_subnet_length | default(None) }}"
+>>>>>>> Remove unused/obsolete items from openshift_master_facts
       registry_selector: "{{ openshift_registry_selector | default(None) }}"
       api_server_args: "{{ osm_api_server_args | default(None) }}"
       controller_args: "{{ osm_controller_args | default(None) }}"
@@ -60,8 +69,11 @@
       admission_plugin_config: "{{openshift_master_admission_plugin_config }}"
       kube_admission_plugin_config: "{{openshift_master_kube_admission_plugin_config | default(None) }}"  # deprecated, merged with admission_plugin_config
       image_policy_config: "{{ openshift_master_image_policy_config | default(None) }}"
+<<<<<<< HEAD
       image_policy_allowed_registries_for_import: "{{ openshift_master_image_policy_allowed_registries_for_import | default(None) }}"
       audit_config: "{{ openshift_master_audit_config | default(None) }}"
+=======
+>>>>>>> Remove unused/obsolete items from openshift_master_facts
 
 - name: Determine if scheduler config present
   stat:

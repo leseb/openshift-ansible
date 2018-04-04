@@ -159,6 +159,10 @@ openshift_master_auth_token_max_seconds: 500
 # oo_htpasswd_users_from_file is a custom filter in role lib_utils
 l_osm_htpasswd_users_none: {}
 openshift_master_htpasswd_users: "{{ lookup('file', openshift_master_htpasswd_file) | oo_htpasswd_users_from_file if openshift_master_htpasswd_file is defined else l_osm_htpasswd_users_none }}"
+<<<<<<< HEAD
+=======
+openshift_master_manage_htpasswd: True
+>>>>>>> Remove unused/obsolete items from openshift_master_facts
 l_osm_request_header_none: {}
 openshift_master_request_header_ca: "{{ lookup('file', openshift_master_request_header_ca_file) if openshift_master_request_header_ca_file is defined else l_osm_request_header_none }}"
 openshift_master_oauth_grant_method: auto
@@ -167,6 +171,7 @@ openshift_master_max_requests_inflight: 500
 openshift_master_embedded_dns: True
 openshift_master_embedded_kube: True
 openshift_master_pod_eviction_timeout: ""
+<<<<<<< HEAD
 
 # added so that it can lay down the static pod definitions in a configurable place
 openshift_control_plane_static_pod_location: /etc/origin/node/pods/
@@ -187,3 +192,5 @@ l_core_api_list:
 - "user.openshift.io"
 
 openshift_volume_recycler_image: "{{ l_osm_registry_url | regex_replace('${component}' | regex_escape, 'recycler') }}"
+=======
+>>>>>>> Remove unused/obsolete items from openshift_master_facts

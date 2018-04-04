@@ -58,7 +58,47 @@
     dest: "{{ openshift_master_scheduler_conf }}"
     backup: true
 
+<<<<<<< HEAD
 - import_tasks: htpass_provider.yml
+=======
+- name: Install httpd-tools if needed
+  package: name=httpd-tools state=present
+  when:
+  - item.kind == 'HTPasswdPasswordIdentityProvider'
+  - not openshift_is_atomic | bool
+  with_items: "{{ openshift_master_identity_providers }}"
+  register: result
+  until: result is succeeded
+
+- name: Ensure htpasswd directory exists
+  file:
+    path: "{{ item.filename | dirname }}"
+    state: directory
+  when:
+  - item.kind == 'HTPasswdPasswordIdentityProvider'
+  with_items: "{{ openshift_master_identity_providers }}"
+
+- name: Create the htpasswd file if needed
+  template:
+    dest: "{{ item.filename }}"
+    src: htpasswd.j2
+    backup: yes
+    mode: 0600
+  when:
+  - item.kind == 'HTPasswdPasswordIdentityProvider'
+  - openshift_master_manage_htpasswd | bool
+  with_items: "{{ openshift_master_identity_providers }}"
+
+- name: Ensure htpasswd file exists
+  copy:
+    dest: "{{ item.filename }}"
+    force: no
+    content: ""
+    mode: 0600
+  when:
+  - item.kind == 'HTPasswdPasswordIdentityProvider'
+  with_items: "{{ openshift_master_identity_providers }}"
+>>>>>>> Remove unused/obsolete items from openshift_master_facts
 
 - name: Create the ldap ca file if needed
   copy:
@@ -95,7 +135,11 @@
 
 - name: Create the request header ca file if needed
   copy:
+<<<<<<< HEAD
     dest: "/etc/origin/master/{{ item.name }}_request_header_ca.crt"
+=======
+    dest: "{{ item.clientCA if 'clientCA' in item and '/' in item.clientCA else openshift_master_config_dir ~ '/' ~ item.clientCA | default('request_header_ca.crt') }}"
+>>>>>>> Remove unused/obsolete items from openshift_master_facts
     content: "{{ openshift_master_request_header_ca }}"
     mode: 0600
     backup: yes
