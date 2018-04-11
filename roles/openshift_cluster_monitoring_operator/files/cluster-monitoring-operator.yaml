@@ -31,13 +31,27 @@ objects:
     labels:
       k8s-app: alertmanager
   data:
+<<<<<<< HEAD
     alertmanager.yaml: "${ALERTMANAGER_CONFIG}"
 
 - apiVersion: rbac.authorization.k8s.io/v1
+=======
+    config.yaml: |+
+      prometheusOperator:
+        baseImage: ${PROMETHEUS_OPERATOR_IMAGE}
+        prometheusConfigReloaderBaseImage: ${PROMETHEUS_CONFIG_RELOADER_IMAGE}
+        configReloaderBaseImage: ${CONFIG_RELOADER_IMAGE}
+      prometheusK8s:
+        baseImage: ${PROMETHEUS_IMAGE}
+      alertmanagerMain:
+        baseImage: ${ALERTMANAGER_IMAGE}
+- apiVersion: rbac.authorization.k8s.io/v1beta1
+>>>>>>> cluster_monitoring_operator: Don't use cluster-admin role
   kind: ClusterRole
   metadata: {name: cluster-monitoring-operator}
   rules:
   - apiGroups: [rbac.authorization.k8s.io]
+<<<<<<< HEAD
     resources: [clusterrolebindings, clusterroles, rolebindings, roles]
     verbs: [create, delete, get, list, update, watch]
   - apiGroups: ['']
@@ -52,24 +66,51 @@ objects:
   - apiGroups: [security.openshift.io]
     resources: [securitycontextconstraints]
     verbs: [create, delete, get, list, update, watch]
+=======
+    resources: [roles, rolebindings, clusterroles, clusterrolebindings]
+    verbs: [create, get, list, watch, update, delete]
+  - apiGroups: ['']
+    resources: [serviceaccounts]
+    verbs: [create, get, list, watch, update, delete]
+  - apiGroups: [apps]
+    resources: [deployments, daemonsets]
+    verbs: [create, get, list, watch, update, delete]
+  - apiGroups: [route.openshift.io]
+    resources: [routes]
+    verbs: [create, get, list, watch, update, delete]
+  - apiGroups: [security.openshift.io]
+    resources: [securitycontextconstraints]
+    verbs: [create, get, list, watch, update, delete]
+>>>>>>> cluster_monitoring_operator: Don't use cluster-admin role
   - apiGroups: [authentication.k8s.io]
     resources: [tokenreviews]
     verbs: [create]
   - apiGroups: [authorization.k8s.io]
     resources: [subjectaccessreviews]
     verbs: [create]
+<<<<<<< HEAD
   - apiGroups: [apps]
     resources: [daemonsets, deployments, replicasets, statefulsets]
+=======
+  - apiGroups: ['']
+    resources: [nodes, pods, services, resourcequotas, replicationcontrollers, limitranges, persistentvolumeclaims, persistentvolumes, namespaces, endpoints]
+>>>>>>> cluster_monitoring_operator: Don't use cluster-admin role
     verbs: [list, watch]
   - apiGroups: [extensions]
     resources: [daemonsets, deployments, replicasets]
     verbs: [list, watch]
+<<<<<<< HEAD
   - apiGroups: [autoscaling]
     resources: [horizontalpodautoscalers]
+=======
+  - apiGroups: [apps]
+    resources: [statefulsets]
+>>>>>>> cluster_monitoring_operator: Don't use cluster-admin role
     verbs: [list, watch]
   - apiGroups: [batch]
     resources: [cronjobs, jobs]
     verbs: [list, watch]
+<<<<<<< HEAD
   - apiGroups: ['']
     resources: [configmaps, endpoints, limitranges, namespaces, nodes, persistentvolumeclaims,
       persistentvolumes, pods, replicationcontrollers, resourcequotas, secrets, services]
@@ -81,10 +122,25 @@ objects:
     resourceNames: [kube-state-metrics]
     resources: [deployments]
     verbs: [get, update]
+=======
+  - apiGroups: [autoscaling]
+    resources: [horizontalpodautoscalers]
+    verbs: [list, watch]
+  - apiGroups: [authentication.k8s.io]
+    resources: [tokenreviews]
+    verbs: [create]
+  - apiGroups: [authorization.k8s.io]
+    resources: [subjectaccessreviews]
+    verbs: [create]
+  - apiGroups: ['']
+    resources: [pods]
+    verbs: [get]
+>>>>>>> cluster_monitoring_operator: Don't use cluster-admin role
   - apiGroups: [extensions]
     resourceNames: [kube-state-metrics]
     resources: [deployments]
     verbs: [get, update]
+<<<<<<< HEAD
   - apiGroups: ['']
     resources: [namespaces]
     verbs: [get]
@@ -111,11 +167,45 @@ objects:
     verbs: ['*']
   - apiGroups: ['']
     resources: [configmaps, secrets]
+=======
+  - apiGroups: [authentication.k8s.io]
+    resources: [tokenreviews]
+    verbs: [create]
+  - apiGroups: [authorization.k8s.io]
+    resources: [subjectaccessreviews]
+    verbs: [create]
+  - nonResourceURLs: [/metrics]
+    verbs: [get]
+  - apiGroups: [authentication.k8s.io]
+    resources: [tokenreviews]
+    verbs: [create]
+  - apiGroups: [authorization.k8s.io]
+    resources: [subjectaccessreviews]
+    verbs: [create]
+  - apiGroups: ['']
+    resources: [namespaces, nodes/metrics]
+    verbs: [get]
+  - apiGroups: ['']
+    resources: [nodes, services, endpoints, pods]
+    verbs: [get, list, watch]
+  - apiGroups: ['']
+    resources: [configmaps]
+    verbs: [get]
+  - apiGroups: [extensions]
+    resources: [thirdpartyresources]
+    verbs: ['*']
+  - apiGroups: [apiextensions.k8s.io]
+    resources: [customresourcedefinitions]
+    verbs: ['*']
+  - apiGroups: [monitoring.coreos.com]
+    resources: [alertmanagers, prometheuses, prometheuses/finalizers, alertmanagers/finalizers, servicemonitors]
+>>>>>>> cluster_monitoring_operator: Don't use cluster-admin role
     verbs: ['*']
   - apiGroups: [apps]
     resources: [statefulsets]
     verbs: ['*']
   - apiGroups: ['']
+<<<<<<< HEAD
     resources: [endpoints, services]
     verbs: [create, get, update]
   - apiGroups: ['']
@@ -141,3 +231,69 @@ objects:
   - kind: ServiceAccount
     name: cluster-monitoring-operator
     namespace: ${NAMESPACE}
+=======
+    resources: [configmaps, secrets]
+    verbs: ['*']
+  - apiGroups: ['']
+    resources: [pods]
+    verbs: [list, delete]
+  - apiGroups: ['']
+    resources: [services, endpoints]
+    verbs: [get, create, update]
+  - apiGroups: ['']
+    resources: [nodes]
+    verbs: [list, watch]
+  - apiGroups: ['']
+    resources: [namespaces]
+    verbs: [list]
+- apiVersion: v1
+  kind: ServiceAccount
+  metadata:
+    name: cluster-monitoring-operator
+    namespace: ${NAMESPACE}
+- apiVersion: rbac.authorization.k8s.io/v1beta1
+  kind: ClusterRoleBinding
+  metadata:
+    name: cluster-monitoring-operator
+  roleRef:
+    apiGroup: rbac.authorization.k8s.io
+    kind: ClusterRole
+    name: cluster-monitoring-operator
+  subjects:
+  - kind: ServiceAccount
+    name: cluster-monitoring-operator
+    namespace: ${NAMESPACE}
+- apiVersion: extensions/v1beta1
+  kind: Deployment
+  metadata:
+    name: cluster-monitoring-operator
+    namespace: ${NAMESPACE}
+    labels:
+      app: cluster-monitoring-operator
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app: cluster-monitoring-operator
+    template:
+      metadata:
+        labels:
+          app: cluster-monitoring-operator
+      spec:
+        serviceAccountName: cluster-monitoring-operator
+        containers:
+        - image: ${OPERATOR_IMAGE}
+          name: cluster-monitoring-operator
+          args:
+          - "-namespace=${NAMESPACE}"
+          - "-configmap=cluster-monitoring-config"
+          - "-logtostderr=true"
+          - "-v=4"
+          resources:
+            limits:
+              cpu: 20m
+              memory: 50Mi
+            requests:
+              cpu: 20m
+              memory: 50Mi
+>>>>>>> cluster_monitoring_operator: Don't use cluster-admin role

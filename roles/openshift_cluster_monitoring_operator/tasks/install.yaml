@@ -43,6 +43,7 @@
     description: Openshift Monitoring
     node_selector: ""
 
+<<<<<<< HEAD
 - name: Label monitoring namespace
   oc_label:
     state: present
@@ -70,6 +71,9 @@
       {{ openshift_client_binary }} --config={{ mktemp.stdout }}/admin.kubeconfig adm pod-network make-projects-global openshift-monitoring
 
 - name: Apply the cluster monitoring operator ServiceAccount, Roles and Alertmanager config
+=======
+- name: Apply the cluster monitoring operator template
+>>>>>>> cluster_monitoring_operator: Don't use cluster-admin role
   shell: >
     {{ openshift_client_binary }} process -n openshift-monitoring -f "{{ mktemp.stdout 	}}/{{ item }}"
     --param ALERTMANAGER_CONFIG="{{ openshift_cluster_monitoring_operator_alertmanager_config | b64encode }}"
