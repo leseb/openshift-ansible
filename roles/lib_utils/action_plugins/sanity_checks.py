@@ -393,19 +393,31 @@ class ActionModule(ActionBase):
         kind HTPasswdPasswordIdentityProvider and
         openshift_master_manage_htpasswd is False"""
 
+<<<<<<< HEAD
         manage_pass = self.template_var(
             hostvars, host, 'openshift_master_manage_htpasswd')
         if to_bool(manage_pass):
             # If we manage the file, we can just generate in the new path.
             return None
+=======
+>>>>>>> Add sanity_check for removing filepath and migrate htpasswd
         idps = self.template_var(
             hostvars, host, 'openshift_master_identity_providers')
         if not idps:
             # If we don't find any identity_providers, nothing for us to do.
             return None
+<<<<<<< HEAD
         old_keys = ('file', 'fileName', 'file_name', 'filename')
         if not isinstance(idps, list):
             raise errors.AnsibleModuleError("| not a list")
+=======
+        manage_pass = self.template_var(
+            hostvars, host, 'openshift_master_manage_htpasswd')
+        if to_bool(manage_pass):
+            # If we manage the file, we can just generate in the new path.
+            return None
+        old_keys = ('file', 'fileName', 'file_name', 'filename')
+>>>>>>> Add sanity_check for removing filepath and migrate htpasswd
         for idp in idps:
             if idp['kind'] == 'HTPasswdPasswordIdentityProvider':
                 for old_key in old_keys:
@@ -418,6 +430,7 @@ class ActionModule(ActionBase):
                             'existing master configs, and remove the {} key'
                             'before proceeding.'.format(old_key, old_key))
 
+<<<<<<< HEAD
     def validate_json_format_vars(self, hostvars, host):
         """Fails if invalid json format are found"""
         found_invalid_json = []
@@ -462,6 +475,8 @@ class ActionModule(ActionBase):
             # registry.  We require oreg_auth_user and oreg_auth_password
             raise errors.AnsibleModuleError(err_msg)
 
+=======
+>>>>>>> Add sanity_check for removing filepath and migrate htpasswd
     def run_checks(self, hostvars, host):
         """Execute the hostvars validations against host"""
         distro = self.template_var(hostvars, host, 'ansible_distribution')
@@ -476,9 +491,12 @@ class ActionModule(ActionBase):
         self.check_session_auth_secrets(hostvars, host)
         self.check_unsupported_nfs_configs(hostvars, host)
         self.check_htpasswd_provider(hostvars, host)
+<<<<<<< HEAD
         check_for_removed_vars(hostvars, host)
         self.validate_json_format_vars(hostvars, host)
         self.check_for_oreg_password(hostvars, host, odt)
+=======
+>>>>>>> Add sanity_check for removing filepath and migrate htpasswd
 
     def run(self, tmp=None, task_vars=None):
         result = super(ActionModule, self).run(tmp, task_vars)

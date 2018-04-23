@@ -12,6 +12,9 @@
   failed_when: false
 >>>>>>> Upgrade to 3.10 with static pods
 
+# Only needed for 3.10, remove in 3.11.
+- import_tasks: migrate_idproviders.yml
+
 - import_tasks: static_shim.yml
 
 - import_tasks: upgrade/upgrade_scheduler.yml

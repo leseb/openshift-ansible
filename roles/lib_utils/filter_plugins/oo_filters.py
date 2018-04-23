@@ -631,10 +631,17 @@ def lib_utils_oo_etcd_host_urls(hosts, use_ssl=True, port='2379'):
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 def lib_utils_mutate_htpass_provider(idps):
     '''Updates identityProviders list to mutate filename of htpasswd auth
     to hardcode filename = /etc/origin/master/htpasswd'''
     old_keys = ('filename', 'fileName', 'file_name')
+=======
+def lib_utils_mutate_htpass_provider(idps):
+    '''Updates identityProviders list to mutate filename of htpasswd auth
+    to hardcode filename = /etc/origin/master/htpasswd'''
+    old_keys = ('file', 'fileName', 'file_name')
+>>>>>>> Add sanity_check for removing filepath and migrate htpasswd
     for idp in idps:
         if 'provider' in idp:
             idp_p = idp['provider']
@@ -642,6 +649,7 @@ def lib_utils_mutate_htpass_provider(idps):
                 for old_key in old_keys:
                     if old_key in idp_p:
                         idp_p.pop(old_key)
+<<<<<<< HEAD
                 idp_p['file'] = '/etc/origin/master/htpasswd'
     return idps
 
@@ -685,6 +693,12 @@ def lib_utils_oo_list_of_dict_to_dict_from_key(input_list, keyname):
 
 =======
 >>>>>>> Remove etcd_hosts and etcd_urls from openshift_facts
+=======
+                idp_p['filename'] = '/etc/origin/master/htpasswd'
+    return idps
+
+
+>>>>>>> Add sanity_check for removing filepath and migrate htpasswd
 class FilterModule(object):
     """ Custom ansible filter mapping """
 
@@ -717,9 +731,13 @@ class FilterModule(object):
             "map_to_pairs": map_to_pairs,
             "lib_utils_oo_etcd_host_urls": lib_utils_oo_etcd_host_urls,
 <<<<<<< HEAD
+<<<<<<< HEAD
             "lib_utils_mutate_htpass_provider": lib_utils_mutate_htpass_provider,
             "lib_utils_oo_oreg_image": lib_utils_oo_oreg_image,
             "lib_utils_oo_list_of_dict_to_dict_from_key": lib_utils_oo_list_of_dict_to_dict_from_key,
 =======
 >>>>>>> Remove etcd_hosts and etcd_urls from openshift_facts
+=======
+            "lib_utils_mutate_htpass_provider": lib_utils_mutate_htpass_provider,
+>>>>>>> Add sanity_check for removing filepath and migrate htpasswd
         }
