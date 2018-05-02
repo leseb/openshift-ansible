@@ -25,5 +25,15 @@
   - restart node
 >>>>>>> Switch the master to always run with bootstrapping on
 
+- block:
+  - name: Remove existing systemd service
+    file:
+      path: "/etc/systemd/system/{{ openshift_service_type }}-node.service"
+      state: absent
+    when: not openshift_is_bootstrapped
+  - name: Install node system container
+    import_tasks: node_system_container.yml
+  when: l_is_node_system_container | bool
+
 - import_tasks: config/configure-node-settings.yml
 - import_tasks: configure-proxy-settings.yml
